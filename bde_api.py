@@ -192,6 +192,83 @@ class RateLimiter:
 
 rate_limiter = RateLimiter(max_requests=10, window_seconds=60)  # 每IP每分钟10次
 
+# ============================================================
+# 🔑 API Key 付费门控系统
+# ============================================================
+import hashlib
+import secrets
+
+class KeyManager:
+    """API Key管理：生成/验证/配额"""
+    
+    def __init__(self, keys_file='api_keys.json'):
+        self.keys_file = keys_file
+        self.keys = self._load()
+        # 免费配额追踪：{ip: {date: count}}
+        self._free_usage = {}
+    
+    def _load(self):
+        try:
+            with open(self.keys_file, 'r') as f:
+                return {item['key']: item for item in json.load(f)}
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {}
+    
+    def _save(self):
+        with open(self.keys_file, 'w') as f:
+            json.dump(list(self.keys.values()), f, indent=2)
+    
+    def generate_key(self, tier='premium', email=None):
+        """生成新API Key"""
+        key = f"bde_{secrets.token_urlsafe(24)}"
+        self.keys[key] = {
+            'key': key,
+            'tier': tier,  # free / premium / institutional
+            'email': email,
+            'created_at': datetime.now().isoformat(),
+            'active': True
+        }
+        self._save()
+        return key
+    
+    def verify(self, key):
+        """验证API Key有效性，返回tier或None"""
+        if not key:
+            return None
+        entry = self.keys.get(key)
+        if entry and entry.get('active'):
+            return entry['tier']
+        return None
+    
+    def check_free_quota(self, ip):
+        """检查免费用户当日配额（3次/天）"""
+        today = datetime.now().strftime('%Y-%m-%d')
+        if ip not in self._free_usage:
+            self._free_usage[ip] = {}
+        if today not in self._free_usage[ip]:
+            self._free_usage[ip][today] = 0
+        
+        if self._free_usage[ip][today] >= 3:
+            return False
+        self._free_usage[ip][today] += 1
+        return True
+    
+    def list_keys(self):
+        return list(self.keys.values())
+
+key_manager = KeyManager()
+
+# 🔑 API Key验证依赖
+from fastapi import Header, Depends
+
+async def optional_api_key(x_api_key: str = Header(None)):
+    """可选API Key验证：有key走付费通道，无key走免费配额"""
+    if x_api_key:
+        tier = key_manager.verify(x_api_key)
+        if tier:
+            return {'authenticated': True, 'tier': tier}
+    return {'authenticated': False, 'tier': 'free'}
+
 # 🔒 并发分析锁（防止同时触发多个重型计算）
 _analyze_lock = asyncio.Lock()
 _analyze_last_run = 0  # 上次analyze时间戳
@@ -582,8 +659,21 @@ async def api_analyze(
 
 
 @app.get("/api/snapshot")
-async def api_snapshot(market: str = Query("US", description="市场: US/HK/A/ALL")):
-    """获取最新缓存结果（不重新计算）"""
+async def api_snapshot(
+    request: Request,
+    market: str = Query("US", description="市场: US/HK/A/ALL"),
+    auth: dict = Depends(optional_api_key)
+):
+    """获取最新缓存结果（🔒 免费3次/天，Premium/Institutional无限）"""
+    # 🔑 配额检查
+    client_ip = request.client.host if request.client else "unknown"
+    if not auth['authenticated']:
+        if not key_manager.check_free_quota(client_ip):
+            raise HTTPException(
+                status_code=429,
+                detail="Free tier limit reached (3 queries/day). Upgrade to Premium for unlimited access. Send USDC on Base chain to activate."
+            )
+    
     # 🔒 输入白名单
     market_upper = market.upper().strip()
     if market_upper not in VALID_MARKETS:
@@ -599,6 +689,52 @@ async def api_snapshot(market: str = Query("US", description="市场: US/HK/A/AL
         logger.exception("Snapshot获取失败")
         raise HTTPException(status_code=500, detail="Service temporarily unavailable.")  # 🔒 不泄露内部错误
 
+
+# ============================================================
+# 🔑 API Key 管理端点（内部管理用）
+# ============================================================
+@app.post("/api/keys/generate")
+async def generate_key(
+    request: Request,
+    tier: str = Query("premium", description="Key tier: free/premium/institutional"),
+    email: str = Query(None, description="用户邮箱")
+):
+    """生成新API Key（内部使用）"""
+    client_ip = request.client.host if request.client else "unknown"
+    # 🔒 限制：只允许本地调用
+    if client_ip not in ('127.0.0.1', '::1'):
+        raise HTTPException(status_code=403, detail="Forbidden. Internal use only.")
+    
+    if tier not in ('free', 'premium', 'institutional'):
+        raise HTTPException(status_code=400, detail="Invalid tier. Must be: free, premium, or institutional.")
+    
+    key = key_manager.generate_key(tier=tier, email=email)
+    return {"key": key, "tier": tier, "email": email}
+
+@app.get("/api/keys/list")
+async def list_keys(request: Request):
+    """列出所有API Key（内部使用）"""
+    client_ip = request.client.host if request.client else "unknown"
+    if client_ip not in ('127.0.0.1', '::1'):
+        raise HTTPException(status_code=403, detail="Forbidden. Internal use only.")
+    
+    return {"keys": key_manager.list_keys(), "count": len(key_manager.keys)}
+
+@app.post("/api/keys/revoke")
+async def revoke_key(
+    request: Request,
+    key: str = Query(..., description="要撤销的API Key")
+):
+    """撤销API Key（内部使用）"""
+    client_ip = request.client.host if request.client else "unknown"
+    if client_ip not in ('127.0.0.1', '::1'):
+        raise HTTPException(status_code=403, detail="Forbidden. Internal use only.")
+    
+    if key in key_manager.keys:
+        key_manager.keys[key]['active'] = False
+        key_manager._save()
+        return {"status": "revoked", "key": key[:12] + "..."}
+    raise HTTPException(status_code=404, detail="Key not found.")
 
 @app.get("/api/history")
 async def api_history(
