@@ -110,3 +110,66 @@
 [Fri Jul 10 03:30:04 PM CST 2026] BDE-API 已停止，正在重启...
 [Fri Jul 10 03:30:06 PM CST 2026] BDE-API 重启失败！
 [Fri Jul 10 03:30:06 PM CST 2026] 守护检查完成
+[Fri Jul 10 03:35:01 PM CST 2026] FutuOpenD 已停止，正在重启...
+[Fri Jul 10 03:35:03 PM CST 2026] FutuOpenD 重启失败！
+[Fri Jul 10 03:35:03 PM CST 2026] 守护检查完成
+[Fri Jul 10 03:40:01 PM CST 2026] FutuOpenD 已停止，正在重启...
+[Fri Jul 10 03:40:03 PM CST 2026] FutuOpenD 重启失败！
+[Fri Jul 10 03:40:03 PM CST 2026] 守护检查完成
+[Fri Jul 10 03:45:01 PM CST 2026] FutuOpenD 已停止，正在重启...
+[Fri Jul 10 03:45:03 PM CST 2026] FutuOpenD 重启失败！
+[Fri Jul 10 03:45:03 PM CST 2026] 守护检查完成
+[Fri Jul 10 03:50:01 PM CST 2026] FutuOpenD 已停止，正在重启...
+[Fri Jul 10 03:50:04 PM CST 2026] FutuOpenD 重启失败！
+[Fri Jul 10 03:50:04 PM CST 2026] 守护检查完成
+[Fri Jul 10 03:55:01 PM CST 2026] FutuOpenD 已停止，正在重启...
+[Fri Jul 10 03:55:03 PM CST 2026] FutuOpenD 重启失败！
+[Fri Jul 10 03:55:03 PM CST 2026] 守护检查完成
+[Fri Jul 10 04:00:01 PM CST 2026] FutuOpenD 已停止，正在重启...
+[Fri Jul 10 04:00:03 PM CST 2026] FutuOpenD 重启失败！
+[Fri Jul 10 04:00:03 PM CST 2026] 守护检查完成
+[Fri Jul 10 04:05:01 PM CST 2026] FutuOpenD 已停止，正在重启...
+[Fri Jul 10 04:05:04 PM CST 2026] FutuOpenD 重启失败！
+[Fri Jul 10 04:05:04 PM CST 2026] 守护检查完成
+[Fri Jul 10 04:10:01 PM CST 2026] FutuOpenD 已停止，正在重启...
+[Fri Jul 10 04:10:03 PM CST 2026] FutuOpenD 重启失败！
+[Fri Jul 10 04:10:03 PM CST 2026] 守护检查完成
+[Fri Jul 10 04:15:01 PM CST 2026] FutuOpenD 已停止，正在重启...
+[Fri Jul 10 04:15:03 PM CST 2026] FutuOpenD 重启失败！
+[Fri Jul 10 04:15:03 PM CST 2026] 守护检查完成
+[Fri Jul 10 04:20:01 PM CST 2026] FutuOpenD 已停止，正在重启...
+[Fri Jul 10 04:20:03 PM CST 2026] FutuOpenD 重启失败！
+[Fri Jul 10 04:20:04 PM CST 2026] 守护检查完成
+[Fri Jul 10 04:25:01 PM CST 2026] 守护检查完成
+[Fri Jul 10 04:30:01 PM CST 2026] 守护检查完成
+[Fri Jul 10 04:35:01 PM CST 2026] 守护检查完成
+[Fri Jul 10 04:40:02 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 04:45:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 04:50:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 04:55:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:00:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:05:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:10:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:15:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:20:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:25:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:30:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:35:02 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:40:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:45:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:50:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 05:55:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:00:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:05:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:10:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:15:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:20:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:25:02 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:30:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:35:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:40:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:45:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:50:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 06:55:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 07:00:01 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Fri Jul 10 07:05:02 PM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)

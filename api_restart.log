@@ -1,0 +1,578 @@
+INFO:     Started server process [19199]
+INFO:     Waiting for application startup.
+2026-07-10 15:58:18 [INFO] bde_api: BDE Score™ API 启动 — 绑定 127.0.0.1:8890（🔒 安全模式）
+2026-07-10 15:58:18 [INFO] bde_api: Dashboard: http://localhost:8890/
+2026-07-10 15:58:18 [INFO] usdc_listener: 钱包地址验证通过: 0x349Eea0E2f4d3594797851758325Da3eb49D4343
+2026-07-10 15:58:18 [INFO] bde_api: USDC支付系统已启动（独立线程）
+2026-07-10 15:58:18 [INFO] usdc_listener: USDC后台监听启动
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8890 (Press CTRL+C to quit)
+2026-07-10 15:58:20 [INFO] usdc_listener: 扫描区块 48440376 → 48440473 (链最新: 48440476)
+INFO:     127.0.0.1:53316 - "GET /llms-full.txt HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53326 - "GET /llms-full.txt HTTP/1.1" 200 OK
+INFO:     101.126.19.34:0 - "GET /llms-full.txt HTTP/1.1" 200 OK
+INFO:     115.190.127.223:0 - "GET / HTTP/1.1" 200 OK
+INFO:     115.190.127.67:0 - "GET /dashboard HTTP/1.1" 200 OK
+INFO:     115.190.127.67:0 - "GET /widget HTTP/1.1" 200 OK
+INFO:     115.190.107.107:0 - "GET /terms HTTP/1.1" 200 OK
+INFO:     115.190.127.223:0 - "GET /privacy HTTP/1.1" 200 OK
+INFO:     115.190.107.107:0 - "GET /legal HTTP/1.1" 200 OK
+2026-07-10 15:58:33 [INFO] usdc_listener: 扫描区块 48440473 → 48440480 (链最新: 48440483)
+INFO:     101.126.19.34:0 - "GET /payment HTTP/1.1" 200 OK
+INFO:     115.190.127.67:0 - "GET /llms.txt HTTP/1.1" 200 OK
+INFO:     115.190.107.107:0 - "GET /llms-full.txt HTTP/1.1" 200 OK
+INFO:     115.190.127.223:0 - "GET /robots.txt HTTP/1.1" 200 OK
+INFO:     101.126.19.34:0 - "GET /api/health HTTP/1.1" 200 OK
+2026-07-10 15:58:47 [INFO] usdc_listener: 扫描区块 48440480 → 48440487 (链最新: 48440490)
+2026-07-10 15:59:00 [INFO] usdc_listener: 扫描区块 48440487 → 48440493 (链最新: 48440496)
+2026-07-10 15:59:14 [INFO] usdc_listener: 扫描区块 48440493 → 48440500 (链最新: 48440503)
+2026-07-10 15:59:27 [INFO] usdc_listener: 扫描区块 48440500 → 48440507 (链最新: 48440510)
+2026-07-10 15:59:41 [INFO] usdc_listener: 扫描区块 48440507 → 48440513 (链最新: 48440516)
+2026-07-10 15:59:54 [INFO] usdc_listener: 扫描区块 48440513 → 48440520 (链最新: 48440523)
+2026-07-10 16:00:07 [INFO] usdc_listener: 扫描区块 48440520 → 48440527 (链最新: 48440530)
+2026-07-10 16:00:21 [INFO] usdc_listener: 扫描区块 48440527 → 48440534 (链最新: 48440537)
+2026-07-10 16:00:35 [INFO] usdc_listener: 扫描区块 48440534 → 48440540 (链最新: 48440543)
+2026-07-10 16:00:48 [INFO] usdc_listener: 扫描区块 48440540 → 48440547 (链最新: 48440550)
+2026-07-10 16:01:02 [INFO] usdc_listener: 扫描区块 48440547 → 48440554 (链最新: 48440557)
+2026-07-10 16:01:15 [INFO] usdc_listener: 扫描区块 48440554 → 48440561 (链最新: 48440564)
+2026-07-10 16:01:29 [INFO] usdc_listener: 扫描区块 48440561 → 48440567 (链最新: 48440570)
+2026-07-10 16:01:42 [INFO] usdc_listener: 扫描区块 48440567 → 48440574 (链最新: 48440577)
+2026-07-10 16:01:57 [INFO] usdc_listener: 扫描区块 48440574 → 48440581 (链最新: 48440584)
+2026-07-10 16:02:10 [INFO] usdc_listener: 扫描区块 48440581 → 48440588 (链最新: 48440591)
+2026-07-10 16:02:24 [INFO] usdc_listener: 扫描区块 48440588 → 48440595 (链最新: 48440598)
+2026-07-10 16:02:38 [INFO] usdc_listener: 扫描区块 48440595 → 48440602 (链最新: 48440605)
+2026-07-10 16:02:51 [INFO] usdc_listener: 扫描区块 48440602 → 48440609 (链最新: 48440612)
+2026-07-10 16:03:05 [INFO] usdc_listener: 扫描区块 48440609 → 48440615 (链最新: 48440618)
+2026-07-10 16:03:18 [INFO] usdc_listener: 扫描区块 48440615 → 48440622 (链最新: 48440625)
+2026-07-10 16:03:32 [INFO] usdc_listener: 扫描区块 48440622 → 48440629 (链最新: 48440632)
+2026-07-10 16:03:45 [INFO] usdc_listener: 扫描区块 48440629 → 48440636 (链最新: 48440639)
+2026-07-10 16:03:58 [INFO] usdc_listener: 扫描区块 48440636 → 48440642 (链最新: 48440645)
+2026-07-10 16:04:12 [INFO] usdc_listener: 扫描区块 48440642 → 48440649 (链最新: 48440652)
+2026-07-10 16:04:25 [INFO] usdc_listener: 扫描区块 48440649 → 48440656 (链最新: 48440659)
+2026-07-10 16:04:39 [INFO] usdc_listener: 扫描区块 48440656 → 48440663 (链最新: 48440666)
+2026-07-10 16:04:52 [INFO] usdc_listener: 扫描区块 48440663 → 48440669 (链最新: 48440672)
+2026-07-10 16:05:06 [INFO] usdc_listener: 扫描区块 48440669 → 48440676 (链最新: 48440679)
+INFO:     127.0.0.1:60092 - "GET / HTTP/1.1" 200 OK
+INFO:     115.190.127.72:0 - "GET / HTTP/1.1" 200 OK
+2026-07-10 16:05:19 [INFO] usdc_listener: 扫描区块 48440676 → 48440683 (链最新: 48440686)
+2026-07-10 16:05:32 [INFO] usdc_listener: 扫描区块 48440683 → 48440689 (链最新: 48440692)
+2026-07-10 16:05:46 [INFO] usdc_listener: 扫描区块 48440689 → 48440696 (链最新: 48440699)
+2026-07-10 16:06:00 [INFO] usdc_listener: 扫描区块 48440696 → 48440703 (链最新: 48440706)
+2026-07-10 16:06:13 [INFO] usdc_listener: 扫描区块 48440703 → 48440710 (链最新: 48440713)
+2026-07-10 16:06:27 [INFO] usdc_listener: 扫描区块 48440710 → 48440716 (链最新: 48440719)
+2026-07-10 16:06:40 [INFO] usdc_listener: 扫描区块 48440716 → 48440723 (链最新: 48440726)
+2026-07-10 16:06:54 [INFO] usdc_listener: 扫描区块 48440723 → 48440730 (链最新: 48440733)
+2026-07-10 16:07:07 [INFO] usdc_listener: 扫描区块 48440730 → 48440737 (链最新: 48440740)
+2026-07-10 16:07:20 [INFO] usdc_listener: 扫描区块 48440737 → 48440743 (链最新: 48440746)
+2026-07-10 16:07:34 [INFO] usdc_listener: 扫描区块 48440743 → 48440750 (链最新: 48440753)
+2026-07-10 16:07:48 [INFO] usdc_listener: 扫描区块 48440750 → 48440757 (链最新: 48440760)
+2026-07-10 16:08:01 [INFO] usdc_listener: 扫描区块 48440757 → 48440764 (链最新: 48440767)
+2026-07-10 16:08:15 [INFO] usdc_listener: 扫描区块 48440764 → 48440770 (链最新: 48440773)
+2026-07-10 16:08:29 [INFO] usdc_listener: 扫描区块 48440770 → 48440778 (链最新: 48440781)
+2026-07-10 16:08:42 [INFO] usdc_listener: 扫描区块 48440778 → 48440784 (链最新: 48440787)
+2026-07-10 16:08:56 [INFO] usdc_listener: 扫描区块 48440784 → 48440791 (链最新: 48440794)
+2026-07-10 16:09:09 [INFO] usdc_listener: 扫描区块 48440791 → 48440798 (链最新: 48440801)
+2026-07-10 16:09:23 [INFO] usdc_listener: 扫描区块 48440798 → 48440805 (链最新: 48440808)
+2026-07-10 16:09:36 [INFO] usdc_listener: 扫描区块 48440805 → 48440811 (链最新: 48440814)
+2026-07-10 16:09:50 [INFO] usdc_listener: 扫描区块 48440811 → 48440818 (链最新: 48440821)
+2026-07-10 16:10:03 [INFO] usdc_listener: 扫描区块 48440818 → 48440825 (链最新: 48440828)
+2026-07-10 16:10:17 [INFO] usdc_listener: 扫描区块 48440825 → 48440831 (链最新: 48440834)
+2026-07-10 16:10:30 [INFO] usdc_listener: 扫描区块 48440831 → 48440838 (链最新: 48440841)
+2026-07-10 16:10:44 [INFO] usdc_listener: 扫描区块 48440838 → 48440845 (链最新: 48440848)
+2026-07-10 16:10:57 [INFO] usdc_listener: 扫描区块 48440845 → 48440852 (链最新: 48440855)
+2026-07-10 16:11:10 [INFO] usdc_listener: 扫描区块 48440852 → 48440858 (链最新: 48440861)
+2026-07-10 16:11:24 [INFO] usdc_listener: 扫描区块 48440858 → 48440865 (链最新: 48440868)
+2026-07-10 16:11:37 [INFO] usdc_listener: 扫描区块 48440865 → 48440872 (链最新: 48440875)
+2026-07-10 16:11:51 [INFO] usdc_listener: 扫描区块 48440872 → 48440878 (链最新: 48440881)
+2026-07-10 16:12:04 [INFO] usdc_listener: 扫描区块 48440878 → 48440885 (链最新: 48440888)
+2026-07-10 16:12:18 [INFO] usdc_listener: 扫描区块 48440885 → 48440892 (链最新: 48440895)
+2026-07-10 16:12:32 [INFO] usdc_listener: 扫描区块 48440892 → 48440899 (链最新: 48440902)
+2026-07-10 16:12:45 [INFO] usdc_listener: 扫描区块 48440899 → 48440906 (链最新: 48440909)
+INFO:     127.0.0.1:36838 - "GET /api/health HTTP/1.1" 200 OK
+2026-07-10 16:12:58 [INFO] usdc_listener: 扫描区块 48440906 → 48440912 (链最新: 48440915)
+2026-07-10 16:13:13 [INFO] usdc_listener: 扫描区块 48440912 → 48440919 (链最新: 48440922)
+2026-07-10 16:13:27 [INFO] usdc_listener: 扫描区块 48440919 → 48440927 (链最新: 48440930)
+2026-07-10 16:13:41 [INFO] usdc_listener: 扫描区块 48440927 → 48440934 (链最新: 48440937)
+2026-07-10 16:13:54 [INFO] usdc_listener: 扫描区块 48440934 → 48440940 (链最新: 48440943)
+2026-07-10 16:14:08 [INFO] usdc_listener: 扫描区块 48440940 → 48440947 (链最新: 48440950)
+2026-07-10 16:14:22 [INFO] usdc_listener: 扫描区块 48440947 → 48440954 (链最新: 48440957)
+2026-07-10 16:14:35 [INFO] usdc_listener: 扫描区块 48440954 → 48440961 (链最新: 48440964)
+2026-07-10 16:14:48 [INFO] usdc_listener: 扫描区块 48440961 → 48440967 (链最新: 48440970)
+2026-07-10 16:15:02 [INFO] usdc_listener: 扫描区块 48440967 → 48440974 (链最新: 48440977)
+2026-07-10 16:15:16 [INFO] usdc_listener: 扫描区块 48440974 → 48440981 (链最新: 48440984)
+2026-07-10 16:15:29 [INFO] usdc_listener: 扫描区块 48440981 → 48440988 (链最新: 48440991)
+2026-07-10 16:15:43 [INFO] usdc_listener: 扫描区块 48440988 → 48440994 (链最新: 48440997)
+2026-07-10 16:15:57 [INFO] usdc_listener: 扫描区块 48440994 → 48441002 (链最新: 48441005)
+2026-07-10 16:16:12 [INFO] usdc_listener: 扫描区块 48441002 → 48441009 (链最新: 48441012)
+2026-07-10 16:16:26 [INFO] usdc_listener: 扫描区块 48441009 → 48441016 (链最新: 48441019)
+2026-07-10 16:16:39 [INFO] usdc_listener: 扫描区块 48441016 → 48441023 (链最新: 48441026)
+INFO:     127.0.0.1:35818 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35834 - "POST /api/keys/create HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:35848 - "GET /api/quote/AAPL HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:35860 - "GET /payment HTTP/1.1" 200 OK
+2026-07-10 16:16:52 [INFO] usdc_listener: 扫描区块 48441023 → 48441029 (链最新: 48441032)
+INFO:     127.0.0.1:40704 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40714 - "GET /api/ HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:40716 - "GET /docs HTTP/1.1" 404 Not Found
+2026-07-10 16:17:06 [INFO] usdc_listener: 扫描区块 48441029 → 48441036 (链最新: 48441039)
+2026-07-10 16:17:10 [INFO] bde_api: 尝试通过FutuOpenD获取美股数据...
+2026-07-10 16:17:11 [WARNING] bde_api: Futu获取失败: FutuOpenD未运行，降级到新浪...
+2026-07-10 16:17:18 [INFO] factor_engine: 因子评估完成 | 25/25 只股票
+INFO:     127.0.0.1:34064 - "GET /api/analyze?symbol=AAPL HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/applications.py", line 1160, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/data/所有对话/主对话/BDE-Stock/bde_api.py", line 169, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 130, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 116, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 711, in app
+    response = actual_response_class(content, **response_args)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 189, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 46, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 192, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "/usr/lib/python3.13/json/__init__.py", line 242, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "/usr/lib/python3.13/json/encoder.py", line 202, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.13/json/encoder.py", line 263, in iterencode
+    return _iterencode(o, 0)
+ValueError: Out of range float values are not JSON compliant: nan
+INFO:     127.0.0.1:34070 - "GET /api/snapshot?market=US HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/applications.py", line 1160, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/data/所有对话/主对话/BDE-Stock/bde_api.py", line 169, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 130, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 116, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 711, in app
+    response = actual_response_class(content, **response_args)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 189, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 46, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 192, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "/usr/lib/python3.13/json/__init__.py", line 242, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "/usr/lib/python3.13/json/encoder.py", line 202, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.13/json/encoder.py", line 263, in iterencode
+    return _iterencode(o, 0)
+ValueError: Out of range float values are not JSON compliant: nan
+INFO:     127.0.0.1:34076 - "POST /api/keys/generate HTTP/1.1" 200 OK
+2026-07-10 16:17:19 [INFO] usdc_listener: 扫描区块 48441036 → 48441043 (链最新: 48441046)
+INFO:     127.0.0.1:36718 - "GET /api/analyze?symbol=AAPL HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/applications.py", line 1160, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/data/所有对话/主对话/BDE-Stock/bde_api.py", line 169, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 130, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 116, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 711, in app
+    response = actual_response_class(content, **response_args)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 189, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 46, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 192, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "/usr/lib/python3.13/json/__init__.py", line 242, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "/usr/lib/python3.13/json/encoder.py", line 202, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.13/json/encoder.py", line 263, in iterencode
+    return _iterencode(o, 0)
+ValueError: Out of range float values are not JSON compliant: nan
+INFO:     127.0.0.1:36730 - "GET /api/snapshot?market=US HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/applications.py", line 1160, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/data/所有对话/主对话/BDE-Stock/bde_api.py", line 169, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 130, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 116, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 711, in app
+    response = actual_response_class(content, **response_args)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 189, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 46, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 192, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "/usr/lib/python3.13/json/__init__.py", line 242, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "/usr/lib/python3.13/json/encoder.py", line 202, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.13/json/encoder.py", line 263, in iterencode
+    return _iterencode(o, 0)
+ValueError: Out of range float values are not JSON compliant: nan
+2026-07-10 16:17:33 [INFO] usdc_listener: 扫描区块 48441043 → 48441049 (链最新: 48441052)
+2026-07-10 16:17:47 [INFO] usdc_listener: 扫描区块 48441049 → 48441056 (链最新: 48441059)
+2026-07-10 16:18:00 [INFO] usdc_listener: 扫描区块 48441056 → 48441063 (链最新: 48441066)
+2026-07-10 16:18:15 [INFO] usdc_listener: 扫描区块 48441063 → 48441071 (链最新: 48441074)
+2026-07-10 16:18:28 [INFO] usdc_listener: 扫描区块 48441071 → 48441077 (链最新: 48441080)
+2026-07-10 16:18:42 [INFO] usdc_listener: 扫描区块 48441077 → 48441084 (链最新: 48441087)
+INFO:     127.0.0.1:38114 - "GET /api/analyze?market=US HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/uvicorn/protocols/http/httptools_impl.py", line 416, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/dist-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/applications.py", line 1160, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+                                   ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/data/所有对话/主对话/BDE-Stock/bde_api.py", line 169, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 130, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.13/dist-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 116, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/fastapi/routing.py", line 711, in app
+    response = actual_response_class(content, **response_args)
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 189, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 46, in __init__
+    self.body = self.render(content)
+                ~~~~~~~~~~~^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/starlette/responses.py", line 192, in render
+    return json.dumps(
+           ~~~~~~~~~~^
+        content,
+        ^^^^^^^^
+    ...<3 lines>...
+        separators=(",", ":"),
+        ^^^^^^^^^^^^^^^^^^^^^^
+    ).encode("utf-8")
+    ^
+  File "/usr/lib/python3.13/json/__init__.py", line 242, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "/usr/lib/python3.13/json/encoder.py", line 202, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.13/json/encoder.py", line 263, in iterencode
+    return _iterencode(o, 0)
+ValueError: Out of range float values are not JSON compliant: nan
+2026-07-10 16:18:55 [INFO] usdc_listener: 扫描区块 48441084 → 48441091 (链最新: 48441094)
+2026-07-10 16:19:09 [INFO] usdc_listener: 扫描区块 48441091 → 48441098 (链最新: 48441101)
+2026-07-10 16:19:22 [INFO] usdc_listener: 扫描区块 48441098 → 48441104 (链最新: 48441107)
+2026-07-10 16:19:36 [INFO] usdc_listener: 扫描区块 48441104 → 48441111 (链最新: 48441114)
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-07-10 16:19:48 [INFO] usdc_listener: USDC后台监听已停止
+2026-07-10 16:19:48 [INFO] bde_api: USDC支付系统已停止
+INFO:     Application shutdown complete.
+INFO:     Finished server process [19199]

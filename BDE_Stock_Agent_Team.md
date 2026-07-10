@@ -38,7 +38,7 @@ BDE Score™ 是面向全球投资者的多市场量化分析SaaS工具，同时
 - **职责**：收款追踪、发票管理、链上账务
 - **钱包信息**：
   - 链: Base Mainnet (8453)
-  - 地址: 0x87d6C8F71d89d7E1f17EcAB138EDfaAc19d9D2fE
+  - 地址: 0x349Eea0E2f4d3594797851758325Da3eb49D4343
   - 用途: USDC收款（SaaS订阅 + 合规咨询）
   - 独立于NeuroBridge AGL项目
 
