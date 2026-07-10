@@ -1,132 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BDE Score™ — AI-Powered Multi-Market Stock Analysis</title>
-<meta name="description" content="Transparent AI scoring for 73 stocks across US, HK & A-share markets. Multi-factor quantitative analysis. EU AI Act Art.50 compliant. Open source.">
-<meta name="keywords" content="stock analysis, quantitative trading, AI finance, BDE Score, multi-market, EU AI Act, FutuOpenD">
-<link rel="canonical" href="https://hbhqq9.github.io/bde-score/">
-<!-- Schema.org structured data -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "BDE Score™",
-  "applicationCategory": "FinanceApplication",
-  "operatingSystem": "Web",
-  "description": "AI-powered multi-market stock analysis with transparent multi-factor scoring for 73 stocks across US, HK, and A-share markets.",
-  "url": "https://github.com/hbhqq9/bde-score",
-  "license": "https://opensource.org/licenses/MIT",
-  "author": {
-    "@type": "Organization",
-    "name": "BDE Score Team"
-  },
-  "offers": [
-    {"@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD"},
-    {"@type": "Offer", "name": "Premium", "price": "29", "priceCurrency": "USD"},
-    {"@type": "Offer", "name": "Institutional", "price": "199", "priceCurrency": "USD"}
-  ],
-  "featureList": ["Multi-factor scoring", "3 markets coverage", "Real-time data", "EU AI Act compliant", "Embeddable widgets", "API access"]
-}
-</script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;line-height:1.6}
-.container{max-width:800px;margin:0 auto;padding:40px 20px}
-h1{font-size:2.5em;margin-bottom:10px;background:linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.subtitle{font-size:1.3em;color:#94a3b8;margin-bottom:40px}
-.section{margin-bottom:40px}
-.section h2{font-size:1.5em;margin-bottom:15px;color:#f1f5f9}
-.feature{display:inline-block;background:rgba(30,41,59,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px 20px;margin:4px}
-.cta{display:inline-block;background:#2563eb;color:white;padding:14px 32px;border-radius:12px;text-decoration:none;font-weight:600;font-size:1.1em;margin:8px}
-.cta:hover{background:#3b82f6}
-.cta-outline{background:transparent;border:1px solid rgba(255,255,255,0.2)}
-.price{font-size:2em;font-weight:700;color:#60a5fa}
-.price-small{color:#64748b;font-size:0.5em}
-footer{border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;margin-top:40px;font-size:0.9em;color:#475569}
-a{color:#60a5fa;text-decoration:none}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDE Score™ - Open Source Multi-Factor Stock Analysis</title>
+    <meta name="description" content="Free open-source stock analysis tool covering US, HK, and China A-share markets. 74 stocks, zero registration, one-line API access.">
+    <meta property="og:title" content="BDE Score™ - Multi-Factor Stock Analysis">
+    <meta property="og:description" content="Free, open-source, covers 74 stocks across 3 markets. Try it now with one curl command.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hbhqq9.github.io/bde-score/">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e0e0e0; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 100%); }
+        .hero h1 { font-size: 2.5em; margin-bottom: 10px; background: linear-gradient(90deg, #4fc3f7, #81c784); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.2em; color: #90a4ae; max-width: 600px; margin: 0 auto 30px; }
+        .try-now { background: #4fc3f7; color: #0a0a0a; border: none; padding: 15px 40px; font-size: 1.1em; border-radius: 8px; cursor: pointer; font-weight: 700; text-decoration: none; display: inline-block; }
+        .try-now:hover { background: #81c784; }
+        .terminal { background: #1a1a2e; border-radius: 12px; padding: 20px; max-width: 600px; margin: 30px auto; text-align: left; font-family: 'JetBrains Mono', monospace; }
+        .terminal .prompt { color: #81c784; }
+        .terminal .cmd { color: #e0e0e0; }
+        .terminal .result { color: #90a4ae; font-size: 0.85em; }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .feature { background: #1a1a2e; border-radius: 12px; padding: 24px; border: 1px solid #2a2a3e; }
+        .feature h3 { color: #4fc3f7; margin-bottom: 8px; }
+        .badge-section { text-align: center; padding: 40px 20px; }
+        .badge-section img { margin: 10px; }
+        .market-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 800px; margin: 30px auto; padding: 0 20px; }
+        .market-card { background: #1a1a2e; border-radius: 8px; padding: 20px; text-align: center; border: 1px solid #2a2a3e; }
+        .market-card .count { font-size: 2em; color: #81c784; font-weight: 700; }
+        .market-card .label { color: #90a4ae; margin-top: 5px; }
+        .ecosystem { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .eco-card { background: #1a1a2e; border-radius: 12px; padding: 20px; margin-bottom: 12px; border-left: 3px solid #4fc3f7; }
+        .eco-card a { color: #4fc3f7; text-decoration: none; font-weight: 600; }
+        .eco-card a:hover { text-decoration: underline; }
+        .eco-card p { color: #90a4ae; margin-top: 4px; font-size: 0.9em; }
+        .cta { text-align: center; padding: 60px 20px; }
+        .cta h2 { color: #4fc3f7; margin-bottom: 15px; }
+        .cta p { color: #90a4ae; margin-bottom: 20px; }
+        footer { text-align: center; padding: 30px; color: #555; font-size: 0.85em; border-top: 1px solid #1a1a2e; }
+        footer a { color: #4fc3f7; text-decoration: none; }
+        .schema { display: none; }
+    </style>
 </head>
 <body>
-<div class="container">
-<h1>📊 BDE Score™</h1>
-<p class="subtitle">AI-Powered Multi-Market Stock Analysis — One Score, Every Market</p>
+    <div class="hero">
+        <h1>BDE Score™</h1>
+        <p>Open-source multi-factor stock analysis. US · HK · A-share. Zero registration. One line of code.</p>
+        <div class="terminal">
+            <div><span class="prompt">$</span> <span class="cmd">curl .../api/analyze?symbol=AAPL</span></div>
+            <div class="result">{ "symbol": "AAPL", "composite_score": 72, "signal": "HOLD", ... }</div>
+        </div>
+        <a class="try-now" href="https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?market=ALL">🚀 Try Live API</a>
+        <br><br>
+        <a href="https://github.com/hbhqq9/bde-score" style="color:#90a4ae">⭐ Star on GitHub</a>
+    </div>
 
-<div style="margin-bottom:30px">
-<a href="https://github.com/hbhqq9/bde-score" class="cta">🚀 Try Live Demo</a>
-<a href="https://github.com/hbhqq9/bde-score" class="cta cta-outline">⭐ GitHub</a>
-</div>
+    <div class="market-cards">
+        <div class="market-card">
+            <div class="count">25</div>
+            <div class="label">🇺🇸 US Stocks</div>
+        </div>
+        <div class="market-card">
+            <div class="count">26</div>
+            <div class="label">🇭🇰 HK Stocks</div>
+        </div>
+        <div class="market-card">
+            <div class="count">23</div>
+            <div class="label">🇨🇳 A-Share Stocks</div>
+        </div>
+    </div>
 
-<div class="section">
-<h2>What is BDE Score™?</h2>
-<p>BDE Score™ is a <strong>transparent, multi-factor quantitative scoring system</strong> that analyzes stocks across US, HK, and A-share markets. Unlike black-box AI models, every score breaks down into 5 explainable factors:</p>
-<div style="margin-top:15px">
-<span class="feature">📈 Momentum</span>
-<span class="feature">📉 Mean Reversion</span>
-<span class="feature">📊 Volume</span>
-<span class="feature">📉 Volatility</span>
-<span class="feature">📈 Trend</span>
-</div>
-</div>
+    <div class="features">
+        <div class="feature">
+            <h3>📊 Multi-Factor Scoring</h3>
+            <p>Fundamentals + Technicals + Risk + Sentiment in a single composite score.</p>
+        </div>
+        <div class="feature">
+            <h3>🛡️ shields.io Badges</h3>
+            <p>Embed live stock scores in any README, blog, or dashboard.</p>
+        </div>
+        <div class="feature">
+            <h3>🤖 GitHub Action</h3>
+            <p>Automate stock monitoring in your CI/CD pipeline.</p>
+        </div>
+        <div class="feature">
+            <h3>🇪🇺 EU AI Act Ready</h3>
+            <p>Built-in Art.50 transparency labels for GPAI compliance.</p>
+        </div>
+        <div class="feature">
+            <h3>💰 USDC Payment</h3>
+            <p>1 USDC = 1 year access. Base Chain. No subscription.</p>
+        </div>
+        <div class="feature">
+            <h3>🔓 Zero Registration</h3>
+            <p>No API key needed for basic access. Just curl.</p>
+        </div>
+    </div>
 
-<div class="section">
-<h2>Coverage</h2>
-<p><strong>73 stocks across 3 markets:</strong></p>
-<div style="margin-top:10px">
-<span class="feature">🇺🇸 US: 25 stocks</span>
-<span class="feature">🇭🇰 HK: 26 stocks</span>
-<span class="feature">🇨🇳 A-shares: 23 stocks</span>
-</div>
-<p style="margin-top:10px;color:#94a3b8">Including: AAPL, NVDA, TSLA, MSFT, Tencent, Alibaba, BYD, Moutai, CATL, and 64 more.</p>
-</div>
+    <div class="badge-section">
+        <h2 style="color:#4fc3f7;margin-bottom:15px">Live Badge</h2>
+        <img src="https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge" alt="BDE Score Badge">
+    </div>
 
-<div class="section">
-<h2>Key Features</h2>
-<div style="margin-top:10px">
-<span class="feature">⚡ Real-time dual-channel data</span>
-<span class="feature">🔒 EU AI Act Art.50 compliant</span>
-<span class="feature">🔌 Embeddable widgets</span>
-<span class="feature">📊 Shareable score cards</span>
-<span class="feature">💰 USDC payments</span>
-<span class="feature">📡 REST API</span>
-</div>
-</div>
+    <div class="ecosystem">
+        <h2 style="color:#4fc3f7;margin-bottom:20px;text-align:center">🔗 Compliance Triangle Ecosystem</h2>
+        <div class="eco-card">
+            <a href="https://github.com/hbhqq9/neurobridge">NeuroBridge</a>
+            <p>Physical AI Protocol — VLA-to-SNN interface layer for embodied AI compliance and governance.</p>
+        </div>
+        <div class="eco-card">
+            <a href="https://github.com/hbhqq9/ipo-compliance">IPO Compliance</a>
+            <p>Pre-IPO compliance diagnostics — automated regulatory readiness assessment for tech companies.</p>
+        </div>
+        <div class="eco-card">
+            <a href="https://github.com/hbhqq9/bde-score">BDE Score™</a>
+            <p>Multi-factor stock analysis — AI-powered market intelligence across US, HK, and China A-shares.</p>
+        </div>
+    </div>
 
-<div class="section">
-<h2>Pricing</h2>
-<div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:15px">
-<div class="feature" style="flex:1;min-width:200px;text-align:center">
-<div style="font-size:0.9em;color:#64748b">Free</div>
-<div class="price">$0</div>
-<div style="font-size:0.85em;color:#94a3b8">Dashboard + 3 queries/day</div>
-</div>
-<div class="feature" style="flex:1;min-width:200px;text-align:center;border-color:#3b82f6">
-<div style="font-size:0.9em;color:#60a5fa">Premium</div>
-<div class="price">$29<span class="price-small">/mo</span></div>
-<div style="font-size:0.85em;color:#94a3b8">Unlimited API + 365-day history</div>
-</div>
-<div class="feature" style="flex:1;min-width:200px;text-align:center">
-<div style="font-size:0.9em;color:#64748b">Institutional</div>
-<div class="price">$199<span class="price-small">/mo</span></div>
-<div style="font-size:0.85em;color:#94a3b8">Custom + compliance reports</div>
-</div>
-</div>
-</div>
+    <div class="cta">
+        <h2>Get Started in 30 Seconds</h2>
+        <p>No signup. No credit card. Just one API call.</p>
+        <a class="try-now" href="https://github.com/hbhqq9/bde-score#quick-start">📖 View Documentation</a>
+    </div>
 
-<div class="section">
-<h2>🔒 EU AI Act Compliance</h2>
-<p>BDE Score™ is <strong>compliance-first by design</strong>. When Art.50 takes effect on August 2, 2026, our system is already ready with full audit trails, explainable methodology, and machine-readable compliance metadata.</p>
-</div>
+    <footer>
+        <p>MIT License · <a href="https://github.com/hbhqq9/bde-score">GitHub</a> · <a href="https://dev.to/hbhqq9/bde-score-open-source-multi-factor-stock-analysis-tool-covering-us-hk-a-share-markets-2p2j">Dev.to Article</a></p>
+        <p style="margin-top:10px">⚠️ This tool is for technical research only. Not investment advice.</p>
+    </footer>
 
-<div style="text-align:center;margin:40px 0">
-<a href="https://github.com/hbhqq9/bde-score" class="cta">🚀 Open Live Dashboard</a>
-</div>
-
-<footer>
-<p>⚠️ <strong>Disclaimer:</strong> BDE Score™ is a technical analysis tool, not financial advice. All investment decisions should be made independently.</p>
-<p style="margin-top:10px">© 2026 BDE Score™ · MIT License · <a href="https://github.com/hbhqq9/bde-score">GitHub</a></p>
-</footer>
-</div>
+    <!-- FAQ Schema for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "What is BDE Score?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "BDE Score is an open-source multi-factor stock analysis tool covering 74 stocks across US, HK, and China A-share markets. It provides composite scores based on fundamentals, technicals, risk, and sentiment analysis."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is BDE Score free?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, BDE Score is free and open source under MIT license. No registration required for basic API access."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How do I use BDE Score?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Simply make an HTTP request: curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?symbol=AAPL for individual stocks, or ?market=ALL for full market analysis."
+                }
+            }
+        ]
+    }
+    </script>
 </body>
 </html>
