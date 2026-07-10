@@ -47,7 +47,7 @@
 |---|------|-------|-----|
 | 1 | awesome-python | 307K | #3247 |
 | 2 | awesome-machine-learning | 73.3K | #1379 |
-| 3 | awesome-datascience | 29.6K | #652 |
+| 3 | awesome-datascience | 29.6K | #652 ✅ MERGED |
 | 4 | awesome-quant | 27.5K | #466 |
 | 5 | awesome-systematic-trading | 8.5K | #66 |
 | 6 | awesome-ai-in-finance | 6.2K | #184 |
