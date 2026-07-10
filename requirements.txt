@@ -1,0 +1,7 @@
+# BDE Score™ API Dependencies
+fastapi>=0.135.0
+uvicorn>=0.30.0
+pandas>=2.0.0
+numpy>=1.24.0
+# futu-api  # 仅在部署环境安装了FutuOpenD时需要
+# 备选：Sina JSONP（纯标准库，无额外依赖）
