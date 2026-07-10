@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDE Score™ FAQ — AI Stock Analysis, Scoring Methodology & EU AI Act Compliance</title>
+<meta name="description" content="Frequently asked questions about BDE Score™: how the AI scoring works, market coverage, EU AI Act compliance, pricing, and API access.">
+<link rel="canonical" href="https://hbhqq9.github.io/bde-score/faq">
+
+<!-- Schema.org FAQ Structured Data (GEO Critical) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is BDE Score™?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BDE Score™ is an AI-powered quantitative stock analysis system that provides transparent multi-factor scoring for 73 stocks across US, HK, and A-share markets. It evaluates each stock on 5 factors: Momentum, Mean Reversion, Volume, Volatility, and Trend, producing a composite score from 0-100."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does BDE Score™ differ from other stock analysis tools?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Unlike black-box AI models, BDE Score™ is fully transparent — every score breaks down into 5 independently weighted factors. It covers 3 markets simultaneously (US, HK, A-shares), is EU AI Act Art.50 compliant by design, and is open source under MIT license."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is BDE Score™ compliant with EU AI Act?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. BDE Score™ is compliance-first by design. It meets EU AI Act Article 50 requirements effective August 2, 2026, with full audit trails, explainable methodology, and machine-readable compliance metadata. It does not make investment recommendations — it provides transparent quantitative signals."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What markets and stocks does BDE Score™ cover?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BDE Score™ covers 73 stocks: US markets (25 stocks including AAPL, NVDA, TSLA, MSFT, GOOG), Hong Kong markets (26 stocks including Tencent, Alibaba, BYD, Ping An), and China A-shares (23 stocks including Moutai, CATL, BYD, CMB)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does BDE Score™ cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BDE Score™ offers three tiers: Free (dashboard + 3 API queries/day), Premium ($29/month for unlimited API + 365-day history), and Institutional ($199/month for custom universe + compliance reports + SLA). USDC payments on Base chain are accepted."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I embed BDE Score™ on my website?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. BDE Score™ provides embeddable widgets via iframe and a share card API that generates SVG score cards. Anyone can embed live stock scores on their website using a simple HTML snippet."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does BDE Score™ provide financial advice?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. BDE Score™ is a technical analysis tool that provides quantitative signals based on historical data patterns. It does not provide investment advice. All investment decisions should be made independently with professional financial advisors."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the BDE Score™ API?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The BDE Score™ API provides programmatic access to stock scores, market snapshots, and shareable score cards. Endpoints include /api/snapshot/{market} for full market data, /api/stock/{symbol} for individual stock analysis, and /share/{symbols} for SVG score card URLs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the 5 scoring factors in BDE Score™?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BDE Score™ uses 5 factors: Momentum (price momentum and rate of change), Mean Reversion (oversold/overbought signals), Volume (trading volume patterns and money flow), Volatility (risk-adjusted returns), and Trend (moving average alignment). Each is independently scored and combined into a composite score."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is BDE Score™ open source?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. BDE Score™ is open source under the MIT license. The full codebase is available at github.com/hbhqq9/bde-score for audit, contribution, and self-hosting."
+      }
+    }
+  ]
+}
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;line-height:1.7}
+.container{max-width:800px;margin:0 auto;padding:40px 20px}
+h1{font-size:2.2em;margin-bottom:10px;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{color:#94a3b8;margin-bottom:40px;font-size:1.1em}
+.faq-item{border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:24px;margin-bottom:16px;background:rgba(30,41,59,0.5)}
+.faq-item h3{color:#60a5fa;font-size:1.1em;margin-bottom:10px}
+.faq-item p{color:#cbd5e1;font-size:0.95em}
+a{color:#60a5fa;text-decoration:none}
+.back{display:inline-block;margin-bottom:20px;font-size:0.9em}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="/" class="back">← Back to BDE Score™</a>
+<h1>Frequently Asked Questions</h1>
+<p class="subtitle">Everything you need to know about BDE Score™</p>
+
+<div class="faq-item">
+<h3>What is BDE Score™?</h3>
+<p>BDE Score™ is an AI-powered quantitative stock analysis system that provides transparent multi-factor scoring for 73 stocks across US, HK, and A-share markets. It evaluates each stock on 5 factors: Momentum, Mean Reversion, Volume, Volatility, and Trend, producing a composite score from 0-100.</p>
+</div>
+
+<div class="faq-item">
+<h3>How does BDE Score™ differ from other stock analysis tools?</h3>
+<p>Unlike black-box AI models, BDE Score™ is fully transparent — every score breaks down into 5 independently weighted factors. It covers 3 markets simultaneously (US, HK, A-shares), is EU AI Act Art.50 compliant by design, and is open source under MIT license.</p>
+</div>
+
+<div class="faq-item">
+<h3>Is BDE Score™ compliant with EU AI Act?</h3>
+<p>Yes. BDE Score™ is compliance-first by design. It meets EU AI Act Article 50 requirements effective August 2, 2026, with full audit trails, explainable methodology, and machine-readable compliance metadata. It does not make investment recommendations — it provides transparent quantitative signals.</p>
+</div>
+
+<div class="faq-item">
+<h3>What markets and stocks does BDE Score™ cover?</h3>
+<p>BDE Score™ covers 73 stocks: US markets (25 stocks including AAPL, NVDA, TSLA, MSFT, GOOG), Hong Kong markets (26 stocks including Tencent, Alibaba, BYD, Ping An), and China A-shares (23 stocks including Moutai, CATL, BYD, CMB).</p>
+</div>
+
+<div class="faq-item">
+<h3>How much does BDE Score™ cost?</h3>
+<p>BDE Score™ offers three tiers: Free (dashboard + 3 API queries/day), Premium ($29/month for unlimited API + 365-day history), and Institutional ($199/month for custom universe + compliance reports + SLA). USDC payments on Base chain are accepted.</p>
+</div>
+
+<div class="faq-item">
+<h3>Can I embed BDE Score™ on my website?</h3>
+<p>Yes. BDE Score™ provides embeddable widgets via iframe and a share card API that generates SVG score cards. Anyone can embed live stock scores on their website using a simple HTML snippet.</p>
+</div>
+
+<div class="faq-item">
+<h3>Does BDE Score™ provide financial advice?</h3>
+<p>No. BDE Score™ is a technical analysis tool that provides quantitative signals based on historical data patterns. It does not provide investment advice. All investment decisions should be made independently with professional financial advisors.</p>
+</div>
+
+<div class="faq-item">
+<h3>What is the BDE Score™ API?</h3>
+<p>The BDE Score™ API provides programmatic access to stock scores, market snapshots, and shareable score cards. Endpoints include /api/snapshot/{market} for full market data, /api/stock/{symbol} for individual stock analysis, and /share/{symbols} for SVG score card URLs.</p>
+</div>
+
+<div class="faq-item">
+<h3>What are the 5 scoring factors in BDE Score™?</h3>
+<p>BDE Score™ uses 5 factors: Momentum (price momentum and rate of change), Mean Reversion (oversold/overbought signals), Volume (trading volume patterns and money flow), Volatility (risk-adjusted returns), and Trend (moving average alignment). Each is independently scored and combined into a composite score.</p>
+</div>
+
+<div class="faq-item">
+<h3>Is BDE Score™ open source?</h3>
+<p>Yes. BDE Score™ is open source under the MIT license. The full codebase is available at <a href="https://github.com/hbhqq9/bde-score">github.com/hbhqq9/bde-score</a> for audit, contribution, and self-hosting.</p>
+</div>
+
+<div style="text-align:center;margin:40px 0">
+<a href="https://rebel-north-intermediate-roof.trycloudflare.com" style="display:inline-block;background:#2563eb;color:white;padding:14px 32px;border-radius:12px;text-decoration:none;font-weight:600;">🚀 Try BDE Score™ Live</a>
+</div>
+</div>
+</body>
+</html>
