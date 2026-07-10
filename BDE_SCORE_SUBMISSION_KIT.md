@@ -10,11 +10,11 @@
 | **产品名称** | BDE Score™ |
 | **一句话描述** | AI-powered multi-market stock analysis with transparent multi-factor scoring |
 | **短描述 (50字)** | Transparent AI scoring for 73 stocks across US, HK & A-share markets. EU AI Act compliant. |
-| **官网URL** | https://rebel-north-intermediate-roof.trycloudflare.com |
+| **官网URL** | https://hbhqq9.github.io/bde-score |
 | **GitHub** | https://github.com/hbhqq9/bde-score |
-| **Live Demo** | https://rebel-north-intermediate-roof.trycloudflare.com/dashboard |
-| **Widget Demo** | https://rebel-north-intermediate-roof.trycloudflare.com/widget |
-| **Share Card** | https://rebel-north-intermediate-roof.trycloudflare.com/share/US?top=5 |
+| **Live Demo** | https://hbhqq9.github.io/bde-score/dashboard |
+| **Widget Demo** | https://hbhqq9.github.io/bde-score/widget |
+| **Share Card** | https://hbhqq9.github.io/bde-score/share/US?top=5 |
 | **类别** | Finance / Stock Analysis / Quantitative Trading / AI |
 | **License** | MIT |
 | **创建日期** | 2026-07-10 |
@@ -59,17 +59,17 @@ stock-analysis, quantitative-trading, ai-finance, multi-market, eu-ai-act, scori
 
 ### iframe Widget
 ```html
-<iframe src="https://rebel-north-intermediate-roof.trycloudflare.com/widget" width="420" height="420" frameborder="0" style="border-radius:12px;overflow:hidden;"></iframe>
+<iframe src="https://hbhqq9.github.io/bde-score/widget" width="420" height="420" frameborder="0" style="border-radius:12px;overflow:hidden;"></iframe>
 ```
 
 ### Markdown Badge
 ```markdown
-[![BDE Score](https://img.shields.io/badge/BDE-Score-blue)](https://rebel-north-intermediate-roof.trycloudflare.com)
+[![BDE Score](https://img.shields.io/badge/BDE-Score-blue)](https://hbhqq9.github.io/bde-score)
 ```
 
 ### Share Card URL
 ```
-https://rebel-north-intermediate-roof.trycloudflare.com/share/US?top=5
+https://hbhqq9.github.io/bde-score/share/US?top=5
 ```
 
 ---

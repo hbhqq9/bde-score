@@ -72,7 +72,7 @@ Open source: github.com/hbhqq9/bde-score
 → Premium ($29/mo): Full API + 365-day history
 → Institutional ($199/mo): Custom universe + compliance reports
 
-Try it: https://rebel-north-intermediate-roof.trycloudflare.com
+Try it: https://hbhqq9.github.io/bde-score
 
 Pay with USDC on Base. No gatekeepers.
 
@@ -167,7 +167,7 @@ Artificial Intelligence, Finance, APIs, Data Science, Regulatory Technology
 
 收USDC，Base链上。没有中间商。
 
-**👉 在线体验：** https://rebel-north-intermediate-roof.trycloudflare.com
+**👉 在线体验：** https://hbhqq9.github.io/bde-score
 
 **👉 GitHub：** https://github.com/hbhqq9/bde-score
 
