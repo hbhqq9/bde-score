@@ -1835,6 +1835,116 @@ async def legal_disclaimer():
     return HTMLResponse(content=html)
 
 
+# Ticker-to-DB-name mapping for badge lookups
+TICKER_MAP = {
+    # US stocks
+    "AAPL": "AAPL", "MSFT": "MSFT", "GOOG": "GOOG", "AMZN": "AMZN", "NVDA": "NVDA",
+    "META": "META", "TSLA": "TSLA", "BABA": "BABA", "AMD": "AMD", "NFLX": "NFLX",
+    "INTC": "INTC", "ARM": "ARM", "AVGO": "AVGO", "JNJ": "JNJ", "UNH": "UNH",
+    "V": "V", "MA": "MA", "PG": "PG", "KO": "KO", "PFE": "PFE", "WMT": "WMT",
+    "MCD": "MCD", "SPY": "SPY", "QQQ": "QQQ",
+    # HK stocks
+    "00700": "腾讯", "09988": "阿里-W", "09999": "网易-S", "03690": "美团-W",
+    "09618": "京东集团", "00005": "汇丰控股", "01024": "快手-W", "09888": "百度集团",
+    "02015": "理想汽车", "09868": "小鹏汽车", "01211": "比亚迪股份", "00388": "香港交易所",
+    "00941": "中国移动", "01810": "小米集团", "09626": "哔哩哔哩", "00981": "中芯国际",
+    "02382": "舜宇光学", "06098": "碧桂园服务", "00823": "领展房产", "01113": "长实集团",
+    "00027": "银河娱乐", "02899": "紫金矿业", "00883": "中国海洋石油", "00001": "长和",
+    "02318": "中国平安", "00390": "中国中铁",
+    # A-shares
+    "SH600519": "贵州茅台", "SH601318": "中国平安", "SZ000858": "五粮液",
+    "SH600036": "招商银行", "SZ002594": "比亚迪", "SH601899": "紫金矿业",
+    "SH600028": "中国石化", "SH601857": "中国石油", "SZ000333": "美的集团",
+    "SH600900": "长江电力", "SH601012": "隆基绿能", "SZ300750": "宁德时代",
+    "SH600519": "贵州茅台", "SZ002714": "牧原股份", "SH600809": "泸州老窖",
+    "SH601288": "农业银行", "SH601939": "建设银行", "SH601398": "工商银行",
+    "SH600028": "中国石化", "SH601728": "中国电信", "SH600941": "中国移动",
+    "SH600050": "中国联通", "SH601088": "中国神华", "SH601628": "中国人寿",
+    "SH603259": "药明生物", "SZ002475": "立讯精密", "SH600887": "伊利股份",
+}
+
+@app.get("/api/badge")
+async def badge(market: str = "ALL", symbol: str = None):
+    """Generate shields.io-compatible badge JSON for BDE Score"""
+    from fastapi.responses import JSONResponse
+    try:
+        # Get latest snapshot
+        snapshot = get_latest_snapshot()
+        if not snapshot:
+            return JSONResponse({
+                "schemaVersion": 1,
+                "label": "BDE Score",
+                "message": "no data",
+                "color": "grey"
+            })
+        
+        if symbol:
+            # Resolve symbol to DB name
+            resolved = TICKER_MAP.get(symbol.upper(), TICKER_MAP.get(symbol)) or symbol.upper()
+            # Try exact match first, then partial match
+            stock = next((s for s in snapshot if s.get('symbol','').upper() == resolved.upper()), None)
+            if not stock:
+                stock = next((s for s in snapshot if resolved in s.get('symbol','')), None)
+            if stock:
+                score = stock.get('bde_score', 0)
+                signal = stock.get('signal', 'HOLD')
+                color = "brightgreen" if signal == "BUY" else "yellow" if signal == "HOLD" else "red"
+                display_name = symbol.upper()
+                return JSONResponse({
+                    "schemaVersion": 1,
+                    "label": f"BDE {display_name}",
+                    "message": f"{score:.1f} {signal}",
+                    "color": color,
+                    "style": "flat"
+                })
+            return JSONResponse({"schemaVersion": 1, "label": "BDE", "message": "not found", "color": "grey"})
+        else:
+            # Market overview badge
+            avg_score = sum(s.get('bde_score', 0) for s in snapshot) / len(snapshot) if snapshot else 0
+            buy_count = sum(1 for s in snapshot if s.get('signal') == 'BUY')
+            return JSONResponse({
+                "schemaVersion": 1,
+                "label": f"BDE Score ({market})",
+                "message": f"Ø{avg_score:.0f} · {buy_count} BUY",
+                "color": "blue",
+                "style": "flat"
+            })
+    except Exception as e:
+        return JSONResponse({"schemaVersion": 1, "label": "BDE Score", "message": "error", "color": "lightgrey"})
+
+
+def get_latest_snapshot():
+    """Get latest analysis snapshot from DB"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        # Find latest run_time
+        row = conn.execute("SELECT DISTINCT run_time FROM analysis_history ORDER BY run_time DESC LIMIT 1").fetchone()
+        if not row:
+            conn.close()
+            return None
+        latest_time = row[0]
+        # Get all stocks from that run
+        rows = conn.execute(
+            "SELECT symbol, composite_score, signal, scores_json FROM analysis_history WHERE run_time = ?",
+            (latest_time,)
+        ).fetchall()
+        conn.close()
+        if not rows:
+            return None
+        return [
+            {
+                "symbol": r[0],
+                "bde_score": r[1],
+                "signal": r[2],
+                "scores": json.loads(r[3]) if r[3] else {}
+            }
+            for r in rows
+        ]
+    except:
+        pass
+    return None
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     uvicorn.run(app, host=API_HOST, port=API_PORT)
