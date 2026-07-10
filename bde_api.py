@@ -168,10 +168,25 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             response.headers["Content-Security-Policy"] = "frame-ancestors *"
         else:
             response.headers["X-Frame-Options"] = "DENY"
-        # CORS
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-API-Key"
+        # 🔒 CORS 白名单（仅允许已知域名嵌入）
+        allowed_origins = {
+            "https://hbhqq9.github.io",
+            "https://atlantic-remains-atomic-floor.trycloudflare.com",
+            "http://localhost:8890",
+            "http://127.0.0.1:8890",
+        }
+        origin = request.headers.get("origin", "")
+        if request.url.path in ('/widget', '/embed/snippet'):
+            # 零账号分发：widget/embed允许任意来源
+            response.headers["Access-Control-Allow-Origin"] = "*"
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-API-Key"
+        elif origin in allowed_origins:
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-API-Key"
+        # 🔒 HSTS（强制HTTPS，1年有效期，含子域名）
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
         return response
 
 app.add_middleware(SecurityHeadersMiddleware)
