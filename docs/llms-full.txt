@@ -44,12 +44,12 @@ Each stock receives a composite score (0-100) with signal classification: Bullis
 
 ## Links
 
-- Live Demo: https://rebel-north-intermediate-roof.trycloudflare.com
-- Dashboard: https://rebel-north-intermediate-roof.trycloudflare.com/dashboard
+- Live Demo: https://github.com/hbhqq9/bde-score
+- Dashboard: https://github.com/hbhqq9/bde-score/dashboard
 - GitHub: https://github.com/hbhqq9/bde-score
 - GitHub Pages: https://hbhqq9.github.io/bde-score
-- API Docs: https://rebel-north-intermediate-roof.trycloudflare.com/docs
-- Widget: https://rebel-north-intermediate-roof.trycloudflare.com/widget
+- API Docs: https://github.com/hbhqq9/bde-score/docs
+- Widget: https://github.com/hbhqq9/bde-score/widget
 
 ## Compliance Note
 
