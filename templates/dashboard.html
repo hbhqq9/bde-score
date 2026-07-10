@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDE Score™ — AI Multi-Market Quantitative Analysis</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  body { font-family: 'Inter', system-ui, sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
+  .score-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+  .pulse-dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .signal-buy { color: #22c55e; }
+  .signal-hold { color: #eab308; }
+  .signal-avoid, .signal-sell { color: #ef4444; }
+  .fade-in { animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .loading-spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #3b82f6; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .market-tab { transition: all 0.2s; }
+  .market-tab.active { background: rgba(59, 130, 246, 0.3); border-color: #3b82f6; color: #93c5fd; }
+  .market-tab:hover:not(.active) { background: rgba(255,255,255,0.05); }
+</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+<!-- Header -->
+<header class="glass sticky top-0 z-50 px-6 py-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center font-bold text-lg">B</div>
+      <div>
+        <h1 class="text-lg font-semibold tracking-tight">BDE Score™</h1>
+        <p class="text-xs text-slate-400">AI Multi-Factor · Multi-Market Engine</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div id="marketStatus" class="flex items-center gap-2 text-sm">
+        <div class="pulse-dot bg-slate-500"></div>
+        <span class="text-slate-400">检测中...</span>
+      </div>
+      <button id="refreshBtn" onclick="loadData(true)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-medium transition-colors flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        刷新
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-8">
+  
+  <!-- Market Tabs -->
+  <div class="flex gap-2 mb-6">
+    <button onclick="switchMarket('US')" class="market-tab active px-4 py-2 rounded-lg border border-slate-700 text-sm font-medium" data-market="US">
+      🇺🇸 美股 <span class="text-slate-500 ml-1">14</span>
+    </button>
+    <button onclick="switchMarket('HK')" class="market-tab px-4 py-2 rounded-lg border border-slate-700 text-sm font-medium" data-market="HK">
+      🇭🇰 港股 <span class="text-slate-500 ml-1">14</span>
+    </button>
+    <button onclick="switchMarket('A')" class="market-tab px-4 py-2 rounded-lg border border-slate-700 text-sm font-medium" data-market="A">
+      🇨🇳 A股 <span class="text-slate-500 ml-1">12</span>
+    </button>
+    <button onclick="switchMarket('ALL')" class="market-tab px-4 py-2 rounded-lg border border-slate-700 text-sm font-medium" data-market="ALL">
+      🌐 全市场 <span class="text-slate-500 ml-1">40</span>
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div id="loadingState" class="flex flex-col items-center justify-center py-20">
+    <div class="loading-spinner mb-4"></div>
+    <p class="text-slate-400">正在获取行情数据并运行多因子分析...</p>
+  </div>
+
+  <!-- Error -->
+  <div id="errorState" class="hidden glass rounded-2xl p-8 text-center">
+    <div class="text-4xl mb-4">⚠️</div>
+    <h3 class="text-lg font-semibold mb-2">数据获取失败</h3>
+    <p id="errorMsg" class="text-slate-400 mb-4"></p>
+    <button onclick="loadData(true)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-medium">重试</button>
+  </div>
+
+  <!-- Content -->
+  <div id="content" class="hidden fade-in">
+    
+    <!-- Summary -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+      <div class="glass rounded-xl p-4">
+        <p class="text-xs text-slate-400 mb-1">当前市场</p>
+        <p id="currentMarket" class="text-lg font-bold">—</p>
+      </div>
+      <div class="glass rounded-xl p-4">
+        <p class="text-xs text-slate-400 mb-1">综合情绪</p>
+        <p id="sentiment" class="text-xl font-bold">—</p>
+      </div>
+      <div class="glass rounded-xl p-4">
+        <p class="text-xs text-slate-400 mb-1">平均得分</p>
+        <p id="avgScore" class="text-xl font-bold mono">—</p>
+      </div>
+      <div class="glass rounded-xl p-4">
+        <p class="text-xs text-slate-400 mb-1">BUY / HOLD</p>
+        <p class="text-xl font-bold"><span id="buyCount" class="signal-buy mono">—</span> <span class="text-slate-600">/</span> <span id="holdCount" class="signal-hold mono">—</span></p>
+      </div>
+      <div class="glass rounded-xl p-4">
+        <p class="text-xs text-slate-400 mb-1">SELL 信号</p>
+        <p id="avoidCount" class="text-xl font-bold signal-avoid mono">—</p>
+      </div>
+    </div>
+
+    <!-- Meta -->
+    <div class="flex items-center gap-4 mb-6 text-xs text-slate-500">
+      <span id="runTime">—</span><span>·</span>
+      <span id="dataSource">—</span><span>·</span>
+      <span id="symbolsCount">—</span>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      
+      <!-- Table -->
+      <div class="lg:col-span-2 glass rounded-2xl overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+          <h2 class="font-semibold">多因子评分排行</h2>
+          <span id="tableNote" class="text-xs text-slate-500">按综合分降序</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-slate-400 text-xs border-b border-slate-800">
+                <th class="px-4 py-3">#</th>
+                <th class="px-4 py-3">代码</th>
+                <th class="px-4 py-3">价格</th>
+                <th class="px-4 py-3">综合分</th>
+                <th class="px-4 py-3">信号</th>
+                <th class="px-4 py-3">动量</th>
+                <th class="px-4 py-3">回归</th>
+                <th class="px-4 py-3">量能</th>
+                <th class="px-4 py-3">波动</th>
+                <th class="px-4 py-3">趋势</th>
+              </tr>
+            </thead>
+            <tbody id="scoreTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Radar -->
+      <div class="glass rounded-2xl p-6">
+        <h2 class="font-semibold mb-4">因子分布（Top 5）</h2>
+        <canvas id="radarChart" width="300" height="300"></canvas>
+      </div>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="glass rounded-2xl p-6 mb-8">
+      <h2 class="font-semibold mb-4">综合评分分布</h2>
+      <canvas id="barChart" height="100"></canvas>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="glass rounded-xl p-4 text-center text-xs text-slate-500">
+      ⚠️ BDE Score™ 仅提供技术分析与数据评分，不构成任何投资建议。投资有风险，决策需谨慎。<br>
+      Technical analysis only. Not investment advice. Past performance does not guarantee future results.
+    </div>
+  </div>
+</main>
+
+<script>
+let radarChart = null, barChart = null;
+let currentMarketCode = 'US';
+const marketNames = { US: '🇺🇸 美股', HK: '🇭🇰 港股', A: '🇨🇳 A股', ALL: '🌐 全市场' };
+const pricePrefix = { US: '$', HK: 'HK$', A: '¥', ALL: '' };
+
+function switchMarket(market) {
+  currentMarketCode = market;
+  document.querySelectorAll('.market-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.market === market);
+  });
+  loadData(true);
+}
+
+async function loadMarketStatus() {
+  try {
+    const resp = await fetch('/api/market-status');
+    const data = await resp.json();
+    const el = document.getElementById('marketStatus');
+    const isOpen = data.market.us_stock.open;
+    el.innerHTML = `
+      <div class="pulse-dot ${isOpen ? 'bg-green-500' : 'bg-red-500'}"></div>
+      <span class="text-slate-300">${data.market.us_stock.status}</span>
+      <span class="text-slate-500">${data.et_time} ET</span>
+    `;
+  } catch(e) {}
+}
+
+async function loadData(forceRefresh = false) {
+  const loading = document.getElementById('loadingState');
+  const error = document.getElementById('errorState');
+  const content = document.getElementById('content');
+  const btn = document.getElementById('refreshBtn');
+  
+  loading.classList.remove('hidden');
+  content.classList.add('hidden');
+  error.classList.add('hidden');
+  btn.disabled = true;
+  
+  try {
+    const url = forceRefresh 
+      ? `/api/analyze?force=true&market=${currentMarketCode}`
+      : `/api/snapshot?market=${currentMarketCode}`;
+    const resp = await fetch(url);
+    if (!resp.ok) { const err = await resp.json(); throw new Error(err.detail || 'Error'); }
+    const data = await resp.json();
+    renderDashboard(data);
+    loading.classList.add('hidden');
+    content.classList.remove('hidden');
+  } catch(e) {
+    loading.classList.add('hidden');
+    error.classList.remove('hidden');
+    document.getElementById('errorMsg').textContent = e.message;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function signalBg(signal) {
+  if (signal === 'BUY') return 'bg-green-500/20 text-green-400';
+  if (signal === 'SELL' || signal === 'AVOID') return 'bg-red-500/20 text-red-400';
+  return 'bg-yellow-500/20 text-yellow-400';
+}
+
+function scoreColor(score) {
+  if (score >= 70) return '#22c55e';
+  if (score >= 50) return '#eab308';
+  return '#ef4444';
+}
+
+function renderDashboard(data) {
+  const prefix = pricePrefix[currentMarketCode] || '';
+  
+  document.getElementById('currentMarket').textContent = data.market || currentMarketCode;
+  document.getElementById('sentiment').textContent = data.market_summary.market_sentiment;
+  document.getElementById('avgScore').textContent = data.market_summary.avg_score;
+  document.getElementById('buyCount').textContent = data.market_summary.buy_signals;
+  document.getElementById('holdCount').textContent = data.market_summary.hold_signals;
+  document.getElementById('avoidCount').textContent = data.market_summary.avoid_signals;
+  document.getElementById('runTime').textContent = `分析时间: ${data.run_time}`;
+  document.getElementById('dataSource').textContent = `数据源: ${data.data_source}`;
+  document.getElementById('symbolsCount').textContent = `标的数: ${data.symbols_count}`;
+  
+  // Table
+  const tbody = document.getElementById('scoreTable');
+  tbody.innerHTML = data.results.map((r, i) => `
+    <tr class="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
+      <td class="px-4 py-3 text-slate-500 mono text-xs">${i + 1}</td>
+      <td class="px-4 py-3">
+        <span class="font-medium">${r.symbol}</span>
+        <span class="text-xs text-slate-500 ml-1">${r.futu_code}</span>
+      </td>
+      <td class="px-4 py-3 mono text-sm">${prefix}${r.current_price.toFixed(2)}</td>
+      <td class="px-4 py-3">
+        <div class="flex items-center gap-2">
+          <span class="mono font-semibold" style="color:${scoreColor(r.composite_score)}">${r.composite_score}</span>
+          <div class="score-bar w-16"><div class="score-fill" style="width:${r.composite_score}%; background:${scoreColor(r.composite_score)}"></div></div>
+        </div>
+      </td>
+      <td class="px-4 py-3"><span class="px-2 py-1 rounded-md text-xs font-medium ${signalBg(r.signal)}">${r.signal}</span></td>
+      <td class="px-4 py-3 mono text-xs">${r.scores.momentum || '—'}</td>
+      <td class="px-4 py-3 mono text-xs">${r.scores.mean_reversion || '—'}</td>
+      <td class="px-4 py-3 mono text-xs">${r.scores.volume || '—'}</td>
+      <td class="px-4 py-3 mono text-xs">${r.scores.volatility || '—'}</td>
+      <td class="px-4 py-3 mono text-xs">${r.scores.trend || '—'}</td>
+    </tr>
+  `).join('');
+  
+  renderRadarChart(data.results.slice(0, 5));
+  renderBarChart(data.results);
+}
+
+function renderRadarChart(top5) {
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  if (radarChart) radarChart.destroy();
+  const factors = ['momentum', 'mean_reversion', 'volume', 'volatility', 'trend'];
+  const labels = ['动量', '均值回归', '量能', '波动', '趋势'];
+  const colors = ['#3b82f6', '#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444'];
+  radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels, datasets: top5.map((r, i) => ({
+        label: r.symbol, data: factors.map(f => r.scores[f] || 0),
+        borderColor: colors[i], backgroundColor: colors[i] + '20',
+        borderWidth: 2, pointRadius: 3,
+      }))
+    },
+    options: {
+      responsive: true,
+      scales: { r: { beginAtZero: true, max: 100, ticks: { stepSize: 25, color: '#64748b', backdropColor: 'transparent' }, grid: { color: 'rgba(255,255,255,0.06)' }, pointLabels: { color: '#94a3b8', font: { size: 11 } }, angleLines: { color: 'rgba(255,255,255,0.06)' } } },
+      plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', usePointStyle: true, pointStyle: 'circle', padding: 12, font: { size: 11 } } } }
+    }
+  });
+}
+
+function renderBarChart(results) {
+  const ctx = document.getElementById('barChart').getContext('2d');
+  if (barChart) barChart.destroy();
+  barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: results.map(r => r.symbol),
+      datasets: [{ label: '综合评分', data: results.map(r => r.composite_score), backgroundColor: results.map(r => scoreColor(r.composite_score) + '80'), borderColor: results.map(r => scoreColor(r.composite_score)), borderWidth: 1, borderRadius: 4 }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 11 } } } },
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+setInterval(() => loadData(false), 15 * 60 * 1000);
+loadMarketStatus();
+loadData(false);
+setInterval(loadMarketStatus, 60000);
+</script>
+</body>
+</html>

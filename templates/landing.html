@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDE Score™ — AI-Powered Multi-Market Stock Analysis</title>
+<meta name="description" content="Real-time quantitative analysis for 73 stocks across US, HK, and A markets. Powered by FutuOpenD. EU AI Act Art.50 compliant.">
+<meta name="keywords" content="stock analysis, quantitative trading, AI finance, EU AI Act, BDE Score, FutuOpenD">
+<!-- Open Graph -->
+<meta property="og:title" content="BDE Score™ — AI-Powered Stock Analysis">
+<meta property="og:description" content="73 stocks. 3 markets. One score. Real-time AI analysis.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bdescore.app">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BDE Score™ — AI-Powered Stock Analysis">
+<meta name="twitter:description" content="73 stocks. 3 markets. One score.">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+      animation: { 'fade-in': 'fadeIn 0.6s ease-out', 'slide-up': 'slideUp 0.6s ease-out', 'pulse-slow': 'pulse 3s infinite' },
+      keyframes: { fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } }, slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
+    }
+  }
+}
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+.glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.06); }
+.gradient-text { background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.gradient-border { position: relative; }
+.gradient-border::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+.glow { box-shadow: 0 0 40px rgba(59, 130, 246, 0.15); }
+.pricing-popular { position: relative; }
+.pricing-popular::after { content: 'MOST POPULAR'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 12px; border-radius: 12px; letter-spacing: 0.05em; }
+.stat-number { font-variant-numeric: tabular-nums; }
+.countdown { font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 glass border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-xl font-bold">📊</span>
+      <span class="text-lg font-semibold tracking-tight">BDE Score<span class="text-blue-400">™</span></span>
+    </div>
+    <div class="hidden md:flex items-center gap-8 text-sm text-slate-400">
+      <a href="#features" class="hover:text-white transition">Features</a>
+      <a href="#pricing" class="hover:text-white transition">Pricing</a>
+      <a href="#compliance" class="hover:text-white transition">Compliance</a>
+      <a href="https://github.com/hbhqq9/bde-score" target="_blank" class="hover:text-white transition">GitHub</a>
+    </div>
+    <a href="#pricing" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition">Get Started</a>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="relative pt-32 pb-20 overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-blue-950/20 via-transparent to-transparent"></div>
+  <div class="absolute top-20 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
+  <div class="absolute top-40 right-1/4 w-72 h-72 bg-purple-600/10 rounded-full blur-3xl"></div>
+  
+  <div class="relative max-w-5xl mx-auto px-6 text-center">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm mb-8 animate-fade-in">
+      <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+      Live — 73 stocks across 3 markets
+    </div>
+    
+    <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-tight mb-6 animate-slide-up">
+      <span class="gradient-text">One Score.</span><br>
+      <span class="text-white">Every Market.</span>
+    </h1>
+    
+    <p class="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto mb-10 animate-slide-up leading-relaxed">
+      AI-powered multi-factor quantitative analysis for US, HK & A-share markets. Real-time data. Explainable methodology. Regulatory-ready.
+    </p>
+    
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-slide-up">
+      <a href="/dashboard" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-4 rounded-xl text-lg transition glow">
+        View Live Dashboard →
+      </a>
+      <a href="#pricing" class="glass text-slate-300 hover:text-white font-medium px-8 py-4 rounded-xl text-lg transition">
+        See Pricing
+      </a>
+    </div>
+    
+    <!-- Live Stats -->
+    <div class="grid grid-cols-3 gap-6 max-w-lg mx-auto">
+      <div class="text-center">
+        <div class="text-3xl font-bold stat-number text-white">73</div>
+        <div class="text-sm text-slate-500">Stocks</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold stat-number text-white">3</div>
+        <div class="text-sm text-slate-500">Markets</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold stat-number text-white">24/7</div>
+        <div class="text-sm text-slate-500">Monitoring</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-24 border-t border-white/5">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Why BDE Score™?</h2>
+      <p class="text-slate-400 text-lg max-w-xl mx-auto">Institutional-grade analysis, accessible to everyone.</p>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="glass rounded-2xl p-8 hover:border-blue-500/30 transition">
+        <div class="text-3xl mb-4">🎯</div>
+        <h3 class="text-lg font-semibold mb-2">Multi-Factor Scoring</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Composite score from momentum, mean reversion, volume, volatility & trend analysis. Each factor transparently weighted.</p>
+      </div>
+      
+      <div class="glass rounded-2xl p-8 hover:border-blue-500/30 transition">
+        <div class="text-3xl mb-4">🌏</div>
+        <h3 class="text-lg font-semibold mb-2">Three Markets, One View</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">US (25), HK (26), and A-shares (23) — normalized scoring across all markets for cross-market comparison.</p>
+      </div>
+      
+      <div class="glass rounded-2xl p-8 hover:border-blue-500/30 transition">
+        <div class="text-3xl mb-4">⚡</div>
+        <h3 class="text-lg font-semibold mb-2">Real-Time Dual Channel</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">FutuOpenD primary + Sina Finance fallback. Automatic degradation ensures 99.9% data availability.</p>
+      </div>
+      
+      <div class="glass rounded-2xl p-8 hover:border-blue-500/30 transition">
+        <div class="text-3xl mb-4">🔒</div>
+        <h3 class="text-lg font-semibold mb-2">EU AI Act Ready</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Full audit trails, explainable methodology, machine-readable compliance metadata. Art.50 compliant by design.</p>
+      </div>
+      
+      <div class="glass rounded-2xl p-8 hover:border-blue-500/30 transition">
+        <div class="text-3xl mb-4">📈</div>
+        <h3 class="text-lg font-semibold mb-2">Historical Tracking</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Track score evolution over 365 days. Identify trends before they become obvious. Backtest strategies.</p>
+      </div>
+      
+      <div class="glass rounded-2xl p-8 hover:border-blue-500/30 transition">
+        <div class="text-3xl mb-4">🔌</div>
+        <h3 class="text-lg font-semibold mb-2">API-First Design</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">RESTful JSON API. Integrate BDE Score into your trading bots, dashboards, or research workflows.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing Section -->
+<section id="pricing" class="py-24 border-t border-white/5">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+      <p class="text-slate-400 text-lg">Start free. Scale as you grow. Pay in USDC.</p>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Free Tier -->
+      <div class="glass rounded-2xl p-8 flex flex-col">
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-1">Free</h3>
+          <p class="text-slate-500 text-sm">Explore the platform</p>
+        </div>
+        <div class="mb-6">
+          <span class="text-4xl font-bold">$0</span>
+          <span class="text-slate-500 text-sm">/forever</span>
+        </div>
+        <ul class="space-y-3 mb-8 flex-1 text-sm text-slate-400">
+          <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">✓</span> Live dashboard view</li>
+          <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">✓</span> 3 snapshot queries/day</li>
+          <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">✓</span> All 3 markets</li>
+          <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">✓</span> 7-day score history</li>
+        </ul>
+        <a href="/dashboard" class="block text-center glass text-white font-medium px-6 py-3 rounded-xl hover:bg-white/5 transition">Try Free</a>
+      </div>
+      
+      <!-- Premium Tier -->
+      <div class="glass rounded-2xl p-8 flex flex-col pricing-popular gradient-border glow">
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-1">Premium</h3>
+          <p class="text-slate-500 text-sm">For active traders</p>
+        </div>
+        <div class="mb-6">
+          <span class="text-4xl font-bold text-blue-400">$29</span>
+          <span class="text-slate-500 text-sm">/month</span>
+        </div>
+        <ul class="space-y-3 mb-8 flex-1 text-sm text-slate-300">
+          <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">✓</span> Unlimited API access</li>
+          <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">✓</span> Full 365-day history</li>
+          <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">✓</span> Real-time push alerts</li>
+          <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">✓</span> Factor breakdown per stock</li>
+          <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">✓</span> Priority support</li>
+        </ul>
+        <a href="#subscribe" class="block text-center bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-xl transition">Subscribe →</a>
+      </div>
+      
+      <!-- Institutional Tier -->
+      <div class="glass rounded-2xl p-8 flex flex-col">
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-1">Institutional</h3>
+          <p class="text-slate-500 text-sm">Custom solutions</p>
+        </div>
+        <div class="mb-6">
+          <span class="text-4xl font-bold">$199</span>
+          <span class="text-slate-500 text-sm">/month</span>
+        </div>
+        <ul class="space-y-3 mb-8 flex-1 text-sm text-slate-400">
+          <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">✓</span> Everything in Premium</li>
+          <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">✓</span> Custom stock universe</li>
+          <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">✓</span> White-label API</li>
+          <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">✓</span> Compliance reports (AI Act)</li>
+          <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">✓</span> Dedicated SLA</li>
+          <li class="flex items-start gap-2"><span class="text-purple-400 mt-0.5">✓</span> On-premise deployment</li>
+        </ul>
+        <a href="#contact" class="block text-center glass text-white font-medium px-6 py-3 rounded-xl hover:bg-white/5 transition">Contact Sales</a>
+      </div>
+    </div>
+    
+    <!-- USDC Payment -->
+    <div id="subscribe" class="mt-12 glass rounded-2xl p-8 text-center">
+      <h3 class="text-xl font-bold mb-2">Pay with USDC</h3>
+      <p class="text-slate-400 text-sm mb-6">Send USDC on Base chain to activate your subscription</p>
+      <div class="bg-slate-900/80 rounded-xl p-4 inline-block">
+        <code class="text-blue-400 text-sm font-mono break-all">0x87d6C8F71d89d7E1f17EcAB138EDfaAc19d9D2fE</code>
+      </div>
+      <p class="text-slate-500 text-xs mt-4">Base Network (ERC-20 USDC) · Send exact monthly amount · Email receipt to confirm activation</p>
+    </div>
+  </div>
+</section>
+
+<!-- EU AI Act Compliance Section -->
+<section id="compliance" class="py-24 border-t border-white/5">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="glass rounded-2xl p-10 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm mb-6">
+        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+        Regulatory Countdown
+      </div>
+      
+      <h2 class="text-3xl font-bold mb-4">EU AI Act — Art.50 Compliance</h2>
+      <p class="text-slate-400 mb-8 max-w-xl mx-auto">
+        BDE Score™ is built with transparency at its core. When Art.50 takes effect, our system is already compliant.
+      </p>
+      
+      <!-- Countdown -->
+      <div class="countdown text-5xl font-bold text-amber-400 mb-6" id="countdown">
+        -- days
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-6 text-left mt-10">
+        <div class="text-center">
+          <div class="text-2xl mb-2">📋</div>
+          <h4 class="font-semibold text-sm mb-1">Audit Trails</h4>
+          <p class="text-xs text-slate-500">Every score decision is logged with full factor weights and input data</p>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl mb-2">🔍</div>
+          <h4 class="font-semibold text-sm mb-1">Explainable</h4>
+          <p class="text-xs text-slate-500">Each stock's score breaks down into momentum, reversion, volume, volatility & trend</p>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl mb-2">🤖</div>
+          <h4 class="font-semibold text-sm mb-1">Machine-Readable</h4>
+          <p class="text-xs text-slate-500">Compliance metadata in JSON format for regulatory reporting</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-24 border-t border-white/5">
+  <div class="max-w-xl mx-auto px-6 text-center">
+    <h2 class="text-3xl font-bold mb-4">Get Early Access</h2>
+    <p class="text-slate-400 mb-8">Join the waitlist for Premium and Institutional tiers. Be first to know when new features launch.</p>
+    
+    <form class="flex flex-col sm:flex-row gap-3" onsubmit="handleSubmit(event)">
+      <input type="email" id="email" placeholder="your@email.com" required
+        class="flex-1 bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/50 transition">
+      <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-3 rounded-xl transition whitespace-nowrap">
+        Join Waitlist
+      </button>
+    </form>
+    <p id="form-msg" class="text-sm mt-3 text-green-400 hidden">✓ You're on the list! We'll be in touch.</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-t border-white/5 py-12">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">📊</span>
+        <span class="font-semibold">BDE Score™</span>
+      </div>
+      <div class="flex items-center gap-6 text-sm text-slate-500">
+        <a href="/dashboard" class="hover:text-white transition">Dashboard</a>
+        <a href="/api/health" class="hover:text-white transition">Status</a>
+        <a href="https://github.com/hbhqq9/bde-score" target="_blank" class="hover:text-white transition">GitHub</a>
+        <a href="#pricing" class="hover:text-white transition">Pricing</a>
+      </div>
+    </div>
+    <div class="mt-8 pt-8 border-t border-white/5 text-center">
+      <p class="text-xs text-slate-600 max-w-2xl mx-auto leading-relaxed">
+        ⚠️ <strong>Disclaimer:</strong> BDE Score™ is a technical analysis tool, not financial advice. All investment decisions should be made independently. Past performance does not guarantee future results. BDE Score™ does not provide investment suitability assessments.
+      </p>
+      <p class="text-xs text-slate-700 mt-4">© 2026 BDE Score™. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Countdown to EU AI Act Art.50 (Aug 2, 2026)
+function updateCountdown() {
+  const target = new Date('2026-08-02T00:00:00Z');
+  const now = new Date();
+  const diff = target - now;
+  if (diff <= 0) { document.getElementById('countdown').textContent = 'ENFORCED'; return; }
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  document.getElementById('countdown').textContent = `${days}d ${hours}h`;
+}
+updateCountdown();
+setInterval(updateCountdown, 3600000);
+
+// Waitlist form
+async function handleSubmit(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  try {
+    const resp = await fetch('/api/waitlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    if (resp.ok) {
+      document.getElementById('form-msg').classList.remove('hidden');
+      document.getElementById('email').value = '';
+    } else {
+      document.getElementById('form-msg').textContent = resp.status === 429 ? 'Too many requests. Please try again later.' : 'Something went wrong. Please retry.';
+      document.getElementById('form-msg').classList.remove('hidden');
+      document.getElementById('form-msg').classList.replace('text-green-400', 'text-red-400');
+    }
+  } catch (err) {
+    document.getElementById('form-msg').textContent = 'Network error. Please retry.';
+    document.getElementById('form-msg').classList.remove('hidden');
+    document.getElementById('form-msg').classList.replace('text-green-400', 'text-red-400');
+  }
+}
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+
+</body>
+</html>
