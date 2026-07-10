@@ -29,32 +29,37 @@ Each stock receives a composite score (0-100) with signal classification: Bullis
 
 ## API Endpoints
 
-- `GET /api/snapshot/{market}` — Full market snapshot (market: US, HK, A)
-- `GET /api/stock/{symbol}` — Single stock analysis
-- `GET /share/{symbols}` — SVG score cards (e.g., /share/AAPL, /share/US?top=5)
-- `GET /widget` — Embeddable score widget (iframe)
-- `GET /` — Landing page with pricing
-- `GET /dashboard` — Full data dashboard
+- `GET /api/quote/{symbol}` — Real-time stock analysis with BDE Score breakdown
+- `GET /api/health` — System health check
+- `POST /api/keys/create` — Create API key for authenticated access
 
-## Pricing
+## Quick Start
 
-- **Free**: Dashboard access + 3 API queries/day
-- **Premium** ($29/mo): Unlimited API + 365-day history
-- **Institutional** ($199/mo): Custom universe + compliance reports + SLA
+```bash
+# Get analysis for Apple
+curl "https://atlantic-remains-atomic-floor.trycloudflare.com/api/quote/AAPL"
+
+# Get analysis for Tencent (HK)
+curl "https://atlantic-remains-atomic-floor.trycloudflare.com/api/quote/00700"
+
+# Get analysis for Kweichow Moutai (A-share)
+curl "https://atlantic-remains-atomic-floor.trycloudflare.com/api/quote/600519"
+```
+
+## Related Projects
+
+- [NeuroBridge](https://github.com/hbhqq9/neurobridge) — VLA-to-SNN interface for physical AI
+- [IPO Compliance](https://github.com/hbhqq9/ipo-compliance) — IPO regulatory compliance toolkit
+
+## Compliance & Legal
+
+- [Terms of Service](https://atlantic-remains-atomic-floor.trycloudflare.com/terms)
+- [Privacy Policy](https://atlantic-remains-atomic-floor.trycloudflare.com/privacy)
+- [Legal Disclaimer](https://atlantic-remains-atomic-floor.trycloudflare.com/legal)
+- Investment analysis is for informational purposes only. Not financial advice.
 
 ## Links
 
-- GitHub: https://github.com/hbhqq9/bde-score
-- GitHub Pages: https://hbhqq9.github.io/bde-score
-- Widget: https://hbhqq9.github.io/bde-score
-
-## Compliance Note
-
-⚠️ BDE Score™ is a technical analysis tool, not financial advice. Investment decisions should be made independently. The system provides quantitative signals based on historical data patterns.
-
-## Related Projects (Compliance Triangle)
-
-- **NeuroBridge** (https://github.com/hbhqq9/neurobridge): VLA→SNN protocol stack — provides the Physical AI compliance framework that BDE Score™ uses for EU AI Act Art.50 transparency
-- **IPO Compliance Service** (https://hbhqq9.github.io/ipo-compliance): 16-dimension Pre-IPO compliance diagnostics — provides the compliance methodology framework
-
-Together these three projects form a "Compliance Triangle": NeuroBridge=protocol infrastructure, IPO Compliance=methodology, BDE Score™=quantitative validation.
+- [GitHub Repository](https://github.com/hbhqq9/bde-score)
+- [GitHub Pages](https://hbhqq9.github.io/bde-score/)
+- [Full Documentation](/llms-full.txt)

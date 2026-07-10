@@ -32,17 +32,17 @@ BDE Score™ is a **transparent, multi-factor quantitative scoring system** that
 
 ```bash
 # Get latest scores (US market)
-curl https://your-api-endpoint/api/snapshot?market=US
+curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/snapshot?market=US
 
 # Get all markets
-curl https://your-api-endpoint/api/snapshot?market=ALL
+curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/snapshot?market=ALL
 
 # With Premium API Key (unlimited access)
 curl -H "X-API-Key: bde_your_key_here" \
-  https://your-api-endpoint/api/snapshot?market=ALL
+  https://atlantic-remains-atomic-floor.trycloudflare.com/api/snapshot?market=ALL
 
 # Historical data
-curl https://your-api-endpoint/api/history?symbol=AAPL&days=30
+curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/history?symbol=AAPL&days=30
 ```
 
 ### Pricing
@@ -53,7 +53,7 @@ curl https://your-api-endpoint/api/history?symbol=AAPL&days=30
 | **Premium** | $29/mo | Unlimited API + 365-day history |
 | **Institutional** | $199/mo | Custom universe + compliance reports + SLA |
 
-**Payment:** USDC on Base chain → `0x87d6C8F71d89d7E1f17EcAB138EDfaAc19d9D2fE`
+**Payment:** USDC on Base chain (Base) → `0x349Eea0E2f4d3594797851758325Da3eb49D4343`
 
 ## 🌏 Coverage
 
