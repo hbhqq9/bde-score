@@ -1059,7 +1059,8 @@ async def payment_page(request: Request):
         # 注入配置
         wallet = os.environ.get('BDE_WALLET_ADDRESS', '0x349Eea0E2f4d3594797851758325Da3eb49D4343')
         html = html.replace('{{ WALLET_ADDRESS }}', wallet)
-        html = html.replace('{{ PRICE_USD }}', str(PAYMENT_PRICE_USD))
+        html = html.replace('{{ USDC_CONTRACT }}', '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913')
+        html = html.replace('{{ PREMIUM_PRICE_USD }}', str(PAYMENT_PRICE_USD))
         html = html.replace('{{ API_BASE }}', str(request.base_url).rstrip('/'))
         return HTMLResponse(content=html)
     except Exception as e:
@@ -1080,22 +1081,35 @@ async def payment_config():
 @app.get("/api/payment/status")
 async def payment_status(payment_id: str = None, tx_hash: str = None):
     """查询支付状态"""
-    global usdc_activator_instance
+    global usdc_activator_instance, usdc_listener_instance
     if not usdc_activator_instance:
         return {"status": "disabled", "message": "支付系统未启用"}
     
     if tx_hash:
-        result = usdc_activator_instance.verify_transaction(tx_hash)
-        return result
+        # 先查已有记录
+        existing = usdc_activator_instance.get_payment_status(tx_hash=tx_hash)
+        if existing:
+            return existing
+        # 通过链上验证
+        if usdc_listener_instance:
+            verify_result = usdc_listener_instance.listener.verify_transaction(tx_hash)
+            if verify_result.get('valid'):
+                usdc_activator_instance.record_payment(verify_result)
+                result = usdc_activator_instance.activate_from_payment(tx_hash)
+                return result or verify_result
+            return verify_result
+        return {"error": "链上监听器不可用"}
     elif payment_id:
         result = usdc_activator_instance.get_payment_status(payment_id)
-        return result
+        if result:
+            return result
+        return {"error": "支付记录未找到"}
     return {"error": "需要提供 payment_id 或 tx_hash"}
 
 @app.post("/api/payment/verify")
 async def verify_payment(request: Request):
     """手动提交tx_hash验证支付"""
-    global usdc_activator_instance
+    global usdc_activator_instance, usdc_listener_instance
     if not usdc_activator_instance:
         return {"status": "disabled", "message": "支付系统未启用"}
     
@@ -1104,8 +1118,21 @@ async def verify_payment(request: Request):
     if not tx_hash:
         return {"error": "缺少 tx_hash"}
     
-    result = usdc_activator_instance.verify_transaction(tx_hash)
-    return result
+    # 先查是否已处理
+    existing = usdc_activator_instance.get_payment_status(tx_hash=tx_hash)
+    if existing and existing.get('api_key'):
+        return existing
+    
+    # 链上验证
+    if not usdc_listener_instance:
+        return {"error": "链上监听器不可用"}
+    
+    verify_result = usdc_listener_instance.listener.verify_transaction(tx_hash)
+    if verify_result.get('valid'):
+        usdc_activator_instance.record_payment(verify_result)
+        result = usdc_activator_instance.activate_from_payment(tx_hash)
+        return result or verify_result
+    return verify_result
 
 @app.get("/api/payment/wallet-check")
 async def wallet_check():
@@ -1137,15 +1164,23 @@ async def startup():
     logger.info(f"BDE Score™ API 启动 — 绑定 {API_HOST}:{API_PORT}（🔒 安全模式）")
     logger.info(f"Dashboard: http://localhost:{API_PORT}/")
 
-    # USDC 支付系统初始化
+    # USDC 支付系统初始化（使用独立线程，避免阻塞事件循环）
     try:
+        import threading
         usdc_activator_instance = PaymentActivator()
         listener = USDCListener()
         usdc_listener_instance = BackgroundListener(listener=listener, activator=usdc_activator_instance)
-        usdc_background_task = asyncio.create_task(usdc_listener_instance.run_loop())
-        logger.info("USDC支付系统已启动")
+        
+        def _run_usdc_loop():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(usdc_listener_instance.run_loop())
+        
+        usdc_thread = threading.Thread(target=_run_usdc_loop, daemon=True, name="USDC-Listener")
+        usdc_thread.start()
+        logger.info("USDC支付系统已启动（独立线程）")
     except Exception as e:
-        logger.warning(f"USDC支付系统启动失败: {e}")
+        logger.warning(f"USDC支付系统启动失败: {e}，API继续正常运行（无USDC监听）")
 
 @app.on_event("shutdown")
 async def shutdown():

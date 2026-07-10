@@ -210,8 +210,8 @@ class USDCListener:
 
             # 获取转入钱包的 Transfer 事件
             logs = transfer_event.get_logs(
-                fromBlock=from_block,
-                toBlock=to_block,
+                from_block=from_block,
+                to_block=to_block,
                 argument_filters={'to': self.wallet_checksum},
             )
         except Exception as e:
