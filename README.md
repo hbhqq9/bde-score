@@ -28,6 +28,16 @@ BDE Score™ is a **transparent, multi-factor quantitative scoring system** that
 ### View Live Dashboard
 👉 **[Open Dashboard](https://hbhqq9.github.io/bde-score/)**
 
+### Use as GitHub Action
+Add automated stock analysis to your workflow:
+```yaml
+- uses: hbhqq9/bde-score@main
+  with:
+    market: ALL
+    min_score: '55'
+```
+Results appear in GitHub Step Summary. [Learn more](#github-action)
+
 ### API Usage
 
 ```bash
@@ -95,6 +105,12 @@ BDE Score™ is **compliance-first by design**. When Art.50 takes effect on **Au
 | `/api/history` | GET | Historical scores |
 | `/api/health` | GET | System status |
 | `/api/market-status` | GET | Market hours |
+
+## 💬 Community
+
+- **Discussions**: [Join the conversation](https://github.com/hbhqq9/bde-score/discussions)
+- **Roadmap**: [v1.1 plans](https://github.com/hbhqq9/bde-score/issues/2)
+- **Related Projects**: [NeuroBridge](https://github.com/hbhqq9/neurobridge) · [IPO Compliance](https://github.com/hbhqq9/ipo-compliance)
 
 ## ⚠️ Disclaimer
 
