@@ -197,6 +197,19 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-API-Key"
         # 🔒 HSTS（强制HTTPS，1年有效期，含子域名）
         response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+        # 🔒 Inject disclaimer into all JSON analysis responses
+        if (isinstance(response, JSONResponse)
+                and request.url.path.startswith('/api/')
+                and request.url.path not in ('/api/health', '/api/keys/list', '/api/payment/config', '/api/payment/chain-status')):
+            try:
+                body = json.loads(response.body)
+                if isinstance(body, dict) and 'disclaimer' not in body:
+                    body['disclaimer'] = '⚠️ Technical analysis only. Not investment advice. Past performance does not guarantee future results.'
+                    new_body = json.dumps(body, default=safe_json_default).encode('utf-8')
+                    response.body = new_body
+                    response.headers['content-length'] = str(len(new_body))
+            except Exception:
+                pass  # Don't break responses if injection fails
         return response
 
 app.add_middleware(SecurityHeadersMiddleware)
@@ -227,47 +240,114 @@ rate_limiter = RateLimiter(max_requests=10, window_seconds=60)  # 每IP每分钟
 # ============================================================
 import hashlib
 import secrets
+import bcrypt
 
 class KeyManager:
-    """API Key管理：生成/验证/配额"""
+    """API Key管理：生成/验证/配额（bcrypt哈希存储）
+    
+    存储格式：
+      - key_hash: bcrypt哈希（cost factor 12）
+      - key_prefix: 前8位用于快速识别（如 bde_xxxx...）
+      - tier/email/created_at/active 等元数据
+      - 原始key不再存储，仅在生成时返回一次
+    """
     
     def __init__(self, keys_file='api_keys.json'):
         self.keys_file = keys_file
-        self.keys = self._load()
+        self.keys = self._load()  # dict: key_hash -> entry
         # 免费配额追踪：{ip: {date: count}}
         self._free_usage = {}
     
     def _load(self):
+        """加载api_keys.json，自动迁移旧版明文格式"""
         try:
             with open(self.keys_file, 'r') as f:
-                return {item['key']: item for item in json.load(f)}
+                raw_items = json.load(f)
         except (FileNotFoundError, json.JSONDecodeError):
             return {}
+        
+        keys = {}
+        migrated = 0
+        
+        for item in raw_items:
+            if 'key_hash' in item:
+                # 新格式：直接使用
+                keys[item['key_hash']] = item
+            elif 'key' in item:
+                # 旧格式（明文）：自动迁移为bcrypt哈希
+                plaintext_key = item['key']
+                key_hash = bcrypt.hashpw(
+                    plaintext_key.encode('utf-8'),
+                    bcrypt.gensalt(rounds=12)
+                ).decode('utf-8')
+                new_entry = {
+                    'key_hash': key_hash,
+                    'key_prefix': plaintext_key[:8],
+                    'tier': item.get('tier', 'free'),
+                    'email': item.get('email'),
+                    'created_at': item.get('created_at'),
+                    'active': item.get('active', True),
+                }
+                # 保留其他字段（如 source/tx_hash 等）
+                for k, v in item.items():
+                    if k not in ('key', 'key_hash', 'key_prefix') and k not in new_entry:
+                        new_entry[k] = v
+                keys[key_hash] = new_entry
+                migrated += 1
+        
+        if migrated > 0:
+            logger.warning(
+                f"🔑 API Key迁移完成：{migrated} 个明文key已转为bcrypt哈希存储"
+            )
+            # 写回迁移后的文件（明文key已清除）
+            try:
+                with open(self.keys_file, 'w') as f:
+                    json.dump(list(keys.values()), f, indent=2)
+                logger.info(f"✅ api_keys.json 已更新（明文key已清除）")
+            except Exception as e:
+                logger.error(f"❌ 迁移文件写入失败: {e}")
+        
+        return keys
     
     def _save(self):
         with open(self.keys_file, 'w') as f:
             json.dump(list(self.keys.values()), f, indent=2)
     
     def generate_key(self, tier='premium', email=None):
-        """生成新API Key"""
+        """生成新API Key，返回明文（仅此一次），存储bcrypt哈希"""
         key = f"bde_{secrets.token_urlsafe(24)}"
-        self.keys[key] = {
-            'key': key,
+        key_hash = bcrypt.hashpw(
+            key.encode('utf-8'),
+            bcrypt.gensalt(rounds=12)
+        ).decode('utf-8')
+        self.keys[key_hash] = {
+            'key_hash': key_hash,
+            'key_prefix': key[:8],
             'tier': tier,  # free / premium / institutional
             'email': email,
             'created_at': datetime.now().isoformat(),
             'active': True
         }
         self._save()
-        return key
+        return key  # 明文只在返回值中出现一次
     
     def verify(self, key):
-        """验证API Key有效性，返回tier或None"""
+        """验证API Key有效性，用bcrypt.checkpw()逐一对比哈希，返回tier或None"""
         if not key:
             return None
-        entry = self.keys.get(key)
-        if entry and entry.get('active'):
-            return entry['tier']
+        key_bytes = key.encode('utf-8')
+        for entry in self.keys.values():
+            if not entry.get('active'):
+                continue
+            stored_hash = entry.get('key_hash', '')
+            try:
+                if bcrypt.checkpw(key_bytes, stored_hash.encode('utf-8')):
+                    # 更新 last_used 时间戳
+                    entry['last_used'] = datetime.now().isoformat()
+                    self._save()
+                    return entry['tier']
+            except (ValueError, TypeError):
+                continue
         return None
     
     def check_free_quota(self, ip):
@@ -284,7 +364,43 @@ class KeyManager:
         return True
     
     def list_keys(self):
-        return list(self.keys.values())
+        """只返回 key_prefix + 元数据，不返回哈希"""
+        result = []
+        for entry in self.keys.values():
+            result.append({
+                'key_prefix': entry.get('key_prefix', '????????'),
+                'tier': entry.get('tier', 'free'),
+                'email': entry.get('email'),
+                'created_at': entry.get('created_at'),
+                'active': entry.get('active', False),
+                'last_used': entry.get('last_used'),
+            })
+        return result
+    
+    def revoke_by_prefix(self, prefix):
+        """通过key_prefix撤销API Key，返回是否成功"""
+        for entry in self.keys.values():
+            if entry.get('key_prefix') == prefix:
+                entry['active'] = False
+                self._save()
+                return True
+        return False
+    
+    def register_key_from_plaintext(self, plaintext_key, metadata):
+        """从明文key注册（供USDC支付系统集成调用），内部自动哈希存储"""
+        key_hash = bcrypt.hashpw(
+            plaintext_key.encode('utf-8'),
+            bcrypt.gensalt(rounds=12)
+        ).decode('utf-8')
+        entry = {
+            'key_hash': key_hash,
+            'key_prefix': plaintext_key[:8],
+            'active': True,
+        }
+        entry.update(metadata)
+        self.keys[key_hash] = entry
+        self._save()
+        return key_hash
 
 key_manager = KeyManager()
 
@@ -632,9 +748,9 @@ async def widget():
 async def embed_snippet():
     """获取嵌入代码片段（用于分享）"""
     return {
-        "iframe": '<iframe src="https://rebel-north-intermediate-roof.trycloudflare.com/widget" width="420" height="420" frameborder="0" style="border-radius:12px;overflow:hidden;"></iframe>',
-        "markdown": "[![BDE Score](https://rebel-north-intermediate-roof.trycloudflare.com/widget)](https://rebel-north-intermediate-roof.trycloudflare.com)",
-        "badge": "[![BDE Score](https://img.shields.io/badge/BDE-Score-blue)](https://rebel-north-intermediate-roof.trycloudflare.com)",
+        "iframe": '<iframe src="https://atlantic-remains-atomic-floor.trycloudflare.com/widget" width="420" height="420" frameborder="0" style="border-radius:12px;overflow:hidden;"></iframe>',
+        "markdown": "[![BDE Score](https://atlantic-remains-atomic-floor.trycloudflare.com/widget)](https://atlantic-remains-atomic-floor.trycloudflare.com)",
+        "badge": "[![BDE Score](https://img.shields.io/badge/BDE-Score-blue)](https://atlantic-remains-atomic-floor.trycloudflare.com)",
         "description": "Embed BDE Score™ live scores on your website. Copy the iframe code above."
     }
 
@@ -863,28 +979,30 @@ async def generate_key(
 
 @app.get("/api/keys/list")
 async def list_keys(request: Request):
-    """列出所有API Key（内部使用）"""
+    """列出所有API Key（内部使用）— 仅显示prefix，不显示完整key"""
     client_ip = request.client.host if request.client else "unknown"
     if client_ip not in ('127.0.0.1', '::1'):
         raise HTTPException(status_code=403, detail="Forbidden. Internal use only.")
     
-    return {"keys": key_manager.list_keys(), "count": len(key_manager.keys)}
+    return {
+        "keys": key_manager.list_keys(),
+        "count": len(key_manager.keys),
+        "note": "Full API keys are shown only once at generation time. Only key_prefix is stored."
+    }
 
 @app.post("/api/keys/revoke")
 async def revoke_key(
     request: Request,
-    key: str = Query(..., description="要撤销的API Key")
+    key_prefix: str = Query(..., description="要撤销的API Key前缀（8位，如 bde_xxxx）")
 ):
-    """撤销API Key（内部使用）"""
+    """撤销API Key（内部使用）— 通过key_prefix撤销"""
     client_ip = request.client.host if request.client else "unknown"
     if client_ip not in ('127.0.0.1', '::1'):
         raise HTTPException(status_code=403, detail="Forbidden. Internal use only.")
     
-    if key in key_manager.keys:
-        key_manager.keys[key]['active'] = False
-        key_manager._save()
-        return {"status": "revoked", "key": key[:12] + "..."}
-    raise HTTPException(status_code=404, detail="Key not found.")
+    if key_manager.revoke_by_prefix(key_prefix):
+        return {"status": "revoked", "key_prefix": key_prefix}
+    raise HTTPException(status_code=404, detail="Key not found by the given prefix.")
 
 @app.get("/api/history")
 async def api_history(
@@ -1040,7 +1158,7 @@ User-agent: Anthropic-AI
 Allow: /
 
 Sitemap: https://hbhqq9.github.io/bde-score/sitemap.xml
-LLMs: https://rebel-north-intermediate-roof.trycloudflare.com/llms.txt
+LLMs: https://hbhqq9.github.io/bde-score/llms.txt
 """
     return PlainTextResponse(robots, media_type="text/plain")
 
