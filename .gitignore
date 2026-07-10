@@ -1,0 +1,36 @@
+# Secrets & Credentials
+.env
+*.key
+*.pem
+*.p12
+*secret*
+*credential*
+*wallet*
+api_keys.json
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Data files
+bde_*.json
+waitlist.json
+local_deploy/
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
