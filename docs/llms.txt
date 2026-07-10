@@ -54,3 +54,10 @@ Each stock receives a composite score (0-100) with signal classification: Bullis
 ## Compliance Note
 
 ⚠️ BDE Score™ is a technical analysis tool, not financial advice. Investment decisions should be made independently. The system provides quantitative signals based on historical data patterns.
+
+## Related Projects (Compliance Triangle)
+
+- **NeuroBridge** (https://github.com/hbhqq9/neurobridge): VLA→SNN protocol stack — provides the Physical AI compliance framework that BDE Score™ uses for EU AI Act Art.50 transparency
+- **IPO Compliance Service** (https://hbhqq9.github.io/ipo-compliance): 16-dimension Pre-IPO compliance diagnostics — provides the compliance methodology framework
+
+Together these three projects form a "Compliance Triangle": NeuroBridge=protocol infrastructure, IPO Compliance=methodology, BDE Score™=quantitative validation.
