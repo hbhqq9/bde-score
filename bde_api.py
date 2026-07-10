@@ -613,6 +613,95 @@ async def embed_snippet():
         "description": "Embed BDE Score™ live scores on your website. Copy the iframe code above."
     }
 
+@app.get("/share/{symbols}", response_class=HTMLResponse)
+async def share_card(
+    symbols: str,
+    top: int = Query(None, description="显示前N名（如 /share/US?top=5）")
+):
+    """🔌 病毒式分发 — 生成可分享的SVG分数卡片
+    
+    用法：
+      /share/AAPL          → 单只股票卡片
+      /share/AAPL,NVDA     → 多只股票卡片  
+      /share/US?top=5      → 市场Top N排行
+    任何人可通过URL分享，每次分享都是获客。
+    """
+    from fastapi.responses import Response
+    
+    symbols_upper = symbols.upper()
+    
+    # 获取数据
+    if symbols_upper in VALID_MARKETS:
+        market = symbols_upper
+        cache_key = f'data_{market}'
+        data = _cache.get(cache_key)
+        if not data:
+            try:
+                data = run_analysis(market=market)
+            except Exception:
+                return Response(content="<svg><text>Error loading data</text></svg>", media_type="image/svg+xml")
+        
+        results = data.get('results', [])
+        results.sort(key=lambda x: x.get('composite_score', 0), reverse=True)
+        if top:
+            results = results[:top]
+        title = f"BDE Score™ Top {top or len(results)} — {market}"
+    else:
+        # 单只或多只股票
+        symbol_list = [s.strip() for s in symbols_upper.split(',')]
+        all_data = _cache.get('data_ALL') or _cache.get('data_US') or _cache.get('data_HK')
+        if not all_data:
+            try:
+                all_data = run_analysis(market='US')
+            except Exception:
+                return Response(content="<svg><text>Error loading data</text></svg>", media_type="image/svg+xml")
+        
+        all_results = all_data.get('results', [])
+        results = [r for r in all_results if r.get('symbol') in symbol_list]
+        title = f"BDE Score™ — {', '.join(symbol_list)}"
+    
+    # 生成SVG
+    svg = _generate_share_svg(results, title)
+    return Response(content=svg, media_type="image/svg+xml", headers={
+        "Cache-Control": "public, max-age=300",
+        "X-Frame-Options": "ALLOWALL",
+        "Content-Security-Policy": "frame-ancestors *",
+    })
+
+def _generate_share_svg(results, title):
+    """生成SVG分享卡片"""
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    w, h = 540, 80 + len(results) * 72 + 100
+    
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f172a"/><stop offset="100%" stop-color="#1e293b"/></linearGradient></defs>
+<rect width="{w}" height="{h}" rx="16" fill="url(#bg)"/>
+<text x="24" y="36" font-family="system-ui" font-size="20" font-weight="700" fill="#f1f5f9">📊 {title}</text>
+<text x="24" y="56" font-family="system-ui" font-size="12" fill="#64748b">{now}</text>
+<rect x="24" y="66" width="80" height="3" rx="1.5" fill="#3b82f6"/>
+'''
+    for i, r in enumerate(results):
+        sym = r.get('symbol', '?')
+        sc = round(r.get('composite_score', 0))
+        color = "#22c55e" if sc >= 70 else ("#eab308" if sc >= 40 else "#ef4444")
+        signal = "BULLISH" if sc >= 70 else ("NEUTRAL" if sc >= 40 else "BEARISH")
+        bw = max(10, min(200, sc * 2))
+        y = 88 + i * 72
+        svg += f'''<text x="24" y="{y+24}" font-family="system-ui" font-size="16" font-weight="600" fill="#e2e8f0">{sym}</text>
+<text x="24" y="{y+44}" font-family="system-ui" font-size="11" fill="#64748b">{r.get('market','')}</text>
+<text x="{w-24}" y="{y+24}" font-family="monospace" font-size="28" font-weight="700" fill="{color}" text-anchor="end">{sc}</text>
+<text x="{w-24}" y="{y+44}" font-family="system-ui" font-size="10" fill="{color}" text-anchor="end" letter-spacing="1">{signal}</text>
+<rect x="120" y="{y+32}" width="200" height="6" rx="3" fill="rgba(255,255,255,0.06)"/>
+<rect x="120" y="{y+32}" width="{bw}" height="6" rx="3" fill="{color}"/>
+'''
+    fy = 80 + len(results) * 72
+    svg += f'''<line x1="24" y1="{fy}" x2="{w-24}" y2="{fy}" stroke="rgba(255,255,255,0.06)"/>
+<text x="{w//2}" y="{fy+28}" font-family="system-ui" font-size="11" fill="#475569" text-anchor="middle">BDE Score™ · AI Multi-Market Analysis</text>
+<text x="{w//2}" y="{fy+48}" font-family="system-ui" font-size="10" fill="#3b82f6" text-anchor="middle">bdescore.app</text>
+<text x="{w//2}" y="{fy+68}" font-family="system-ui" font-size="9" fill="#374151" text-anchor="middle">⚠️ Not financial advice</text>
+</svg>'''
+    return svg
+
 @app.post("/api/waitlist")
 async def add_waitlist(request: Request):
     """Early access waitlist signup（🔒 限流+输入校验）"""
