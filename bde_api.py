@@ -1155,6 +1155,70 @@ async def serve_llms_txt():
     """GEO入口 — AI搜索引擎发现协议"""
     return PlainTextResponse(LLMS_TXT, media_type="text/plain")
 
+
+LLMS_FULL_TXT = """# BDE Score™
+
+> AI-powered multi-market stock analysis with transparent multi-factor scoring. Covers 73 stocks across US, HK, and A-share markets. EU AI Act Art.50 compliant. Open source (MIT).
+
+## What is BDE Score™
+
+BDE Score™ is a quantitative stock scoring system that evaluates stocks across 5 independent factors:
+- **Momentum**: Price momentum and rate of change
+- **Mean Reversion**: Distance from statistical mean, oversold/overbought signals
+- **Volume**: Trading volume patterns and money flow
+- **Volatility**: Risk-adjusted returns and volatility regime
+- **Trend**: Moving average alignment and trend strength
+
+Each stock receives a composite score (0-100) with signal classification: Bullish (>70), Neutral (40-70), Bearish (<40).
+
+## Coverage
+
+- **US Markets** (25 stocks): AAPL, MSFT, GOOG, AMZN, META, NVDA, AMD, AVGO, ARM, INTC, V, MA, JNJ, UNH, LLY, PFE, PG, KO, WMT, MCD, TSLA, NFLX, BABA, SPY, QQQ
+- **HK Markets** (26 stocks): Tencent (00700), Alibaba (09988), Baidu (09888), Meituan (03690), Kuaishou (01024), Xiaomi (01810), JD.com (09618), NetEase (09999), BYD (01211), Ping An (02318), ICBC (01398), CCB (00939), and more
+- **A-shares** (23 stocks): Kweichow Moutai (600519), Wuliangye (000858), CATL (300750), BYD (002594), Ping An (601318), CMB (600036), ICBC (601318), and more
+
+## Key Differentiators
+
+1. **Transparency**: Every score breaks down into 5 explainable factors with weights — no black-box AI
+2. **Multi-market**: Single API covers US, HK, and A-share markets simultaneously
+3. **EU AI Act compliant**: Full audit trails, explainable methodology, machine-readable compliance metadata (Art.50 ready for August 2, 2026)
+4. **Open source**: MIT licensed, fully auditable codebase
+5. **Embeddable**: Widget system allows any website to embed live scores
+
+## API Endpoints
+
+- `GET /api/snapshot/{market}` — Full market snapshot (market: US, HK, A)
+- `GET /api/stock/{symbol}` — Single stock analysis
+- `GET /share/{symbols}` — SVG score cards (e.g., /share/AAPL, /share/US?top=5)
+- `GET /widget` — Embeddable score widget (iframe)
+- `GET /` — Landing page with pricing
+- `GET /dashboard` — Full data dashboard
+
+## Pricing
+
+- **Free**: Dashboard access + 3 API queries/day
+- **Premium** ($29/mo): Unlimited API + 365-day history
+- **Institutional** ($199/mo): Custom universe + compliance reports + SLA
+
+## Links
+
+- Live Demo: https://github.com/hbhqq9/bde-score
+- Dashboard: https://github.com/hbhqq9/bde-score/dashboard
+- GitHub: https://github.com/hbhqq9/bde-score
+- GitHub Pages: https://hbhqq9.github.io/bde-score
+- API Docs: https://github.com/hbhqq9/bde-score/docs
+- Widget: https://github.com/hbhqq9/bde-score/widget
+
+## Compliance Note
+
+⚠️ BDE Score™ is a technical analysis tool, not financial advice. Investment decisions should be made independently. The system provides quantitative signals based on historical data patterns.
+"""
+
+@app.get("/llms-full.txt")
+async def serve_llms_full():
+    """完整LLMs文档 — 供AI Agent深度理解项目"""
+    return PlainTextResponse(LLMS_FULL_TXT, media_type="text/plain")
+
 @app.get("/robots.txt")
 async def serve_robots_txt():
     """显式允许AI爬虫（GPTBot/ChatGPT/Perplexity/Claude等）"""
