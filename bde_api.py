@@ -907,27 +907,11 @@ async def api_history(
 
 @app.get("/api/health")
 async def api_health():
-    """系统健康检查"""
-    import subprocess
-    
-    # FutuOpenD状态
-    result = subprocess.run(['pgrep', '-f', 'FutuOpenD'], capture_output=True, text=True)
-    futu_running = result.returncode == 0
-    
-    # 数据库状态
-    db_size = os.path.getsize(DB_PATH) if os.path.exists(DB_PATH) else 0
-    
-    # 缓存状态
-    cache_age = None
-    if _cache['timestamp']:
-        cache_age = round((datetime.now() - _cache['timestamp']).total_seconds())
-    
+    """系统健康检查 - 精简信息防止内部架构泄露"""
     return {
         'status': 'healthy',
         'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        'futu_opend': 'running' if futu_running else 'stopped',
-        'database': {'exists': os.path.exists(DB_PATH), 'size_bytes': db_size},
-        'cache': {'valid': _cache['data'] is not None, 'age_seconds': cache_age},
+        'version': '1.0.0',
     }
 
 
