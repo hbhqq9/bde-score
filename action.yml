@@ -1,0 +1,74 @@
+name: 'BDE Score™ Stock Analysis'
+description: 'EU AI Act Art.50 compliant transparency scoring for US/HK/A-share stocks'
+branding:
+  icon: 'trending-up'
+  color: 'blue'
+inputs:
+  market:
+    description: 'Market to analyze: US, HK, A, or ALL'
+    required: false
+    default: 'ALL'
+  min_score:
+    description: 'Minimum BDE Score threshold (0-100)'
+    required: false
+    default: '50'
+  api_url:
+    description: 'BDE Score API base URL'
+    required: false
+    default: 'https://atlantic-remains-atomic-floor.trycloudflare.com'
+outputs:
+  results:
+    description: 'Analysis results in JSON format'
+  top_picks:
+    description: 'Top scoring stocks above threshold'
+runs:
+  using: 'composite'
+  steps:
+    - name: Fetch BDE Score Analysis
+      id: analyze
+      shell: bash
+      run: |
+        echo "🔍 Running BDE Score™ analysis for market: ${{ inputs.market }}"
+        RESPONSE=$(curl -s "${{ inputs.api_url }}/api/analyze?market=${{ inputs.market }}")
+        
+        if [ $? -eq 0 ] && echo "$RESPONSE" | python3 -c "import sys,json; json.load(sys.stdin)" 2>/dev/null; then
+          echo "✅ Analysis completed successfully"
+          echo "results<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESPONSE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          # Extract top picks above threshold
+          TOP_PICKS=$(echo "$RESPONSE" | python3 -c "
+        import sys, json
+        data = json.load(sys.stdin)
+        stocks = data.get('stocks', data) if isinstance(data, dict) else data
+        if isinstance(stocks, list):
+            top = [s for s in stocks if s.get('bde_score', 0) >= float('${{ inputs.min_score }}')]
+            top.sort(key=lambda x: x.get('bde_score', 0), reverse=True)
+            for s in top[:10]:
+                print(f\"{s.get('symbol','?')}: {s.get('bde_score',0):.1f} ({s.get('signal','?')})\")
+        " 2>/dev/null)
+          
+          echo "top_picks<<EOF" >> $GITHUB_OUTPUT
+          echo "$TOP_PICKS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Analysis failed"
+          echo "results={\"error\": \"API request failed\"}" >> $GITHUB_OUTPUT
+          echo "top_picks=" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Display Results
+      shell: bash
+      run: |
+        echo "## 📊 BDE Score™ Analysis Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Market**: ${{ inputs.market }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Min Score**: ${{ inputs.min_score }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Top Picks" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        echo "${{ steps.analyze.outputs.top_picks }}" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "*EU AI Act Art.50 Compliant · Technical service, not financial advice*" >> $GITHUB_STEP_SUMMARY
