@@ -551,7 +551,7 @@ def fetch_via_futu(universe=None, days=120):
 
 
 def fetch_via_sina(universe=None, days=120):
-    """通过新浪财经获取数据（备用）- 支持美股/港股/A股"""
+    """通过新浪财经获取数据（备用）- 支持美股/A股, 港股历史K线暂不可用"""
     if universe is None:
         universe = DEFAULT_UNIVERSE
     import urllib.request
@@ -572,35 +572,54 @@ def fetch_via_sina(universe=None, days=120):
             code = futu_code.split('.')[1]
             
             if market == 'US':
-                # 美股: US.AAPL -> aapl
+                # 美股: US.AAPL -> JSONP API (confirmed working)
                 sina_sym = code.lower()
                 url = f'https://stock.finance.sina.com.cn/usstock/api/jsonp.php/var%20data=/US_MinKService.getDailyK?symbol={sina_sym}&scale=240&datalen={days}'
-            elif market == 'HK':
-                # 港股: HK.00700 -> rt_hk00700
-                sina_sym = f'rt_hk{code}'
-                url = f'https://stock.finance.sina.com.cn/hkstock/api/jsonp.php/var%20data=/HK_KlineService.getDailyK?symbol={code}&scale=240&datalen={days}'
+                req = urllib.request.Request(url, headers=headers)
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    text = resp.read().decode('utf-8')
+                    json_str = text[text.index('([') + 1:text.rindex('])') + 1]
+                    raw = json.loads(json_str)
+                    if raw and isinstance(raw[0], dict):
+                        df = pd.DataFrame([{
+                            'date': item.get('d', ''),
+                            'open': float(item.get('o', 0)),
+                            'high': float(item.get('h', 0)),
+                            'low': float(item.get('l', 0)),
+                            'close': float(item.get('c', 0)),
+                            'volume': float(item.get('v', 0)),
+                        } for item in raw[-days:]])  # limit to requested days
+                        all_klines[short_name] = df
+                        prices[short_name] = float(df.iloc[-1]['close'])
+            
             elif market in ('SH', 'SZ'):
-                # A股: SH.600519 -> sh600519
+                # A股: SH.600519 -> CN_MarketData API (confirmed working)
                 sina_sym = f'{market.lower()}{code}'
-                url = f'https://stock.finance.sina.com.cn/usstock/api/jsonp.php/var%20data=/CN_MinKService.getDailyK?symbol={sina_sym}&scale=240&datalen={days}'
+                url = f'https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol={sina_sym}&scale=240&ma=no&datalen={days}'
+                req = urllib.request.Request(url, headers=headers)
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    text = resp.read().decode('utf-8')
+                    raw = json.loads(text)
+                    if raw and isinstance(raw, list):
+                        df = pd.DataFrame([{
+                            'date': item.get('day', ''),
+                            'open': float(item.get('open', 0)),
+                            'high': float(item.get('high', 0)),
+                            'low': float(item.get('low', 0)),
+                            'close': float(item.get('close', 0)),
+                            'volume': float(item.get('volume', 0)),
+                        } for item in raw])
+                        all_klines[short_name] = df
+                        prices[short_name] = float(df.iloc[-1]['close'])
+            
+            elif market == 'HK':
+                # 港股: 历史K线API已下线，用实时行情+跳过
+                errors.append(f"{futu_code}: HK历史K线API暂不可用")
+                continue
+            
             else:
                 errors.append(f"{futu_code}: 未知市场{market}")
                 continue
-            
-            req = urllib.request.Request(url, headers=headers)
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                text = resp.read().decode('utf-8')
-                # 解析 JSONP
-                json_str = text[text.index('([') + 1:text.rindex('])') + 1]
-                raw = json.loads(json_str)
-                
-                if raw:
-                    df = pd.DataFrame(raw, columns=['date', 'open', 'high', 'low', 'close', 'volume'])
-                    for col in ['open', 'high', 'low', 'close']:
-                        df[col] = df[col].astype(float)
-                    df['volume'] = df['volume'].astype(float)
-                    all_klines[short_name] = df
-                    prices[short_name] = float(df.iloc[-1]['close'])
         except Exception as e:
             errors.append(f"{futu_code}: {e}")
     
