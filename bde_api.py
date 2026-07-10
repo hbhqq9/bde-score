@@ -30,7 +30,7 @@ from contextlib import contextmanager
 from collections import defaultdict
 
 from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 import uvicorn
@@ -956,6 +956,80 @@ async def api_market_status():
             }
         }
     }
+
+
+# ==================== GEO (Generative Engine Optimization) ====================
+
+LLMS_TXT = """# BDE Score™
+
+> AI-powered multi-market stock analysis with transparent multi-factor scoring. Covers 73 stocks across US, HK, and A-share markets. EU AI Act Art.50 compliant. Open source (MIT).
+
+## What is BDE Score™
+
+BDE Score™ is a quantitative stock scoring system that evaluates stocks across 5 independent factors: Momentum, Mean Reversion, Volume, Volatility, and Trend. Each stock receives a composite score (0-100) with signal classification: Bullish (>70), Neutral (40-70), Bearish (<40).
+
+## Coverage
+
+- US Markets (25 stocks): AAPL, MSFT, GOOG, AMZN, META, NVDA, AMD, AVGO, ARM, INTC, V, MA, JNJ, UNH, LLY, PFE, PG, KO, WMT, MCD, TSLA, NFLX, BABA, SPY, QQQ
+- HK Markets (26 stocks): Tencent (00700), Alibaba (09988), Baidu (09888), Meituan (03690), Kuaishou (01024), Xiaomi (01810), JD.com (09618), NetEase (09999), BYD (01211), Ping An (02318)
+- A-shares (23 stocks): Kweichow Moutai (600519), CATL (300750), BYD (002594), Ping An (601318), CMB (600036)
+
+## API Endpoints
+
+- GET /api/snapshot/{market} — Full market snapshot (US, HK, A)
+- GET /api/stock/{symbol} — Single stock analysis with 5-factor breakdown
+- GET /share/{symbols} — SVG score cards for social sharing
+- GET /widget — Embeddable score widget (iframe)
+- GET /dashboard — Full data dashboard
+
+## Pricing
+
+Free: Dashboard + 3 API queries/day | Premium: $29/mo (unlimited API) | Institutional: $199/mo (custom + compliance)
+
+## Links
+
+- GitHub: https://github.com/hbhqq9/bde-score
+- GitHub Pages: https://hbhqq9.github.io/bde-score
+- FAQ: https://hbhqq9.github.io/bde-score/faq
+
+## Compliance
+
+⚠️ Technical analysis tool only. Not financial advice. EU AI Act Art.50 compliant.
+"""
+
+@app.get("/llms.txt")
+async def serve_llms_txt():
+    """GEO入口 — AI搜索引擎发现协议"""
+    return PlainTextResponse(LLMS_TXT, media_type="text/plain")
+
+@app.get("/robots.txt")
+async def serve_robots_txt():
+    """显式允许AI爬虫（GPTBot/ChatGPT/Perplexity/Claude等）"""
+    robots = """User-agent: *
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+Sitemap: https://hbhqq9.github.io/bde-score/sitemap.xml
+LLMs: https://rebel-north-intermediate-roof.trycloudflare.com/llms.txt
+"""
+    return PlainTextResponse(robots, media_type="text/plain")
 
 
 # ============================================================
