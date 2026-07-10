@@ -33,7 +33,7 @@ We've published a comprehensive technical guide covering:
 ✅ Real case studies (TikTok, SaaS trap, automotive AI)
 
 📎 Full whitepaper: [Link]
-📎 Live BDE Score™ Dashboard: https://rebel-north-intermediate-roof.trycloudflare.com
+📎 Live BDE Score™ Dashboard: https://hbhqq9.github.io/bde-score
 
 **This is not legal advice.** This is technical readiness assessment.
 
@@ -72,7 +72,7 @@ We've published a comprehensive technical guide covering:
 - 3个真实案例分析
 
 📎 白皮书全文：[Link]
-📎 BDE Score™实时分析面板：https://rebel-north-intermediate-roof.trycloudflare.com
+📎 BDE Score™实时分析面板：https://hbhqq9.github.io/bde-score
 
 ⚠️ 本内容为技术服务，非法律建议。
 

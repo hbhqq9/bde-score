@@ -566,12 +566,17 @@ class PaymentActivator:
             同步数量
         """
         synced = 0
+        # 收集已有key的prefix集合，用于去重判断
+        existing_prefixes = {
+            entry.get('key_prefix')
+            for entry in key_manager.keys.values()
+        }
         for tx_hash, payment in self.payments.items():
             if payment.get('status') == 'activated' and payment.get('api_key'):
                 api_key = payment['api_key']
-                if api_key not in key_manager.keys:
-                    key_manager.keys[api_key] = {
-                        'key': api_key,
+                prefix = api_key[:8]
+                if prefix not in existing_prefixes:
+                    metadata = {
                         'tier': payment.get('tier', 'premium'),
                         'email': payment.get('email'),
                         'created_at': payment.get('activated_at'),
@@ -580,11 +585,12 @@ class PaymentActivator:
                         'tx_hash': tx_hash,
                         'from_address': payment.get('from_address'),
                     }
+                    key_manager.register_key_from_plaintext(api_key, metadata)
+                    existing_prefixes.add(prefix)
                     synced += 1
                     logger.info(f"同步Key到KeyManager: {api_key[:12]}... (tx: {tx_hash[:16]}...)")
 
         if synced > 0:
-            key_manager._save()
             logger.info(f"共步 {synced} 个Key到KeyManager")
 
         return synced

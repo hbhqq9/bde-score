@@ -296,16 +296,17 @@ class KeyManager:
                 migrated += 1
         
         if migrated > 0:
-            logger.warning(
+            _logger = logging.getLogger('bde_api')
+            _logger.warning(
                 f"🔑 API Key迁移完成：{migrated} 个明文key已转为bcrypt哈希存储"
             )
             # 写回迁移后的文件（明文key已清除）
             try:
                 with open(self.keys_file, 'w') as f:
                     json.dump(list(keys.values()), f, indent=2)
-                logger.info(f"✅ api_keys.json 已更新（明文key已清除）")
+                _logger.info(f"✅ api_keys.json 已更新（明文key已清除）")
             except Exception as e:
-                logger.error(f"❌ 迁移文件写入失败: {e}")
+                _logger.error(f"❌ 迁移文件写入失败: {e}")
         
         return keys
     
@@ -1313,6 +1314,421 @@ async def shutdown():
             await usdc_background_task
         except asyncio.CancelledError:
             pass
+
+
+# ============================================================
+# 📜 Legal Pages — Compliance Endpoints
+# ============================================================
+
+LEGAL_STYLE = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+body { font-family: 'Inter', system-ui, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 0; line-height: 1.8; }
+.legal-container { max-width: 800px; margin: 0 auto; padding: 60px 24px 80px; }
+.legal-header { border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 32px; margin-bottom: 40px; }
+.legal-header h1 { font-size: 2rem; font-weight: 700; color: #f1f5f9; margin: 0 0 8px; }
+.legal-header .subtitle { color: #64748b; font-size: 0.95rem; }
+.legal-header .effective { color: #3b82f6; font-size: 0.85rem; margin-top: 4px; }
+.legal-section { margin-bottom: 36px; }
+.legal-section h2 { font-size: 1.25rem; font-weight: 600; color: #f1f5f9; margin-bottom: 12px; border-left: 3px solid #3b82f6; padding-left: 12px; }
+.legal-section h3 { font-size: 1.05rem; font-weight: 600; color: #cbd5e1; margin: 20px 0 8px; }
+.legal-section p, .legal-section li { color: #94a3b8; font-size: 0.92rem; margin-bottom: 8px; }
+.legal-section ul { padding-left: 20px; }
+.legal-section li { margin-bottom: 6px; }
+.legal-highlight { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.15); border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+.legal-highlight p { color: #93c5fd; margin: 0; }
+.legal-warning { background: rgba(234,179,8,0.08); border: 1px solid rgba(234,179,8,0.15); border-radius: 8px; padding: 16px 20px; margin: 16px 0; }
+.legal-warning p { color: #fde68a; margin: 0; }
+.legal-footer { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 24px; margin-top: 48px; text-align: center; }
+.legal-footer a { color: #3b82f6; text-decoration: none; margin: 0 12px; font-size: 0.85rem; }
+.legal-footer a:hover { color: #60a5fa; }
+.legal-footer .copy { color: #475569; font-size: 0.8rem; margin-top: 12px; }
+.back-link { display: inline-block; color: #3b82f6; text-decoration: none; font-size: 0.9rem; margin-bottom: 24px; }
+.back-link:hover { color: #60a5fa; }
+</style>
+"""
+
+LEGAL_FOOTER_HTML = """
+<div class="legal-footer">
+  <a href="/">Home</a>
+  <a href="/terms">Terms of Service</a>
+  <a href="/privacy">Privacy Policy</a>
+  <a href="/legal">Legal Disclaimer</a>
+  <div class="copy">&copy; 2026 BDE Score&#8482;. All rights reserved.</div>
+</div>
+"""
+
+LEGAL_BACK_LINK = '<a href="/" class="back-link">&larr; Back to BDE Score&#8482;</a>'
+
+
+@app.get("/terms", response_class=HTMLResponse)
+async def terms_of_service():
+    """Terms of Service"""
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service &mdash; BDE Score&#8482;</title>
+{LEGAL_STYLE}
+</head>
+<body>
+<div class="legal-container">
+{LEGAL_BACK_LINK}
+
+<div class="legal-header">
+  <h1>Terms of Service</h1>
+  <div class="subtitle">BDE Score&#8482; &mdash; AI-Powered Technical Analysis Platform</div>
+  <div class="effective">Effective Date: June 1, 2026</div>
+</div>
+
+<div class="legal-section">
+  <h2>1. Nature of Service</h2>
+  <p>BDE Score&#8482; (&ldquo;the Service&rdquo;) is a <strong>technical analysis tool</strong> that provides quantitative scoring based on historical price data and mathematical models. The Service evaluates stocks using multi-factor algorithms including momentum, mean reversion, volume analysis, volatility measurement, and trend detection.</p>
+  <div class="legal-warning">
+    <p><strong>&#9888;&#65039; IMPORTANT:</strong> BDE Score&#8482; is <strong>NOT</strong> a financial service, investment advisor, broker, dealer, or custodian. We do not provide personalized investment recommendations or manage assets on your behalf.</p>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2>2. Acceptance of Terms</h2>
+  <p>By accessing or using the Service, you agree to be bound by these Terms. If you do not agree, do not use the Service. We reserve the right to modify these Terms at any time. Continued use after changes constitutes acceptance.</p>
+</div>
+
+<div class="legal-section">
+  <h2>3. No Warranty / &ldquo;As Is&rdquo; Basis</h2>
+  <p>The Service is provided on an <strong>&ldquo;AS IS&rdquo;</strong> and <strong>&ldquo;AS AVAILABLE&rdquo;</strong> basis without any warranties of any kind, either express or implied, including but not limited to:</p>
+  <ul>
+    <li>Accuracy or completeness of any scores, signals, or analysis</li>
+    <li>Availability or uptime of the platform</li>
+    <li>Merchantability or fitness for a particular purpose</li>
+    <li>Non-infringement of third-party rights</li>
+  </ul>
+  <p>You acknowledge that quantitative models have inherent limitations and past model performance does not guarantee future accuracy.</p>
+</div>
+
+<div class="legal-section">
+  <h2>4. Subscription &amp; Payment</h2>
+  <h3>4.1 Pricing</h3>
+  <ul>
+    <li><strong>Free Tier:</strong> $0 &mdash; Dashboard access + 3 API queries per day</li>
+    <li><strong>Premium:</strong> $29 USD/month &mdash; Unlimited API access, paid in USDC (Base chain)</li>
+    <li><strong>Institutional:</strong> $199 USD/month &mdash; Custom solutions, paid in USDC</li>
+  </ul>
+  <h3>4.2 Payment Method</h3>
+  <p>Premium subscriptions are paid exclusively in USDC (USD Coin) on the Base blockchain network. Upon confirmation of on-chain payment, an API key is generated and activated instantly.</p>
+  <h3>4.3 No Refund Policy</h3>
+  <div class="legal-highlight">
+    <p><strong>All payments are final and non-refundable.</strong> Because the API key is activated immediately upon payment confirmation and provides instant access to the service, no refunds can be issued. Please ensure you understand the service before subscribing.</p>
+  </div>
+  <h3>4.4 Subscription Termination</h3>
+  <p>Subscriptions are valid for one calendar month from activation. The Service does not auto-renew; you must send a new payment to continue access.</p>
+</div>
+
+<div class="legal-section">
+  <h2>5. Right to Terminate</h2>
+  <p>We reserve the right to suspend or terminate your access to the Service at our sole discretion, without notice, for conduct that we determine violates these Terms, is harmful to other users, or is harmful to the Service&rsquo;s reputation or integrity.</p>
+</div>
+
+<div class="legal-section">
+  <h2>6. Limitation of Liability</h2>
+  <p>In no event shall BDE Score&#8482;, its operators, affiliates, or contributors be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including but not limited to:</p>
+  <ul>
+    <li>Loss of profits, data, or investment capital</li>
+    <li>Trading losses or missed opportunities</li>
+    <li>Service interruptions or data inaccuracies</li>
+    <li>Any damages resulting from reliance on the Service&rsquo;s output</li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2>7. User Responsibilities</h2>
+  <ul>
+    <li>You are solely responsible for any investment decisions you make</li>
+    <li>You must not use the Service for any unlawful purpose</li>
+    <li>You must not attempt to reverse-engineer, copy, or redistribute the Service</li>
+    <li>You must not share your API key with unauthorized parties</li>
+    <li>You must comply with all applicable laws and regulations in your jurisdiction</li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2>8. Governing Law</h2>
+  <p>These Terms shall be governed by and construed in accordance with applicable international law. Any disputes arising from these Terms or the Service shall be resolved through good-faith negotiation. If negotiation fails, disputes shall be submitted to arbitration in a mutually agreed jurisdiction.</p>
+</div>
+
+<div class="legal-section">
+  <h2>9. Contact</h2>
+  <p>For questions regarding these Terms, please visit our GitHub repository or contact us through the waitlist form on our website.</p>
+  <p>GitHub: <a href="https://github.com/hbhqq9/bde-score" style="color:#3b82f6;">github.com/hbhqq9/bde-score</a></p>
+</div>
+
+{LEGAL_FOOTER_HTML}
+</div>
+</body>
+</html>"""
+    return HTMLResponse(content=html)
+
+
+@app.get("/privacy", response_class=HTMLResponse)
+async def privacy_policy():
+    """Privacy Policy &mdash; GDPR Compliant"""
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy &mdash; BDE Score&#8482;</title>
+{LEGAL_STYLE}
+</head>
+<body>
+<div class="legal-container">
+{LEGAL_BACK_LINK}
+
+<div class="legal-header">
+  <h1>Privacy Policy</h1>
+  <div class="subtitle">BDE Score&#8482; &mdash; Data Protection &amp; Privacy Practices</div>
+  <div class="effective">Effective Date: June 1, 2026 &middot; GDPR Compliant</div>
+</div>
+
+<div class="legal-section">
+  <h2>1. Data Controller</h2>
+  <p>BDE Score&#8482; (&ldquo;we&rdquo;, &ldquo;us&rdquo;, &ldquo;our&rdquo;) is the data controller for personal data collected through this service. This policy describes what data we collect, how we use it, and your rights under the General Data Protection Regulation (GDPR) and other applicable privacy laws.</p>
+</div>
+
+<div class="legal-section">
+  <h2>2. Data We Collect</h2>
+  <h3>2.1 Account Data</h3>
+  <ul>
+    <li><strong>Email address</strong> &mdash; collected during waitlist signup or payment confirmation, used solely for account identification and communication</li>
+    <li><strong>Payment records</strong> &mdash; blockchain transaction hashes (tx_hash), wallet addresses, payment amounts, and timestamps; recorded to verify subscription status</li>
+  </ul>
+  <h3>2.2 Usage Data</h3>
+  <ul>
+    <li><strong>API usage logs</strong> &mdash; request timestamps, IP addresses (for rate limiting), and query parameters; retained for 30 days for abuse prevention</li>
+    <li><strong>API key metadata</strong> &mdash; key creation date, tier level, and active/inactive status</li>
+  </ul>
+  <h3>2.3 Data We Do NOT Collect</h3>
+  <ul>
+    <li>No cookies or tracking pixels</li>
+    <li>No browser fingerprinting</li>
+    <li>No third-party analytics (no Google Analytics, no Mixpanel)</li>
+    <li>No personal identification beyond email address</li>
+    <li>No device information or location data</li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2>3. Purpose of Data Collection</h2>
+  <p>We collect data exclusively for the following purposes:</p>
+  <ul>
+    <li><strong>Service delivery</strong> &mdash; providing API access, verifying payments, managing subscriptions</li>
+    <li><strong>Abuse prevention</strong> &mdash; rate limiting, detecting unauthorized access, preventing fraud</li>
+    <li><strong>Communication</strong> &mdash; sending subscription confirmations and service-related notices</li>
+  </ul>
+  <div class="legal-highlight">
+    <p><strong>Legal basis (GDPR Art.6):</strong> Processing is necessary for the performance of a contract (providing the subscribed service) and for our legitimate interest in preventing abuse.</p>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2>4. Data Storage &amp; Security</h2>
+  <ul>
+    <li>All data is stored <strong>locally on our own servers</strong> &mdash; no cloud third-party data processors</li>
+    <li>Data is stored in encrypted SQLite databases with file-level access controls</li>
+    <li>API keys are generated using cryptographically secure random number generation</li>
+    <li>All connections are encrypted via TLS 1.3 (enforced by Cloudflare Tunnel with HSTS)</li>
+    <li>No data is transferred outside the European Economic Area (EEA)</li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2>5. Data Sharing</h2>
+  <div class="legal-warning">
+    <p><strong>We do NOT share, sell, or disclose your personal data to any third party.</strong> This includes advertisers, analytics providers, data brokers, or any other external entity. Your data stays with us.</p>
+  </div>
+  <p>The only exception is if required by law (e.g., a valid court order), in which case we will notify you unless legally prohibited.</p>
+</div>
+
+<div class="legal-section">
+  <h2>6. Your Rights (GDPR)</h2>
+  <p>Under the GDPR, you have the following rights regarding your personal data:</p>
+  <ul>
+    <li><strong>Right of Access (Art.15)</strong> &mdash; request a copy of all data we hold about you</li>
+    <li><strong>Right to Rectification (Art.16)</strong> &mdash; correct inaccurate data</li>
+    <li><strong>Right to Erasure (Art.17)</strong> &mdash; request deletion of all your data (&ldquo;right to be forgotten&rdquo;)</li>
+    <li><strong>Right to Restrict Processing (Art.18)</strong> &mdash; limit how we use your data</li>
+    <li><strong>Right to Data Portability (Art.20)</strong> &mdash; receive your data in a machine-readable format</li>
+    <li><strong>Right to Object (Art.21)</strong> &mdash; object to processing of your data</li>
+  </ul>
+  <div class="legal-highlight">
+    <p><strong>To exercise any of these rights</strong>, contact us via the email address below. We will respond within 30 days and fulfill your request at no cost.</p>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2>7. Cookie Policy</h2>
+  <div class="legal-highlight">
+    <p><strong>We do NOT use cookies.</strong> BDE Score&#8482; does not set any cookies &mdash; neither session cookies, persistent cookies, nor third-party cookies. Our service works entirely without cookie-based tracking.</p>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2>8. Data Retention</h2>
+  <ul>
+    <li><strong>Email addresses:</strong> retained for the duration of your subscription + 90 days after expiration</li>
+    <li><strong>Payment records:</strong> retained for 1 year for audit purposes, then permanently deleted</li>
+    <li><strong>API usage logs:</strong> retained for 30 days, then automatically purged</li>
+    <li><strong>Analysis data:</strong> aggregate stock analysis results (not personal data) may be retained indefinitely</li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2>9. Children&rsquo;s Privacy</h2>
+  <p>The Service is not directed at individuals under the age of 18. We do not knowingly collect data from minors. If you believe a minor has provided us with personal data, please contact us for immediate deletion.</p>
+</div>
+
+<div class="legal-section">
+  <h2>10. Changes to This Policy</h2>
+  <p>We may update this Privacy Policy from time to time. Material changes will be communicated via our website. Continued use after changes constitutes acceptance of the updated policy.</p>
+</div>
+
+<div class="legal-section">
+  <h2>11. Contact &amp; Data Protection</h2>
+  <p>For privacy-related inquiries, data requests, or complaints:</p>
+  <ul>
+    <li>GitHub: <a href="https://github.com/hbhqq9/bde-score" style="color:#3b82f6;">github.com/hbhqq9/bde-score</a></li>
+    <li>Waitlist form: Available on our homepage</li>
+  </ul>
+  <p style="margin-top:12px;">We are committed to resolving any privacy concerns promptly. If you are unsatisfied with our response, you have the right to lodge a complaint with your local Data Protection Authority.</p>
+</div>
+
+{LEGAL_FOOTER_HTML}
+</div>
+</body>
+</html>"""
+    return HTMLResponse(content=html)
+
+
+@app.get("/legal", response_class=HTMLResponse)
+async def legal_disclaimer():
+    """Legal Disclaimer &mdash; SEC + EU AI Act"""
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal Disclaimer &mdash; BDE Score&#8482;</title>
+{LEGAL_STYLE}
+</head>
+<body>
+<div class="legal-container">
+{LEGAL_BACK_LINK}
+
+<div class="legal-header">
+  <h1>Legal Disclaimer</h1>
+  <div class="subtitle">BDE Score&#8482; &mdash; Regulatory Disclosures &amp; Risk Warnings</div>
+  <div class="effective">Effective Date: June 1, 2026</div>
+</div>
+
+<div class="legal-section">
+  <div class="legal-warning">
+    <p><strong>&#9888;&#65039; READ CAREFULLY:</strong> This page contains important legal disclosures about BDE Score&#8482;. By using this service, you acknowledge and agree to all statements on this page.</p>
+  </div>
+</div>
+
+<div class="legal-section">
+  <h2>1. SEC Disclaimer &mdash; Not Investment Advice</h2>
+  <div class="legal-warning">
+    <p><strong>BDE Score&#8482; is NOT registered with the U.S. Securities and Exchange Commission (SEC)</strong> as an investment adviser, broker-dealer, transfer agent, or any other regulated financial entity.</p>
+  </div>
+  <ul>
+    <li>BDE Score&#8482; does <strong>NOT</strong> provide investment advice or recommendations</li>
+    <li>BDE Score&#8482; does <strong>NOT</strong> offer securities for sale or purchase</li>
+    <li>BDE Score&#8482; does <strong>NOT</strong> act as a broker, dealer, custodian, or intermediary in any financial transaction</li>
+    <li>BDE Score&#8482; does <strong>NOT</strong> manage assets, hold funds, or execute trades on behalf of users</li>
+    <li>BDE Score&#8482; scores and signals are <strong>mathematical outputs of an algorithmic model</strong>, not professional financial advice</li>
+  </ul>
+  <p>No content on this platform constitutes a solicitation or offer to buy or sell any security. All analysis is provided for informational and educational purposes only.</p>
+  <p style="margin-top:12px;">If you are uncertain about any investment decision, please consult a licensed financial advisor registered with the SEC or your local regulatory authority.</p>
+</div>
+
+<div class="legal-section">
+  <h2>2. EU AI Act &mdash; Art.50 Transparency Declaration</h2>
+  <div class="legal-highlight">
+    <p><strong>AI-Generated Content Disclosure (EU AI Act Article 50):</strong></p>
+    <p style="margin-top:8px;">All scores, signals, rankings, and analytical outputs produced by BDE Score&#8482; are <strong>generated by an artificial intelligence system</strong>. They do not represent human judgment, professional analysis, or personalized financial advice.</p>
+  </div>
+  <p>In compliance with Article 50 of the EU AI Act (Regulation (EU) 2024/1689), BDE Score&#8482; discloses the following:</p>
+  <ul>
+    <li><strong>AI System Type:</strong> Rule-based multi-factor quantitative model (not a generative AI or large language model)</li>
+    <li><strong>Methodology:</strong> Composite scoring from 5 independent factors &mdash; Momentum, Mean Reversion, Volume Profile, Volatility Regime, and Trend Strength &mdash; each computed using established quantitative finance techniques</li>
+    <li><strong>Data Inputs:</strong> Historical daily OHLCV (Open, High, Low, Close, Volume) price data from public market feeds</li>
+    <li><strong>Output Nature:</strong> Numerical scores (0&ndash;100) and categorical signals (Bullish/Neutral/Bearish) based on deterministic mathematical formulas</li>
+    <li><strong>Human Oversight:</strong> No human reviews or modifies individual scores; the system operates autonomously</li>
+    <li><strong>Limitations:</strong> The model cannot predict future prices, account for fundamental factors (earnings, management quality, macro events), or adapt to black swan events</li>
+  </ul>
+  <p style="margin-top:12px;">Users within the EU/EEA are reminded that AI-generated analysis should not be the sole basis for any financial decision.</p>
+</div>
+
+<div class="legal-section">
+  <h2>3. Risk Disclosure</h2>
+  <div class="legal-warning">
+    <p><strong>&#9888;&#65039; INVESTMENT INVOLVES RISK, INCLUDING POSSIBLE LOSS OF PRINCIPAL.</strong></p>
+  </div>
+  <ul>
+    <li><strong>Past performance does not guarantee future results.</strong> Historical price patterns may not repeat.</li>
+    <li><strong>Quantitative models have limitations.</strong> Models are simplifications of reality and may fail during unusual market conditions, liquidity crises, or structural market changes.</li>
+    <li><strong>Markets can be irrational.</strong> Stock prices are influenced by countless factors including human psychology, geopolitics, natural disasters, and regulatory changes &mdash; none of which are fully captured by technical analysis.</li>
+    <li><strong>No strategy is risk-free.</strong> All investment strategies carry the risk of loss. You should only invest capital you can afford to lose.</li>
+    <li><strong>Cross-market risks.</strong> Investing in foreign markets (HK, A-shares) involves additional risks including currency fluctuation, political instability, and different regulatory environments.</li>
+    <li><strong>Cryptocurrency payment risks.</strong> USDC, while pegged to the US Dollar, is a digital asset. Transaction finality on blockchain means payments cannot be reversed. Users bear all responsibility for sending correct payment amounts to correct addresses.</li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2>4. Not a Broker, Dealer, or Custodian</h2>
+  <p>BDE Score&#8482; explicitly states that it:</p>
+  <ul>
+    <li>Is <strong>NOT</strong> a broker or dealer as defined under the Securities Exchange Act of 1934</li>
+    <li>Is <strong>NOT</strong> an investment adviser registered under the Investment Advisers Act of 1940</li>
+    <li>Is <strong>NOT</strong> a custodian of any client funds or securities</li>
+    <li>Is <strong>NOT</strong> a member of FINRA, SIPC, or any other securities regulatory organization</li>
+    <li>Does <strong>NOT</strong> have the authority to execute trades, manage portfolios, or provide suitability determinations</li>
+  </ul>
+  <p style="margin-top:12px;">BDE Score&#8482; is a <strong>software-as-a-service (SaaS) product</strong> that provides data analysis tools. The relationship between BDE Score&#8482; and its users is strictly that of a software provider and end user.</p>
+</div>
+
+<div class="legal-section">
+  <h2>5. Third-Party Data</h2>
+  <p>Market data displayed through BDE Score&#8482; is sourced from third-party providers (FutuOpenD, Sina Finance). We do not guarantee the accuracy, timeliness, or completeness of this data. Data may be delayed, incomplete, or subject to errors. Users should verify critical data from primary exchange sources.</p>
+</div>
+
+<div class="legal-section">
+  <h2>6. Jurisdictional Compliance</h2>
+  <p>Users are responsible for ensuring that their use of BDE Score&#8482; complies with the laws and regulations of their respective jurisdictions. Some jurisdictions may restrict or prohibit the use of algorithmic analysis tools or cryptocurrency payments. BDE Score&#8482; makes no representation regarding the legality of its use in any specific jurisdiction.</p>
+</div>
+
+<div class="legal-section">
+  <h2>7. Indemnification</h2>
+  <p>By using BDE Score&#8482;, you agree to indemnify, defend, and hold harmless BDE Score&#8482;, its operators, and contributors from any claims, losses, liabilities, damages, or expenses (including legal fees) arising from:</p>
+  <ul>
+    <li>Your use of the Service or reliance on its outputs</li>
+    <li>Your violation of these disclaimers or applicable laws</li>
+    <li>Your investment decisions made based on the Service&rsquo;s analysis</li>
+  </ul>
+</div>
+
+<div class="legal-section">
+  <h2>8. Severability</h2>
+  <p>If any provision of this disclaimer is found to be unenforceable, the remaining provisions shall continue in full force and effect. The unenforceable provision shall be modified to the minimum extent necessary to make it enforceable while preserving its original intent.</p>
+</div>
+
+{LEGAL_FOOTER_HTML}
+</div>
+</body>
+</html>"""
+    return HTMLResponse(content=html)
 
 
 if __name__ == '__main__':
