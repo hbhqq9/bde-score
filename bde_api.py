@@ -158,15 +158,20 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
-        response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
         response.headers["Pragma"] = "no-cache"
-        # CORS: 仅允许同源 + Cloudflare
-        response.headers["Access-Control-Allow-Origin"] = "*"  # Dashboard需要跨域; 生产环境应限制
-        response.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        # 🔌 /widget 和 /embed 路径允许iframe嵌入（零账号分发机制）
+        if request.url.path in ('/widget', '/embed/snippet'):
+            response.headers["X-Frame-Options"] = "ALLOWALL"
+            response.headers["Content-Security-Policy"] = "frame-ancestors *"
+        else:
+            response.headers["X-Frame-Options"] = "DENY"
+        # CORS
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-API-Key"
         return response
 
 app.add_middleware(SecurityHeadersMiddleware)
@@ -580,6 +585,33 @@ async def dashboard():
     template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates', 'dashboard.html')
     with open(template_path, 'r', encoding='utf-8') as f:
         return f.read()
+
+@app.get("/widget", response_class=HTMLResponse)
+async def widget():
+    """🔌 可嵌入分数卡片 — 零账号分发机制
+    任何人复制这行即可嵌入自己的网站/博客/论坛：
+    <iframe src="https://YOUR_URL/widget" width="420" height="420" frameborder="0"></iframe>
+    """
+    widget_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'widget', 'score-widget.html')
+    with open(widget_path, 'r', encoding='utf-8') as f:
+        html = f.read()
+    return HTMLResponse(
+        content=html,
+        headers={
+            "X-Frame-Options": "ALLOWALL",  # 🔓 允许任意网站iframe嵌入
+            "Content-Security-Policy": "frame-ancestors *",
+        }
+    )
+
+@app.get("/embed/snippet")
+async def embed_snippet():
+    """获取嵌入代码片段（用于分享）"""
+    return {
+        "iframe": '<iframe src="https://rebel-north-intermediate-roof.trycloudflare.com/widget" width="420" height="420" frameborder="0" style="border-radius:12px;overflow:hidden;"></iframe>',
+        "markdown": "[![BDE Score](https://rebel-north-intermediate-roof.trycloudflare.com/widget)](https://rebel-north-intermediate-roof.trycloudflare.com)",
+        "badge": "[![BDE Score](https://img.shields.io/badge/BDE-Score-blue)](https://rebel-north-intermediate-roof.trycloudflare.com)",
+        "description": "Embed BDE Score™ live scores on your website. Copy the iframe code above."
+    }
 
 @app.post("/api/waitlist")
 async def add_waitlist(request: Request):

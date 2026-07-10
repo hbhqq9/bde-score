@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #e2e8f0; padding: 20px; }
+.widget { max-width: 400px; margin: 0 auto; }
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.logo { font-size: 18px; font-weight: 700; color: #f1f5f9; }
+.badge { background: #1e40af; color: #93c5fd; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+.stock-card { background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 14px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+.stock-name { font-weight: 600; font-size: 14px; }
+.stock-market { font-size: 11px; color: #64748b; }
+.score { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.score.bullish { color: #22c55e; }
+.score.neutral { color: #eab308; }
+.score.bearish { color: #ef4444; }
+.signal { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+.signal.buy { color: #22c55e; }
+.signal.hold { color: #eab308; }
+.signal.avoid { color: #ef4444; }
+.footer { text-align: center; margin-top: 12px; font-size: 11px; color: #475569; }
+.footer a { color: #3b82f6; text-decoration: none; }
+.loading { text-align: center; padding: 40px; color: #64748b; }
+</style>
+</head>
+<body>
+<div class="widget">
+  <div class="header">
+    <span class="logo">📊 BDE Score™</span>
+    <span class="badge">LIVE</span>
+  </div>
+  <div id="content" class="loading">Loading scores...</div>
+  <div class="footer">
+    Powered by <a href="https://rebel-north-intermediate-roof.trycloudflare.com" target="_blank">BDE Score™</a> · Not financial advice
+  </div>
+</div>
+
+<script>
+const SYMBOLS = ['AAPL', 'NVDA', 'TSLA', 'MSFT', 'GOOG'];
+const API = 'https://rebel-north-intermediate-roof.trycloudflare.com/api/snapshot';
+
+function getSignal(score) {
+  if (score >= 70) return { label: 'BULLISH', cls: 'buy', scoreCls: 'bullish' };
+  if (score >= 40) return { label: 'NEUTRAL', cls: 'hold', scoreCls: 'neutral' };
+  return { label: 'BEARISH', cls: 'avoid', scoreCls: 'bearish' };
+}
+
+async function load() {
+  try {
+    const resp = await fetch(API + '?market=US');
+    const data = await resp.json();
+    const results = data.results || [];
+    const top = results.slice(0, 5);
+    
+    let html = '';
+    top.forEach(r => {
+      const score = Math.round(r.bde_score || 0);
+      const signal = getSignal(score);
+      html += `
+        <div class="stock-card">
+          <div>
+            <div class="stock-name">${r.symbol}</div>
+            <div class="stock-market">${r.market || 'US'}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="score ${signal.scoreCls}">${score}</div>
+            <div class="signal ${signal.cls}">${signal.label}</div>
+          </div>
+        </div>`;
+    });
+    document.getElementById('content').innerHTML = html;
+  } catch (e) {
+    document.getElementById('content').innerHTML = '<div style="text-align:center;padding:20px;color:#64748b;">Temporarily unavailable</div>';
+  }
+}
+
+load();
+setInterval(load, 300000); // Refresh every 5 min
+</script>
+</body>
+</html>
