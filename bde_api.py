@@ -198,16 +198,37 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # 🔒 HSTS（强制HTTPS，1年有效期，含子域名）
         response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
         # 🔒 Inject disclaimer into all JSON analysis responses
-        if (isinstance(response, JSONResponse)
-                and request.url.path.startswith('/api/')
+        if (request.url.path.startswith('/api/')
+                and 'application/json' in response.headers.get('content-type', '')
                 and request.url.path not in ('/api/health', '/api/keys/list', '/api/payment/config', '/api/payment/chain-status')):
             try:
-                body = json.loads(response.body)
+                # Read the streamed body
+                body_chunks = []
+                async for chunk in response.body_iterator:
+                    body_chunks.append(chunk if isinstance(chunk, bytes) else chunk.encode('utf-8'))
+                raw_body = b''.join(body_chunks)
+                
+                body = json.loads(raw_body)
                 if isinstance(body, dict) and 'disclaimer' not in body:
                     body['disclaimer'] = '⚠️ Technical analysis only. Not investment advice. Past performance does not guarantee future results.'
                     new_body = json.dumps(body, default=safe_json_default).encode('utf-8')
-                    response.body = new_body
-                    response.headers['content-length'] = str(len(new_body))
+                    # Rebuild response with modified body
+                    from starlette.responses import Response as StarletteResponse
+                    return StarletteResponse(
+                        content=new_body,
+                        status_code=response.status_code,
+                        headers={**dict(response.headers), 'content-length': str(len(new_body))},
+                        media_type='application/json'
+                    )
+                else:
+                    # No modification needed, return response with original body
+                    from starlette.responses import Response as StarletteResponse
+                    return StarletteResponse(
+                        content=raw_body,
+                        status_code=response.status_code,
+                        headers={**dict(response.headers), 'content-length': str(len(raw_body))},
+                        media_type='application/json'
+                    )
             except Exception:
                 pass  # Don't break responses if injection fails
         return response
