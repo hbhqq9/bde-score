@@ -1,65 +1,47 @@
 # BDE Score™
 
-> AI-powered multi-market stock analysis with transparent multi-factor scoring. Covers 73 stocks across US, HK, and A-share markets. EU AI Act Art.50 compliant. Open source (MIT).
+> Open-source multi-factor stock analysis covering 74 stocks across US, HK, and China A-share markets.
 
-## What is BDE Score™
+## Key Features
 
-BDE Score™ is a quantitative stock scoring system that evaluates stocks across 5 independent factors:
-- **Momentum**: Price momentum and rate of change
-- **Mean Reversion**: Distance from statistical mean, oversold/overbought signals
-- **Volume**: Trading volume patterns and money flow
-- **Volatility**: Risk-adjusted returns and volatility regime
-- **Trend**: Moving average alignment and trend strength
-
-Each stock receives a composite score (0-100) with signal classification: Bullish (>70), Neutral (40-70), Bearish (<40).
-
-## Coverage
-
-- **US Markets** (25 stocks): AAPL, MSFT, GOOG, AMZN, META, NVDA, AMD, AVGO, ARM, INTC, V, MA, JNJ, UNH, LLY, PFE, PG, KO, WMT, MCD, TSLA, NFLX, BABA, SPY, QQQ
-- **HK Markets** (26 stocks): Tencent (00700), Alibaba (09988), Baidu (09888), Meituan (03690), Kuaishou (01024), Xiaomi (01810), JD.com (09618), NetEase (09999), BYD (01211), Ping An (02318), ICBC (01398), CCB (00939), and more
-- **A-shares** (23 stocks): Kweichow Moutai (600519), Wuliangye (000858), CATL (300750), BYD (002594), Ping An (601318), CMB (600036), ICBC (601318), and more
-
-## Key Differentiators
-
-1. **Transparency**: Every score breaks down into 5 explainable factors with weights — no black-box AI
-2. **Multi-market**: Single API covers US, HK, and A-share markets simultaneously
-3. **EU AI Act compliant**: Full audit trails, explainable methodology, machine-readable compliance metadata (Art.50 ready for August 2, 2026)
-4. **Open source**: MIT licensed, fully auditable codebase
-5. **Embeddable**: Widget system allows any website to embed live scores
-
-## API Endpoints
-
-- `GET /api/quote/{symbol}` — Real-time stock analysis with BDE Score breakdown
-- `GET /api/health` — System health check
-- `POST /api/keys/create` — Create API key for authenticated access
+- Multi-factor scoring: fundamentals, technicals, risk, sentiment
+- Zero registration API access
+- shields.io compatible dynamic badges
+- GitHub Action for CI/CD integration
+- EU AI Act Art.50 compliant transparency labels
+- USDC payment on Base Chain (1 USDC = 1 year, 2,592,000 API calls)
 
 ## Quick Start
 
 ```bash
-# Get analysis for Apple
-curl "https://atlantic-remains-atomic-floor.trycloudflare.com/api/quote/AAPL"
+# All markets
+curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?market=ALL
 
-# Get analysis for Tencent (HK)
-curl "https://atlantic-remains-atomic-floor.trycloudflare.com/api/quote/00700"
+# US market
+curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?market=US
 
-# Get analysis for Kweichow Moutai (A-share)
-curl "https://atlantic-remains-atomic-floor.trycloudflare.com/api/quote/600519"
+# Individual stock
+curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?symbol=AAPL
 ```
 
-## Related Projects
+## API Documentation
 
-- [NeuroBridge](https://github.com/hbhqq9/neurobridge) — VLA-to-SNN interface for physical AI
-- [IPO Compliance](https://github.com/hbhqq9/ipo-compliance) — IPO regulatory compliance toolkit
+- [API Docs](https://atlantic-remains-atomic-floor.trycloudflare.com/docs) - Full API documentation
+- [Health Check](https://atlantic-remains-atomic-floor.trycloudflare.com/api/health) - Service status
+- [Market Status](https://atlantic-remains-atomic-floor.trycloudflare.com/api/market-status) - Market hours
 
-## Compliance & Legal
+## Supported Stocks
 
-- [Terms of Service](https://atlantic-remains-atomic-floor.trycloudflare.com/terms)
-- [Privacy Policy](https://atlantic-remains-atomic-floor.trycloudflare.com/privacy)
-- [Legal Disclaimer](https://atlantic-remains-atomic-floor.trycloudflare.com/legal)
-- Investment analysis is for informational purposes only. Not financial advice.
+- US Market: 25 stocks (AAPL, GOOGL, MSFT, NVDA, TSLA, META, AMZN, etc.)
+- HK Market: 26 stocks (Tencent, Alibaba, Meituan, Xiaomi, BYD, etc.)
+- A-Share Market: 23 stocks (Moutai, Ping An, CATL, Midea, etc.)
 
 ## Links
 
 - [GitHub Repository](https://github.com/hbhqq9/bde-score)
-- [GitHub Pages](https://hbhqq9.github.io/bde-score/)
-- [Full Documentation](/llms-full.txt)
+- [Release Notes](https://github.com/hbhqq9/bde-score/releases)
+- [Dev.to Article](https://dev.to/hbhqq9/bde-score-open-source-multi-factor-stock-analysis-tool-covering-us-hk-a-share-markets-2p2j)
+
+## License
+
+MIT License. Not investment advice.
