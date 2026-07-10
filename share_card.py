@@ -101,7 +101,7 @@ def generate_svg_card(results, title="BDE Score™", subtitle=""):
   <!-- Footer -->
   <line x1="24" y1="{footer_y}" x2="{card_width - 24}" y2="{footer_y}" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
   <text x="{card_width // 2}" y="{footer_y + 28}" font-family="system-ui,sans-serif" font-size="11" fill="#475569" text-anchor="middle">BDE Score™ · AI-Powered Multi-Market Analysis</text>
-  <text x="{card_width // 2}" y="{footer_y + 48}" font-family="system-ui,sans-serif" font-size="10" fill="#3b82f6" text-anchor="middle">rebel-north-intermediate-roof.trycloudflare.com</text>
+  <text x="{card_width // 2}" y="{footer_y + 48}" font-family="system-ui,sans-serif" font-size="10" fill="#3b82f6" text-anchor="middle">atlantic-remains-atomic-floor.trycloudflare.com</text>
   <text x="{card_width // 2}" y="{footer_y + 68}" font-family="system-ui,sans-serif" font-size="9" fill="#374151" text-anchor="middle">⚠️ Technical analysis only. Not financial advice.</text>
 </svg>'''
     
