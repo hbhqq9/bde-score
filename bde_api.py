@@ -211,6 +211,13 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                 body = json.loads(raw_body)
                 if isinstance(body, dict) and 'disclaimer' not in body:
                     body['disclaimer'] = '⚠️ Technical analysis only. Not investment advice. Past performance does not guarantee future results.'
+                # 🔗 Discovery: Cross-project ecosystem promotion
+                if isinstance(body, dict) and 'discover' not in body:
+                    body['discover'] = {
+                        'neurobridge': {'desc': 'Physical AI Protocol Layer', 'url': 'https://github.com/hbhqq9/neurobridge'},
+                        'ipo_compliance': {'desc': 'Pre-IPO Compliance Diagnostics', 'url': 'https://github.com/hbhqq9/ipo-compliance'},
+                        'landing': 'https://hbhqq9.github.io/bde-score/'
+                    }
                     new_body = json.dumps(body, default=safe_json_default).encode('utf-8')
                     # Rebuild response with modified body
                     from starlette.responses import Response as StarletteResponse
