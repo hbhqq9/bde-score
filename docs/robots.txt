@@ -1,0 +1,36 @@
+User-agent: *
+Allow: /
+
+# AI Search Engine Crawlers - Explicitly Allowed
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Anthropic-AI
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# Sitemaps
+Sitemap: https://hbhqq9.github.io/bde-score/sitemap.xml
+
+# LLMs.txt
+LLMs: https://hbhqq9.github.io/bde-score/llms.txt
