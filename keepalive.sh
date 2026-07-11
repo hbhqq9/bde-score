@@ -35,4 +35,22 @@ check_and_restart "BDE-API" "bde_api.py" \
 check_and_restart "Cloudflare-Tunnel" "cloudflared" \
     "nohup cloudflared tunnel --url http://127.0.0.1:8890 > /tmp/cloudflared.log 2>&1 &"
 
+# 4. MCP HTTP Server (Remote MCP endpoint - port 8891)
+check_and_restart "MCP-HTTP-Server" "mcp_http_server.py" \
+    "cd $BDE_DIR && nohup python3 mcp/mcp_http_server.py > /tmp/mcp_http.log 2>&1 &"
+
+# 5. MCP Cloudflare Tunnel (separate tunnel for MCP server on port 8891)
+MCP_TUNNEL_COUNT=$(pgrep -f "cloudflared.*8891" | wc -l)
+if [ "$MCP_TUNNEL_COUNT" -eq 0 ]; then
+    echo "[$(date)] MCP-Tunnel stopped, restarting..." >> "$LOG"
+    nohup cloudflared tunnel --url http://localhost:8891 > /tmp/mcp_tunnel.log 2>&1 &
+    sleep 3
+    if pgrep -f "cloudflared.*8891" > /dev/null 2>&1; then
+        NEW_URL=$(grep -o "https://[^ ]*trycloudflare.com" /tmp/mcp_tunnel.log | tail -1)
+        echo "[$(date)] MCP-Tunnel restarted: $NEW_URL" >> "$LOG"
+    else
+        echo "[$(date)] MCP-Tunnel restart FAILED" >> "$LOG"
+    fi
+fi
+
 echo "[$(date)] 守护检查完成 (FutuOpenD: $(pgrep -c -f FutuOpenD)进程, BDE-API: $(pgrep -c -f bde_api.py)进程, CF-Tunnel: $(pgrep -c -f cloudflared)进程)" >> "$LOG"
