@@ -100,20 +100,45 @@ BDE Score is directly callable by AI agents — no registration, no API keys.
 
 | Protocol | Platform | Status |
 |----------|----------|--------|
-| **MCP** | Claude Desktop, Cursor, Windsurf | ✅ Ready |
+| **MCP** | Claude Desktop, Cursor, Windsurf, Cline | ✅ Ready |
 | **LangChain** | Any LangChain agent | ✅ Ready |
 | **OpenAI Functions** | ChatGPT plugins, GPTs | ✅ Schema ready |
 
-```python
-# LangChain
-from bde_score_langchain import get_bde_tools
-tools = get_bde_tools()
+### MCP Quick Install
 
-# MCP (Claude Desktop)
-# Add to claude_desktop_config.json — see mcp/README.md
+```bash
+# Claude Code
+claude mcp add bde-score -- python /path/to/bde-score/mcp/bde_score_mcp.py
+
+# Or add to claude_desktop_config.json
+{
+  "mcpServers": {
+    "bde-score": {
+      "command": "python",
+      "args": ["/path/to/bde-score/mcp/bde_score_mcp.py"]
+    }
+  }
+}
 ```
 
-Full guide: [mcp/README.md](mcp/README.md)
+### Tools
+
+| Tool | Description |
+|------|-------------|
+| `get_bde_score` | Comprehensive BDE scoring (fundamental + technical + ESG) |
+| `get_multi_market_comparison` | Cross-market comparison (US/HK/CN) |
+| `get_stock_screener` | Screen stocks by BDE criteria |
+| `get_esg_analysis` | ESG analysis for a stock |
+| `get_sector_analysis` | Sector-level analysis |
+
+### LangChain
+
+```python
+from bde_score_langchain import get_bde_tools
+tools = get_bde_tools()
+```
+
+Full guide: [mcp/README.md](mcp/README.md) · AI Agent install: [llms-install.md](llms-install.md)
 
 ## 🛠 Tech Stack
 
