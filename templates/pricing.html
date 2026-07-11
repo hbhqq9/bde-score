@@ -324,6 +324,7 @@
             currentLang = lang;
             document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
             document.querySelectorAll('.lang-btn').forEach(b => { b.className = 'lang-btn px-2 py-1 text-xs rounded ' + (b.textContent.trim() === ({zh:'中',en:'EN',ja:'日'}[lang]) ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-300'); });
+            localStorage.setItem('bde_lang', lang);
         }
 
         function selectTier(tier) {
@@ -334,6 +335,13 @@
         function closeModal() {
             document.getElementById('purchaseModal').classList.add('hidden');
         }
+
+        
+        // Init: restore language preference
+        const savedLang = localStorage.getItem('bde_lang');
+        const browserLang = navigator.language.startsWith('zh') ? 'zh' : navigator.language.startsWith('ja') ? 'ja' : 'en';
+        const initLang = savedLang || browserLang;
+        if (initLang && i18n[initLang]) { setLang(initLang); }
 
         document.getElementById('purchaseModal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
