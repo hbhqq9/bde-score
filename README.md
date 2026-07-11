@@ -94,6 +94,27 @@ BDE Score™ is **compliance-first by design**. When Art.50 takes effect on **Au
 
 > 78% of AI system operators have NOT taken Art.50 compliance measures yet (April 2026 data). BDE Score™ closes this gap.
 
+## 🔌 AI Agent Integration (MCP + LangChain)
+
+BDE Score is directly callable by AI agents — no registration, no API keys.
+
+| Protocol | Platform | Status |
+|----------|----------|--------|
+| **MCP** | Claude Desktop, Cursor, Windsurf | ✅ Ready |
+| **LangChain** | Any LangChain agent | ✅ Ready |
+| **OpenAI Functions** | ChatGPT plugins, GPTs | ✅ Schema ready |
+
+```python
+# LangChain
+from bde_score_langchain import get_bde_tools
+tools = get_bde_tools()
+
+# MCP (Claude Desktop)
+# Add to claude_desktop_config.json — see mcp/README.md
+```
+
+Full guide: [mcp/README.md](mcp/README.md)
+
 ## 🛠 Tech Stack
 
 - **Data:** FutuOpenD (primary) + Sina Finance (fallback) — dual-channel auto-failover

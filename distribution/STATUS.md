@@ -1,95 +1,76 @@
 # BDE Score™ 分发状态追踪器
-> 最后更新: 2026-07-10 18:15 UTC+8
+> 最后更新: 2026-07-11 10:15 UTC+8
 
 ## 📊 总览
 
 | 指标 | 数量 | 潜在触达 |
 |------|------|---------|
-| Awesome Lists PR | **16个** | **510K+ stars** |
+| Awesome Lists PR | **20个** | **~547K stars** |
 | GitHub Discussions | 6帖 | 127K+ stars |
 | GitHub Gists | 4个 | 公开可索引 |
 | Dev.to文章 | 1篇 | ✅ LIVE |
 | SEO博客 | 2篇 | Google长尾 |
 | HelloGitHub自荐 | #3429 | 月刊10万+读者 |
-| Launch Kit | 全平台 | 模板就绪 |
-| Newsletter列表 | 10+ | 投稿就绪 |
+| **Newsletter投稿** | **1篇** | **Quantocracy** 🆕 |
 
-## ✅ 已发布（LIVE）
+## ✅ 已收录（MERGED）
 
-### Dev.to
-- [BDE Score: Open-Source Multi-Factor Stock Analysis Tool](https://dev.to/hbhqq9/bde-score-open-source-multi-factor-stock-analysis-tool-covering-us-hk-a-share-markets-2p2j)
+### awesome-datascience #652 (29.6K stars) ✅
+- 维护者: Hüseyin Mert (@hmert)
+- Merge时间: 2026-07-10 11:07 UTC
+- 邮件确认: 2026-07-10 19:07 UTC+8
 
-### GitHub Discussions (6帖)
+## ⏳ 已提交（等待审核）- 17个
+
+| # | Repo | Stars | PR | 状态 |
+|---|------|-------|-----|------|
+| 1 | awesome-python | 307K | #3247 | open |
+| 2 | awesome-machine-learning | 73.3K | #1379 | open |
+| 3 | awesome-quant | 27.5K | #466 | open |
+| 4 | awesome-systematic-trading | 8.5K | #66 | open |
+| 5 | awesome-ai-in-finance | 6.2K | #184 | open |
+| 6 | awesome-cli-apps | 20K | #1229 | ❌ closed (无评论原因，维护者 jneidel 关闭) |
+| 7 | awesome-mlops | 7K | #189 | open |
+| 8 | awesome-systematic-trading(2) | 2K | #126 | open |
+| 9 | awesome-opensource-apps | 3.8K | #185 | open |
+| 10 | awesome-deep-trading | 2K | #19 | open |
+| 11 | awesome-stock-trading | 500 | #53 | open |
+| 12 | Awesome-Quant-ML-Trading | 500 | #33 | open |
+| 13 | awesome-fintech | - | #97 | ❌ closed (维护者 adamdecaf 关闭，Gemini bot 已批准但仍被拒) |
+| 14 | awesome-open-finance | 170 | #10 | open |
+| 15 | Awesome_AI4Finance | 276 | #15 | open |
+| 16 | **awesome-fastapi** | **11.5K** | **#316** | **open** 🆕 |
+| 17 | **awesome-python-applications** | **17.9K** | **#232** | **open** 🆕 |
+| 18 | **awesome-python-data-science** | **3.5K** | **#102** | **open** 🆕 |
+| 19 | **awesome-data-analysis** | **1.6K** | **#77** | **open** 🆕 |
+
+## ✅ Discussions (6帖)
+
 1. [OpenBB (63K⭐)](https://github.com/OpenBB-finance/OpenBB/discussions/7581)
-2. [nautilus_trader (24.5K⭐)](https://github.com/nautechsystems/nautilus_trader/discussions/4432)
-3. [FinRL (15.7K⭐)](https://github.com/AI4Finance-Foundation/FinRL/discussions/1425)
-4. [vectorbt (8.3K⭐)](https://github.com/polakowo/vectorbt/discussions/863)
-5. [awesome-ai-in-finance (6.2K⭐)](https://github.com/georgezouq/awesome-ai-in-finance/discussions/185)
-6. [awesome-systematic-trading (6.4K⭐)](https://github.com/paperswithbacktest/awesome-systematic-trading/discussions/67)
+2. [FinRL (15.7K⭐)](https://github.com/AI4Finance-Foundation/FinRL/discussions/1425)
+3. [vectorbt (8.3K⭐)](https://github.com/polakowo/vectorbt/discussions/863)
+4. [awesome-ai-in-finance (6.2K⭐)](https://github.com/georgezouq/awesome-ai-in-finance/discussions/185)
+5. [awesome-systematic-trading (6.4K⭐)](https://github.com/paperswithbacktest/awesome-systematic-trading/discussions/67)
+6. [nautilus_trader (24.5K⭐)](https://github.com/nautechsystems/nautilus_trader/discussions/4432) - 可能已删除
 
-### GitHub Gists (4个)
-1. [Python API示例](https://gist.github.com/hbhqq9/710dae28edfb6e13e56e2f4c5013a4f6)
-2. [Badge集成指南](https://gist.github.com/hbhqq9/8bee6fded817ba2a253128e59612ef3f)
-3. [OpenBB集成](https://gist.github.com/hbhqq9/67713a009c5f1d5773ac5dc59ba0251e)
-4. [GitHub Action示例](https://gist.github.com/hbhqq9/98ee0689e6d23d13b17616cd76ae6b15)
+## 📝 其他渠道
 
-### SEO博客
-1. [BDE Score vs Yahoo Finance](https://hbhqq9.github.io/bde-score/blog/bde-score-vs-yahoo-finance.html)
-2. [How to Add Stock Badges](https://hbhqq9.github.io/bde-score/blog/how-to-add-stock-badges.html)
+- **Dev.to**: https://dev.to/hbhqq9/bde-score-open-source-multi-factor-stock-analysis-tool-covering-us-hk-a-share-markets-2p2j
+- **HelloGitHub**: Issue #3429 (等待月刊收录)
+- **GitHub Gists**: 4个公开
+- **SEO博客**: 2篇已部署
+- **llms.txt**: 已部署
 
-### HelloGitHub
-- [Issue #3429](https://github.com/521xueweihan/HelloGitHub/issues/3429)
+## 📈 指标追踪
 
-## ⏳ 已提交（等待审核）
+- **GitHub Stars**: 0 (等待PR merge后增长)
+- **Awesome Lists Merged**: 1/18
+- **总Stars覆盖**: ~540K
+- **API Uptime**: ~99%
 
-### Awesome Lists PR (16个)
-| # | Repo | Stars | PR |
-|---|------|-------|-----|
-| 1 | awesome-python | 307K | #3247 |
-| 2 | awesome-machine-learning | 73.3K | #1379 |
-| 3 | awesome-datascience | 29.6K | #652 ✅ MERGED |
-| 4 | awesome-quant | 27.5K | #466 |
-| 5 | awesome-systematic-trading | 8.5K | #66 |
-| 6 | awesome-ai-in-finance | 6.2K | #184 |
-| 7 | awesome-cli-apps | 20K | #1229 |
-| 8 | awesome-mlops | 7K | #189 |
-| 9 | awesome-systematic-trading(2) | 2K | #126 |
-| 10 | awesome-opensource-apps | 3.8K | #185 |
-| 11 | awesome-deep-trading | 2K | #19 |
-| 12 | awesome-stock-trading | 500 | #53 |
-| 13 | Awesome-Quant-ML-Trading | 500 | #33 |
-| 14 | awesome-fintech | - | #97 |
-| 15 | awesome-open-finance | 170 | #10 |
-| 16 | Awesome_AI4Finance | 276 | #15 |
-| **总计** | | **510K+** | |
+## 下一步
 
-## 🚧 需手动操作（CAPTCHA/WAF封锁）
-
-| 平台 | 原因 | 物料位置 |
-|------|------|---------|
-| Hacker News | 中国云网络IP封锁 | `distribution/show_hn_post.md` |
-| SourceForge | Cloudflare + reCAPTCHA | `distribution/sf_listing.md` |
-| Product Hunt | Cloudflare | `distribution/PH_launch.md` |
-| 掘金 | 拼图滑块CAPTCHA | `distribution/chinese_article_v2.md` |
-| CSDN | 图形点击CAPTCHA | `distribution/chinese_article_v2.md` |
-| BetaList | reCAPTCHA | `distribution/betalist_submission.md` |
-| Slashdot | 需管理员审批 | `distribution/slashdot_submission.md` |
-| DevPost | AWS WAF | 物料已创建 |
-| AlternativeTo | Cloudflare | 物料已创建 |
-
-## 📋 间接渗透策略
-
-### 已部署的间接传播渠道
-1. **GitHub Discussions引流** - 在头部开源项目里发帖（127K⭐覆盖）
-2. **SEO内容矩阵** - 对比文章+教程狙击Google长尾搜索
-3. **AI爬虫发现** - llms.txt + robots.txt让AI直接发现
-4. **HelloGitHub月刊** - 中国最大开源发现平台
-5. **Launch Kit** - 让任何人都能一键传播
-6. **Newsletter投稿** - 10+目标简报模板就绪
-
-## 🏗️ 基础设施
-- Cloudflare Tunnel: 公网唯一入口
-- GitHub Pages: hbhqq9.github.io/bde-score
-- Release: v1.0.0
-- SEO Topics: 20个（GitHub上限）
-- Cross-link: BDE↔NeuroBridge↔IPO Compliance 三项目互引
+1. 继续监控20个PR状态
+2. 提交更多Awesome Lists PR (目标25个)
+3. **Newsletter投稿**: ✅ Quantocracy 已发送 (2026-07-11 10:48 UTC+8)
+4. 等待首个PR merge后的Star增长
