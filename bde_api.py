@@ -1869,6 +1869,13 @@ LEGAL_FOOTER_HTML = """
 LEGAL_BACK_LINK = '<a href="/" class="back-link">&larr; Back to BDE Score&#8482;</a>'
 
 
+@app.get("/pricing", response_class=HTMLResponse)
+async def pricing_page():
+    """Pricing page with credit tiers"""
+    with open("templates/pricing.html", encoding="utf-8") as f:
+        return HTMLResponse(content=f.read())
+
+
 @app.get("/terms", response_class=HTMLResponse)
 async def terms_of_service():
     """Terms of Service"""
