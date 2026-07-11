@@ -100,6 +100,17 @@
         .amount-badge-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; }
         .qr-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; text-align: center; }
 
+        /* Save QR Button */
+        .save-qr-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 0.75rem; padding: 8px 18px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--secondary)); color: #fff; border: none; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 2px 8px rgba(59,130,246,0.3); }
+        .save-qr-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,130,246,0.5); }
+        .save-qr-btn:active { transform: translateY(0); }
+        .save-qr-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        /* Copy Amount Button */
+        .copy-amount-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 0.5rem; padding: 6px 14px; border-radius: 6px; background: rgba(59,130,246,0.12); color: var(--accent); border: 1px solid rgba(59,130,246,0.3); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+        .copy-amount-btn:hover { background: rgba(59,130,246,0.25); }
+        .copy-amount-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
         .footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: var(--text-muted); line-height: 1.5; }
         .footer a { color: var(--accent); text-decoration: none; }
 
@@ -146,6 +157,10 @@
                 <div class="amount-badge-label" data-i18n="exact_amount">{{ I18N_EXACT_AMOUNT }}</div>
                 <div class="amount-badge-value"><span id="amount-badge-price">{{ TIER_PRICE }}</span> USDC</div>
                 <div class="amount-badge-hint" data-i18n="scan_to_pay">{{ I18N_SCAN_TO_PAY }}</div>
+                <button class="copy-amount-btn" onclick="copyAmount()">
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                    <span data-i18n="btn_copy_amount">{{ I18N_BTN_COPY_AMOUNT }}</span>
+                </button>
             </div>
 
             <!-- QR Code (server-rendered base64 image) -->
@@ -154,6 +169,10 @@
                     <img id="qr-img" src="{{ QR_IMG_SRC }}" alt="QR Code" style="width:180px;height:180px;display:block;" />
                 </div>
                 <div class="qr-hint" data-i18n="qr_hint">{{ I18N_QR_HINT }}</div>
+                <button class="save-qr-btn" onclick="saveQRImage()" data-i18n="btn_save_qr">
+                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    {{ I18N_BTN_SAVE_QR }}
+                </button>
             </div>
 
             <!-- Wallet Address -->
@@ -230,9 +249,11 @@
             footer_bde: 'BDE Score™',
             footer_chain: '链上支付 via Base',
             exact_amount: '请精确支付',
-            scan_to_pay: '扫码即自动填入金额，无需手动输入',
-            qr_hint: '扫码自动填入精确金额',
+            scan_to_pay: '扫码获取收款地址，金额请按上方提示手动输入',
+            qr_hint: '扫码获取地址，请按上方金额精确输入',
+            btn_save_qr: '\u4e00\u952e\u4fdd\u5b58\u4e8c\u7ef4\u7801',
             toast_copied: '地址已复制！',
+            toast_amount_copied: '金额已复制！请到钱包粘贴',
             toast_enter_tx: '请输入交易哈希',
             toast_invalid_tx: '交易哈希格式无效',
             status_payment_detected: '已检测到支付！',
@@ -268,9 +289,12 @@
             footer_bde: 'BDE Score™',
             footer_chain: 'On-chain payments via Base',
             exact_amount: 'Pay Exactly',
-            scan_to_pay: 'Scan QR to auto-fill amount, no manual input needed',
-            qr_hint: 'Scan to auto-fill exact amount',
+            scan_to_pay: 'Scan QR for address, then enter amount shown above',
+            qr_hint: 'Scan QR for address, enter amount manually',
+            btn_save_qr: 'Save QR Image',
+            btn_copy_amount: 'Copy Amount',
             toast_copied: 'Address copied!',
+            toast_amount_copied: 'Amount copied! Paste in your wallet',
             toast_enter_tx: 'Please enter a transaction hash',
             toast_invalid_tx: 'Invalid transaction hash format',
             status_payment_detected: 'Payment detected!',
@@ -306,9 +330,12 @@
             footer_bde: 'BDE Score™',
             footer_chain: 'Baseチェーン決済',
             exact_amount: '正確な金額を支払う',
-            scan_to_pay: 'QRコードをスキャンすると金額が自動入力されます',
-            qr_hint: 'スキャンで正確な金額を自動入力',
+            scan_to_pay: 'QRコードをスキャンしてアドレスを取得、金額は手動入力',
+            qr_hint: 'スキャンでアドレス取得、金額は手動入力',
+            btn_save_qr: 'QRコードを保存',
+            btn_copy_amount: '金額をコピー',
             toast_copied: 'アドレスをコピーしました！',
+            toast_amount_copied: '金額をコピーしました！ウォレットに貼り付けてください',
             toast_enter_tx: 'トランザクションハッシュを入力してください',
             toast_invalid_tx: 'トランザクションハッシュの形式が無効です',
             status_payment_detected: '支払いを検出しました！',
@@ -443,7 +470,53 @@
         lines.forEach(function(l, i) { ctx.fillText(l, size/2, 30 + i*11); });
     }
 
-    // ============================================================
+        function copyAmount() {
+        var priceEl = document.getElementById('amount-badge-price');
+        if (!priceEl) return;
+        var rawText = priceEl.textContent.trim().replace(/,/g, '');
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(rawText).then(function() { showToast(t('toast_amount_copied')); });
+            } else {
+                var ta = document.createElement('textarea');
+                ta.value = rawText; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+                document.body.appendChild(ta); ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast(t('toast_amount_copied'));
+            }
+        } catch(e) { showToast(rawText); }
+    }
+
+    function saveQRImage() {
+        var img = document.getElementById('qr-img');
+        if (!img || !img.src) return;
+        try {
+            var canvas = document.createElement('canvas');
+            var w = img.naturalWidth || 400;
+            var h = img.naturalHeight || 400;
+            canvas.width = w; canvas.height = h;
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            canvas.toBlob(function(blob) {
+                if (!blob) { alert('Save failed'); return; }
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'BDE-Score-QR-{{ TIER_PARAM }}.png';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+            }, 'image/png');
+        } catch(e) {
+            // Fallback: open image in new tab for long-press save
+            var w = window.open(img.src, '_blank');
+            if (!w) alert('Please long-press the QR image to save');
+        }
+    }
+
+// ============================================================
     // Init display — server already rendered tier info, wallet, QR
     // JS only handles i18n switch & status polling
     // ============================================================
