@@ -12,13 +12,17 @@
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://atlantic-remains-atomic-floor.trycloudflare.com/mcp"
+      "url": "https://retrieve-jobs-congress-made.trycloudflare.com/mcp"
     }
   ],
   "tools": [
     {
       "name": "get_bde_score",
       "description": "Get BDE Score composite analysis (0-100) for a stock."
+    },
+    {
+      "name": "get_stock_analysis",
+      "description": "Get detailed BDE analysis for a specific stock."
     },
     {
       "name": "get_multi_market_comparison",
@@ -29,12 +33,12 @@
       "description": "Screen stocks by BDE score criteria."
     },
     {
-      "name": "get_esg_analysis",
-      "description": "ESG analysis for a stock."
-    },
-    {
       "name": "get_sector_analysis",
       "description": "Sector-level BDE analysis and rankings."
+    },
+    {
+      "name": "get_esg_analysis",
+      "description": "ESG analysis for a stock."
     }
   ]
 }
