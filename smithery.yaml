@@ -1,0 +1,44 @@
+# Smithery configuration for BDE Score MCP Server
+# https://smithery.ai/server/bde-score
+
+name: bde-score
+version: 1.0.1
+description: >
+  BDE Score provides multi-factor quantitative stock analysis for US, HK, 
+  and CN markets. Get transparent 0-100 composite scores covering momentum, 
+  volatility, value, and quality factors. EU AI Act Art.50 compliant.
+
+# Server configuration
+server:
+  transport: streamable-http
+  endpoint: /mcp
+  auth:
+    type: apikey
+    header: X-API-Key
+    description: "API Key required. Contact for institutional access."
+
+# Tools provided
+tools:
+  - name: get_bde_score
+    description: "Get BDE Score composite analysis for stocks in a market"
+  - name: get_stock_analysis  
+    description: "Get detailed BDE analysis for a specific stock"
+  - name: get_multi_market_comparison
+    description: "Compare same company's scores across US/HK/CN markets"
+  - name: get_stock_screener
+    description: "Screen stocks by BDE score threshold"
+  - name: get_sector_analysis
+    description: "Get sector-level BDE analysis and rankings"
+  - name: get_esg_analysis
+    description: "Get ESG analysis derived from quantitative factors"
+
+# Metadata
+metadata:
+  category: finance
+  tags: [stocks, quantitative, multi-factor, US, HK, A-shares, analysis, scoring]
+  homepage: https://github.com/hbhqq9/bde-score
+  docs: https://hbhqq9.github.io/bde-score/
+  pricing:
+    free: "10 requests/min, all markets, all tools"
+    premium: "$29/mo - unlimited + priority"
+    institutional: "$199/mo - dedicated + SLA + custom factors"
