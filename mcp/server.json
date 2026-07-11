@@ -1,92 +1,45 @@
 {
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
   "name": "io.github.hbhqq9/bde-score",
-  "description": "BDE Score™ — Multi-market stock analysis API with composite scoring (US/HK/A-shares). Provides fundamental, technical, and risk metrics via a single unified endpoint. EU AI Act compliant. MCP + LangChain + OpenAI Functions integration ready.",
-  "version": "1.1.0",
-  "repository": "https://github.com/hbhqq9/bde-score",
-  "homepage": "https://hbhqq9.github.io/bde-score/",
-  "license": "MIT",
-  "categories": ["finance", "data", "api", "analysis"],
-  "tags": ["stock-analysis", "fintech", "quantitative-finance", "multi-factor", "scoring", "us-stocks", "hk-stocks", "a-shares", "eu-ai-act", "compliance"],
-  "remotes": [
+  "description": "Multi-market stock analysis MCP server providing BDE scoring (fundamental, technical, ESG) for US, HK, and China A-share markets. Covers 3 major exchanges with unified methodology.",
+  "version": "1.0.0",
+  "repoUrl": "https://github.com/hbhqq9/bde-score",
+  "remote": {
+    "transport": "streamable-http",
+    "url": "https://atlantic-remains-atomic-floor.trycloudflare.com/mcp"
+  },
+  "packages": [
     {
-      "type": "streamable-http",
-      "url": "https://atlantic-remains-atomic-floor.trycloudflare.com/mcp"
+      "registry_type": "pypi",
+      "identifier": "bde-score",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio",
+        "command": "python",
+        "args": ["-m", "bde_score_mcp"]
+      }
     }
   ],
   "tools": [
     {
       "name": "get_bde_score",
-      "description": "Get BDE Score™ composite analysis for a stock (0-100 scoring across fundamental, technical, risk dimensions). Supports US, HK, and China A-share markets.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "symbol": {
-            "type": "string",
-            "description": "Stock symbol (e.g., 'AAPL', '00700.HK', '600519.SH')"
-          },
-          "market": {
-            "type": "string",
-            "enum": ["US", "HK", "CN"],
-            "description": "Market code"
-          }
-        },
-        "required": ["symbol"]
-      }
+      "description": "Get comprehensive BDE Score for a stock including fundamental, technical, and ESG dimensions. Supports US, HK, and China A-share markets."
     },
     {
-      "name": "get_stock_fundamentals",
-      "description": "Get fundamental analysis metrics: P/E, P/B, ROE, revenue growth, profit margins, dividend yield, and more.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "symbol": { "type": "string", "description": "Stock symbol" },
-          "market": { "type": "string", "enum": ["US", "HK", "CN"], "description": "Market code" }
-        },
-        "required": ["symbol"]
-      }
+      "name": "get_multi_market_comparison",
+      "description": "Compare the same company across US/HK/CN markets with BDE scores for each listing."
     },
     {
-      "name": "get_technical_indicators",
-      "description": "Get technical analysis indicators: RSI, MACD, Bollinger Bands, moving averages, volume analysis, support/resistance levels.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "symbol": { "type": "string", "description": "Stock symbol" },
-          "market": { "type": "string", "enum": ["US", "HK", "CN"], "description": "Market code" }
-        },
-        "required": ["symbol"]
-      }
+      "name": "get_stock_screener",
+      "description": "Screen stocks by BDE score criteria across multiple markets with customizable filters."
     },
     {
-      "name": "get_risk_assessment",
-      "description": "Get risk assessment: volatility, beta, drawdown analysis, VaR metrics, and risk-adjusted returns.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "symbol": { "type": "string", "description": "Stock symbol" },
-          "market": { "type": "string", "enum": ["US", "HK", "CN"], "description": "Market code" }
-        },
-        "required": ["symbol"]
-      }
+      "name": "get_esg_analysis",
+      "description": "Detailed ESG (Environmental, Social, Governance) analysis for a specific stock."
     },
     {
-      "name": "compare_stocks",
-      "description": "Compare BDE Scores across multiple stocks in the same or different markets.",
-      "parameters": {
-        "type": "object",
-        "properties": {
-          "symbols": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "List of stock symbols to compare"
-          }
-        },
-        "required": ["symbols"]
-      }
+      "name": "get_sector_analysis",
+      "description": "Sector-level analysis with average BDE scores and top performers by sector."
     }
-  ],
-  "publisher": {
-    "type": "github",
-    "username": "hbhqq9"
-  }
+  ]
 }
