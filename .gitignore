@@ -1,36 +1,22 @@
-# Secrets & Credentials
-.env
-*.key
-*.pem
-*.p12
-*secret*
-*credential*
-*wallet*
-api_keys.json
+# Agent memory files
+MEMORY.md
+recent_memory/
+
+# Fork directories
+awesome_time_series_in_python_fork/
+best_of_python_fork/
+
+# Logs
+keepalive.log
+*.log
 
 # Database
-*.db
-*.sqlite
-*.sqlite3
+bde_history.db
 
-# Data files
-bde_*.json
-waitlist.json
-local_deploy/
-__pycache__/
-*.pyc
-
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
+# Distribution status
+distribution/STATUS.md
 
 # Python
-.venv/
-venv/
-*.egg-info/
-dist/
-build/
+__pycache__/
+*.pyc
+.env
