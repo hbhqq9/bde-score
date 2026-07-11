@@ -11,6 +11,7 @@ import httpx
 from datetime import datetime
 from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
+from mcp.types import ToolAnnotations
 
 # Disable DNS rebinding protection to allow dynamic Cloudflare tunnel URLs
 security_settings = TransportSecuritySettings(
@@ -45,12 +46,22 @@ async def call_bde_api(endpoint: str, params: dict = None) -> dict:
             return {"error": str(e)}
 
 
-@mcp.tool()
+@mcp.tool(
+    title="Get BDE Scores",
+    annotations=ToolAnnotations(
+        title="Get BDE Scores",
+        readOnlyHint=True,
+        idempotentHint=True,
+        destructiveHint=False,
+        openWorldHint=False
+    )
+)
 async def get_bde_score(market: str = "ALL") -> str:
-    """Get BDE Score analysis for stocks in a specific market.
+    """Get BDE Score composite analysis (0-100) for stocks in a specific market.
+    Returns multi-factor quantitative scores covering momentum, volatility, value, and quality.
     
     Args:
-        market: "US", "HK", "CN", or "ALL" (default: ALL)
+        market: "US", "HK", "CN", or "ALL" (default: ALL). Returns up to 25 stocks per market.
     """
     result = await call_bde_api("/api/snapshot", {"market": market.upper()})
     if "error" in result:
@@ -58,13 +69,22 @@ async def get_bde_score(market: str = "ALL") -> str:
     return json.dumps(result, ensure_ascii=False, default=str)
 
 
-@mcp.tool()
+@mcp.tool(
+    title="Analyze Stock",
+    annotations=ToolAnnotations(
+        title="Analyze Stock",
+        readOnlyHint=True,
+        idempotentHint=True,
+        destructiveHint=False,
+        openWorldHint=False
+    )
+)
 async def get_stock_analysis(symbol: str, market: str = "US") -> str:
-    """Get detailed BDE analysis for a specific stock.
+    """Get detailed BDE analysis for a specific stock including factor breakdown.
     
     Args:
         symbol: Stock ticker symbol (e.g., AAPL, 00700, SH600519)
-        market: Market code - US, HK, or CN
+        market: Market code - "US", "HK", or "CN"
     """
     result = await call_bde_api("/api/analyze", {"symbol": symbol.upper(), "market": market.upper()})
     if "error" in result:
@@ -72,9 +92,18 @@ async def get_stock_analysis(symbol: str, market: str = "US") -> str:
     return json.dumps(result, ensure_ascii=False, default=str)
 
 
-@mcp.tool()
+@mcp.tool(
+    title="Compare Markets",
+    annotations=ToolAnnotations(
+        title="Compare Markets",
+        readOnlyHint=True,
+        idempotentHint=True,
+        destructiveHint=False,
+        openWorldHint=False
+    )
+)
 async def get_multi_market_comparison(symbol: str) -> str:
-    """Compare the same company across US/HK/CN markets using BDE scoring.
+    """Compare the same company's BDE scores across US/HK/CN markets.
     
     Args:
         symbol: Company name or ticker to compare across markets
@@ -87,12 +116,21 @@ async def get_multi_market_comparison(symbol: str) -> str:
     return json.dumps(results, ensure_ascii=False, default=str)
 
 
-@mcp.tool()
+@mcp.tool(
+    title="Screen Stocks",
+    annotations=ToolAnnotations(
+        title="Screen Stocks",
+        readOnlyHint=True,
+        idempotentHint=True,
+        destructiveHint=False,
+        openWorldHint=False
+    )
+)
 async def get_stock_screener(market: str = "ALL", min_score: int = 70) -> str:
-    """Screen stocks by BDE score criteria.
+    """Screen stocks by BDE score threshold. Returns top 50 stocks meeting criteria.
     
     Args:
-        market: Filter by market (US, HK, CN, ALL)
+        market: Filter by market ("US", "HK", "CN", "ALL")
         min_score: Minimum BDE score threshold (0-100, default 70)
     """
     snapshot = await call_bde_api("/api/snapshot", {"market": market.upper()})
@@ -115,12 +153,21 @@ async def get_stock_screener(market: str = "ALL", min_score: int = 70) -> str:
     }, ensure_ascii=False, default=str)
 
 
-@mcp.tool()
+@mcp.tool(
+    title="Sector Analysis",
+    annotations=ToolAnnotations(
+        title="Sector Analysis",
+        readOnlyHint=True,
+        idempotentHint=True,
+        destructiveHint=False,
+        openWorldHint=False
+    )
+)
 async def get_sector_analysis(market: str = "US") -> str:
-    """Get sector-level BDE analysis and rankings.
+    """Get sector-level BDE analysis and rankings. Shows average scores per sector.
     
     Args:
-        market: Market to analyze (US, HK, CN)
+        market: Market to analyze ("US", "HK", "CN")
     """
     snapshot = await call_bde_api("/api/snapshot", {"market": market.upper()})
     if "error" in snapshot:
@@ -150,12 +197,22 @@ async def get_sector_analysis(market: str = "US") -> str:
     }, ensure_ascii=False, default=str)
 
 
-@mcp.tool()
+@mcp.tool(
+    title="ESG Analysis",
+    annotations=ToolAnnotations(
+        title="ESG Analysis",
+        readOnlyHint=True,
+        idempotentHint=True,
+        destructiveHint=False,
+        openWorldHint=False
+    )
+)
 async def get_esg_analysis(symbol: str) -> str:
     """Get ESG (Environmental, Social, Governance) analysis for a stock.
+    Note: ESG data is derived from quantitative factors, not dedicated ESG ratings.
     
     Args:
-        symbol: Stock ticker symbol
+        symbol: Stock ticker symbol (e.g., AAPL, 00700)
     """
     result = await call_bde_api("/api/analyze", {"symbol": symbol.upper(), "include_esg": "true"})
     if "error" in result:
