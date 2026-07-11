@@ -1676,6 +1676,21 @@ LLMs: https://hbhqq9.github.io/bde-score/llms.txt
 # 💰 USDC 支付系统
 # ============================================================
 
+@app.get("/credit-payment", response_class=HTMLResponse)
+async def credit_payment_page(request: Request):
+    """Credit payment page - tier-specific USDC payment"""
+    try:
+        template_path = os.path.join(os.path.dirname(__file__), 'templates', 'credit-payment.html')
+        with open(template_path, 'r') as f:
+            html = f.read()
+        # Inject config
+        wallet = os.environ.get('BDE_WALLET_ADDRESS', '0x349Eea0E2f4d3594797851758325Da3eb49D4343')
+        html = html.replace('{{ WALLET_ADDRESS }}', wallet)
+        html = html.replace('{{ USDC_CONTRACT }}', '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913')
+        html = html.replace('{{ API_BASE }}', str(request.base_url).rstrip('/'))
+        return HTMLResponse(content=html)
+    except Exception as e:
+        return HTMLResponse(content=f"<h1>Credit payment page load failed</h1><p>{str(e)}</p>", status_code=500)
 @app.get("/payment", response_class=HTMLResponse)
 async def payment_page(request: Request):
     """支付页面 - 用户发送USDC后自动激活API Key"""

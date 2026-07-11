@@ -152,7 +152,7 @@
                     <p class="text-xs text-slate-500 mb-3" data-i18n="modal_usdc_hint">USDC支付（Polygon/ERC20）将在支付页面处理</p>
                 </div>
                 <div class="flex gap-3">
-                    <a class="i18n-link flex-1 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 font-medium text-center transition-colors" href="/payment?lang=" id="modalPayBtn" data-i18n="modal_pay">前往支付</a>
+                    <a class="i18n-link flex-1 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 font-medium text-center transition-colors" href="/credit-payment?lang=" id="modalPayBtn" data-i18n="modal_pay">前往支付</a>
                     <button onclick="closeModal()" class="px-4 py-2.5 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors" data-i18n="modal_cancel">取消</button>
                 </div>
             </div>
@@ -334,6 +334,12 @@
 
         function selectTier(tier) {
             document.getElementById('modalTierInfo').textContent = tierInfo[tier][currentLang];
+            // Update payment link with tier parameter
+            var payBtn = document.getElementById('modalPayBtn');
+            var currentHref = payBtn.getAttribute('href');
+            var base = currentHref.split('?')[0];
+            var params = currentHref.split('?')[1] || '';
+            payBtn.setAttribute('href', base + '?' + params + '&tier=' + tier);
             document.getElementById('purchaseModal').classList.remove('hidden');
         }
 

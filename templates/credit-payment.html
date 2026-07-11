@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDE Score — Credit Payment</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-card: #111827;
+            --bg-elevated: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.3);
+            --success: #22c55e;
+            --warning: #eab308;
+            --danger: #ef4444;
+            --border: rgba(255,255,255,0.06);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 2rem 1rem;
+        }
+        .container { max-width: 520px; width: 100%; }
+
+        .nav-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+        .nav-bar .brand { font-size: 1rem; font-weight: 700; color: var(--accent); text-decoration: none; }
+        .lang-group { display: flex; gap: 4px; }
+        .lang-btn { padding: 4px 8px; font-size: 11px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+        .lang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        .header { text-align: center; margin-bottom: 2rem; }
+        .header h1 { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.25rem; }
+        .header p { color: var(--text-muted); font-size: 0.875rem; }
+
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; }
+
+        /* Tier summary */
+        .tier-summary { text-align: center; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .tier-name { font-size: 0.875rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+        .price-amount { font-size: 3rem; font-weight: 800; color: var(--text-primary); line-height: 1; }
+        .price-amount .currency { font-size: 1.5rem; vertical-align: super; color: var(--accent); }
+        .credit-detail { font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.25rem; }
+        .unit-price { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; }
+
+        /* QR */
+        .qr-section { text-align: center; margin-bottom: 1.5rem; }
+        .qr-wrapper { display: inline-block; padding: 12px; background: #fff; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 0 20px var(--accent-glow); }
+        .qr-wrapper canvas { display: block; }
+
+        .address-section { margin-bottom: 1.5rem; }
+        .address-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .address-box { display: flex; align-items: center; gap: 0.5rem; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 1rem; }
+        .address-text { flex: 1; font-family: 'SF Mono','Fira Code',monospace; font-size: 0.8rem; color: var(--text-secondary); word-break: break-all; line-height: 1.4; }
+        .copy-btn { flex-shrink: 0; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+        .copy-btn:hover { opacity: 0.85; }
+
+        /* Status */
+        .status-section { text-align: center; padding: 1.25rem; border-radius: 12px; margin-bottom: 1rem; }
+        .status-waiting { background: rgba(234,179,8,0.08); border: 1px solid rgba(234,179,8,0.2); }
+        .status-confirmed { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); }
+        .status-error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); }
+        .status-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .status-text { font-size: 0.875rem; font-weight: 600; }
+        .status-detail { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .status-waiting .status-icon { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+        /* Key display */
+        .key-display { background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(59,130,246,0.1)); border: 1px solid rgba(34,197,94,0.3); border-radius: 12px; padding: 1.5rem; text-align: center; margin-top: 1rem; display: none; }
+        .key-display.show { display: block; }
+        .key-label { font-size: 0.75rem; color: var(--success); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+        .key-value { font-family: 'SF Mono','Fira Code',monospace; font-size: 0.9rem; color: var(--text-primary); background: var(--bg-primary); padding: 0.75rem 1rem; border-radius: 8px; word-break: break-all; margin-bottom: 0.75rem; }
+        .key-usage { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+        .key-usage code { background: var(--bg-elevated); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; }
+
+        /* TX Input */
+        .tx-input-section { margin-top: 1rem; }
+        .tx-input-group { display: flex; gap: 0.5rem; }
+        .tx-input { flex: 1; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 0.75rem; color: var(--text-primary); font-family: monospace; font-size: 0.8rem; outline: none; }
+        .tx-input:focus { border-color: var(--accent); }
+        .tx-input::placeholder { color: var(--text-muted); }
+
+        .features { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1.5rem; }
+        .feature-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--text-secondary); }
+        .feature-item .check { color: var(--success); font-weight: bold; }
+
+        .footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: var(--text-muted); line-height: 1.5; }
+        .footer a { color: var(--accent); text-decoration: none; }
+
+        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--bg-elevated); color: var(--text-primary); padding: 0.75rem 1.5rem; border-radius: 10px; font-size: 0.875rem; opacity: 0; transition: all 0.3s; z-index: 100; border: 1px solid var(--border); }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        @media (max-width: 480px) {
+            body { padding: 1rem 0.5rem; }
+            .card { padding: 1.25rem; }
+            .price-amount { font-size: 2.5rem; }
+            .features { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-bar">
+            <a class="brand i18n-link" href="/?lang=">BDE Score™</a>
+            <div class="lang-group">
+                <button class="lang-btn" onclick="setLang('zh')">中</button>
+                <button class="lang-btn" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('ja')">日</button>
+            </div>
+        </div>
+
+        <div class="header">
+            <h1 data-i18n="header_title">📊 积分充值</h1>
+            <p data-i18n="header_desc">支付后积分立即到账，API Key 自动激活</p>
+        </div>
+
+        <div class="card">
+            <!-- Tier Info (dynamically filled) -->
+            <div class="tier-summary">
+                <div class="tier-name" id="tier-name">--</div>
+                <div class="price-amount">
+                    <span class="currency">¥</span><span id="price-value">--</span>
+                </div>
+                <div class="credit-detail" id="credit-detail">--</div>
+                <div class="unit-price" id="unit-price">--</div>
+            </div>
+
+            <!-- QR Code -->
+            <div class="qr-section">
+                <div class="qr-wrapper">
+                    <canvas id="qr-canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Wallet Address -->
+            <div class="address-section">
+                <div class="address-label" data-i18n="send_usdc">将 USDC 发送至以下地址</div>
+                <div class="address-box">
+                    <span class="address-text" id="wallet-address">Loading...</span>
+                    <button class="copy-btn" onclick="copyAddress()" data-i18n="btn_copy">复制</button>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div id="status-section" class="status-section status-waiting">
+                <div class="status-icon">⏳</div>
+                <div class="status-text" id="status-text" data-i18n="status_waiting">等待支付中...</div>
+                <div class="status-detail" id="status-detail" data-i18n="status_detail_waiting">请完成支付后等待系统自动确认</div>
+            </div>
+
+            <!-- Manual TX Verification -->
+            <div class="tx-input-section">
+                <div class="address-label" style="margin-bottom: 0.5rem;" data-i18n="tx_hint">已发送？输入交易哈希进行验证：</div>
+                <div class="tx-input-group">
+                    <input type="text" class="tx-input" id="tx-input" placeholder="0x..." spellcheck="false">
+                    <button class="copy-btn" onclick="verifyTx()" data-i18n="btn_verify">验证</button>
+                </div>
+            </div>
+
+            <!-- API Key Display -->
+            <div class="key-display" id="key-display">
+                <div class="key-label" data-i18n="activated">✅ 充值成功</div>
+                <div class="key-value" id="api-key-value"></div>
+                <div class="key-usage" data-i18n="key_usage">在API请求中使用此密钥：<br><code>curl -H "X-API-Key: YOUR_KEY" /api/snapshot</code></div>
+            </div>
+
+            <!-- Features -->
+            <div class="features">
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_instant">即时到账</span></div>
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_auto_key">自动激活API Key</span></div>
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_markets">美/港/A股市场</span></div>
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_privacy">零个人数据</span></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p data-i18n="footer_disclaimer">⚠️ 仅为技术分析工具，非金融投资建议。</p>
+            <p>Powered by <a class="i18n-link" href="/?lang=" data-i18n="footer_bde">BDE Score™</a> · <span data-i18n="footer_chain">链上支付 via Base</span></p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    // ============================================================
+    // i18n
+    // ============================================================
+    var currentLang = 'zh';
+    var i18n = {
+        zh: {
+            header_title: '📊 积分充值',
+            header_desc: '支付后积分立即到账，API Key 自动激活',
+            send_usdc: '将 USDC 发送至以下地址',
+            btn_copy: '复制',
+            status_waiting: '等待支付中...',
+            status_detail_waiting: '请完成支付后等待系统自动确认',
+            tx_hint: '已发送？输入交易哈希进行验证：',
+            btn_verify: '验证',
+            activated: '✅ 充值成功',
+            key_usage: '在API请求中使用此密钥：<br><code>curl -H "X-API-Key: YOUR_KEY" /api/snapshot</code>',
+            feat_instant: '即时到账',
+            feat_auto_key: '自动激活API Key',
+            feat_markets: '美/港/A股市场',
+            feat_privacy: '零个人数据',
+            footer_disclaimer: '⚠️ 仅为技术分析工具，非金融投资建议。',
+            footer_bde: 'BDE Score™',
+            footer_chain: '链上支付 via Base',
+            toast_copied: '地址已复制！',
+            toast_enter_tx: '请输入交易哈希',
+            toast_invalid_tx: '交易哈希格式无效',
+            status_payment_detected: '已检测到支付！',
+            status_waiting_confirm: '等待区块确认中...',
+            status_confirmed: '支付确认！',
+            status_activating: '已确认，激活中...',
+            status_generating_key: '正在生成API Key...',
+            status_verified: '验证成功！',
+            status_verify_fail: '验证失败',
+            status_no_payment: '未找到有效支付',
+            status_network_error: '网络错误',
+            status_retry: '请稍后重试',
+            status_check_tx: '请检查交易哈希后重试',
+            credits_detail: '{credits} 积分',
+            unit_price_text: '单价：¥{price}/积分'
+        },
+        en: {
+            header_title: '📊 Credit Recharge',
+            header_desc: 'Credits applied instantly after payment, API Key auto-activated',
+            send_usdc: 'Send USDC to this address',
+            btn_copy: 'Copy',
+            status_waiting: 'Waiting for payment...',
+            status_detail_waiting: 'Complete payment and wait for auto-confirmation',
+            tx_hint: 'Already sent? Enter transaction hash to verify:',
+            btn_verify: 'Verify',
+            activated: '✅ Recharge Successful',
+            key_usage: 'Use this key in API requests:<br><code>curl -H "X-API-Key: YOUR_KEY" /api/snapshot</code>',
+            feat_instant: 'Instant delivery',
+            feat_auto_key: 'Auto-activate API Key',
+            feat_markets: 'US / HK / A-share markets',
+            feat_privacy: 'Zero personal data',
+            footer_disclaimer: '⚠️ Technical analysis tool only. Not investment advice.',
+            footer_bde: 'BDE Score™',
+            footer_chain: 'On-chain payments via Base',
+            toast_copied: 'Address copied!',
+            toast_enter_tx: 'Please enter a transaction hash',
+            toast_invalid_tx: 'Invalid transaction hash format',
+            status_payment_detected: 'Payment detected!',
+            status_waiting_confirm: 'Waiting for block confirmations...',
+            status_confirmed: 'Payment confirmed!',
+            status_activating: 'Confirmed, activating...',
+            status_generating_key: 'Generating your API Key...',
+            status_verified: 'Verification successful!',
+            status_verify_fail: 'Verification failed',
+            status_no_payment: 'No valid payment found',
+            status_network_error: 'Network error',
+            status_retry: 'Please try again later',
+            status_check_tx: 'Check the transaction hash and try again',
+            credits_detail: '{credits} Credits',
+            unit_price_text: 'Unit price: ¥{price}/credit'
+        },
+        ja: {
+            header_title: '📊 クレジットチャージ',
+            header_desc: '支払い後クレジット即時反映、APIキー自動有効化',
+            send_usdc: '以下のアドレスにUSDCを送信',
+            btn_copy: 'コピー',
+            status_waiting: '支払い待ち...',
+            status_detail_waiting: '支払い完了後、自動確認をお待ちください',
+            tx_hint: '送信済み？トランザクションハッシュを入力して検証：',
+            btn_verify: '検証',
+            activated: '✅ チャージ完了',
+            key_usage: 'APIリクエストにこのキーを使用：<br><code>curl -H "X-API-Key: YOUR_KEY" /api/snapshot</code>',
+            feat_instant: '即時反映',
+            feat_auto_key: 'APIキー自動有効化',
+            feat_markets: '米国/香港/A株市場',
+            feat_privacy: '個人データゼロ',
+            footer_disclaimer: '️ 技術分析ツールのみの提供であり、金融投资建议ではありません。',
+            footer_bde: 'BDE Score™',
+            footer_chain: 'Baseチェーン決済',
+            toast_copied: 'アドレスをコピーしました！',
+            toast_enter_tx: 'トランザクションハッシュを入力してください',
+            toast_invalid_tx: 'トランザクションハッシュの形式が無効です',
+            status_payment_detected: '支払いを検出しました！',
+            status_waiting_confirm: 'ブロック確認待ち...',
+            status_confirmed: '支払い確認済み！',
+            status_activating: '確認済み、有効化中...',
+            status_generating_key: 'APIキーを生成中...',
+            status_verified: '検証成功！',
+            status_verify_fail: '検証失敗',
+            status_no_payment: '有効な支払いが見つかりません',
+            status_network_error: 'ネットワークエラー',
+            status_retry: '後でもう一度お試しください',
+            status_check_tx: 'トランザクションハッシュを確認して再試行してください',
+            credits_detail: '{credits} クレジット',
+            unit_price_text: '単価：¥{price}/クレジット'
+        }
+    };
+
+    function t(key) { return i18n[currentLang]?.[key] || i18n.zh[key] || key; }
+
+    function setLang(lang) {
+        if (!i18n[lang]) return;
+        currentLang = lang;
+        document.querySelectorAll('[data-i18n]').forEach(function(el) {
+            var key = el.getAttribute('data-i18n');
+            var val = t(key);
+            if (val && val.indexOf('<') > -1) { el.innerHTML = val; } else { el.textContent = val || key; }
+        });
+        document.querySelectorAll('.lang-btn').forEach(function(b) {
+            var map = {zh:'中', en:'EN', ja:'日'};
+            b.className = 'lang-btn' + (b.textContent.trim() === map[lang] ? ' active' : '');
+        });
+        localStorage.setItem('bde_lang', lang);
+        // Update cross-page links
+        document.querySelectorAll('.i18n-link').forEach(function(a) {
+            var base = a.getAttribute('href').split('?')[0];
+            a.setAttribute('href', base + '?lang=' + lang);
+        });
+        // Re-render dynamic tier info in current language
+        renderTierInfo();
+    }
+
+    // Init
+    (function() {
+        var urlLang = new URLSearchParams(window.location.search).get('lang');
+        var savedLang = localStorage.getItem('bde_lang');
+        var nav = navigator.language || 'en';
+        var browserLang = nav.indexOf('zh') === 0 ? 'zh' : nav.indexOf('ja') === 0 ? 'ja' : 'en';
+        var initLang = urlLang || savedLang || browserLang;
+        if (i18n[initLang]) setLang(initLang); else setLang('zh');
+        // Set initial cross-page links
+        document.querySelectorAll('.i18n-link').forEach(function(a) {
+            var base = a.getAttribute('href').split('?')[0];
+            a.setAttribute('href', base + '?lang=' + initLang);
+        });
+    })();
+
+    // ============================================================
+    // Tier data — maps tier param to display info
+    // ============================================================
+    var TIERS = {
+        starter:       { zh: '入门版', en: 'Starter',      ja: 'スターター',     price: 10,   credits: 1000,      unit: 0.01 },
+        standard:      { zh: '标准版', en: 'Standard',     ja: 'スタンダード',   price: 90,   credits: 10000,     unit: 0.009 },
+        pro:           { zh: '专业版', en: 'Pro',          ja: 'プロ',           price: 800,  credits: 100000,    unit: 0.008 },
+        institutional: { zh: '机构版', en: 'Institutional', ja: '機関投資家',     price: 6000, credits: 1000000,   unit: 0.006 }
+    };
+
+    var currentTier = 'starter';
+
+    function getTierParam() {
+        return new URLSearchParams(window.location.search).get('tier') || 'starter';
+    }
+
+    function formatNumber(n) {
+        return n.toLocaleString();
+    }
+
+    function renderTierInfo() {
+        var tier = TIERS[currentTier] || TIERS.starter;
+        document.getElementById('tier-name').textContent = tier[currentLang];
+        document.getElementById('price-value').textContent = tier.price;
+        var credText = t('credits_detail').replace('{credits}', formatNumber(tier.credits));
+        document.getElementById('credit-detail').textContent = credText;
+        var unitText = t('unit_price_text').replace('{price}', tier.unit.toFixed(3).replace(/0+$/, '').replace(/\.$/, ''));
+        document.getElementById('unit-price').textContent = unitText;
+    }
+
+    // ============================================================
+    // Config & QR
+    // ============================================================
+    var CONFIG = {
+        walletAddress: '{{ WALLET_ADDRESS }}',
+        usdcContract: '{{ USDC_CONTRACT }}',
+        chain: 'Base',
+        chainId: 8453,
+    };
+
+    function generateQR(text, canvas) {
+        var ctx = canvas.getContext('2d');
+        var size = 180;
+        canvas.width = size; canvas.height = size;
+        var script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
+        script.onload = function() {
+            try {
+                var qr = qrcode(0, 'M');
+                qr.addData(text); qr.make();
+                var mc = qr.getModuleCount();
+                var cs = size / mc;
+                ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
+                ctx.fillStyle = '#000000';
+                for (var r = 0; r < mc; r++) {
+                    for (var c = 0; c < mc; c++) {
+                        if (qr.isDark(r, c)) {
+                            ctx.fillRect(Math.round(c*cs), Math.round(r*cs), Math.ceil(cs), Math.ceil(cs));
+                        }
+                    }
+                }
+            } catch(e) { renderFallback(ctx, text, size); }
+        };
+        script.onerror = function() { renderFallback(ctx, text, size); };
+        document.head.appendChild(script);
+    }
+    function renderFallback(ctx, text, size) {
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
+        ctx.fillStyle = '#000'; ctx.font = '7px monospace'; ctx.textAlign = 'center';
+        var lines = text.match(/.{1,22}/g) || [text];
+        lines.forEach(function(l, i) { ctx.fillText(l, size/2, 30 + i*11); });
+    }
+
+    // ============================================================
+    // Init display
+    // ============================================================
+    currentTier = getTierParam();
+    renderTierInfo();
+    document.getElementById('wallet-address').textContent = CONFIG.walletAddress;
+    generateQR(CONFIG.walletAddress, document.getElementById('qr-canvas'));
+
+    // ============================================================
+    // Copy
+    // ============================================================
+    function copyAddress() {
+        navigator.clipboard.writeText(CONFIG.walletAddress).then(function() {
+            showToast(t('toast_copied'));
+        }).catch(function() {
+            var el = document.createElement('textarea');
+            el.value = CONFIG.walletAddress;
+            document.body.appendChild(el); el.select();
+            document.execCommand('copy'); document.body.removeChild(el);
+            showToast(t('toast_copied'));
+        });
+    }
+
+    // ============================================================
+    // Status
+    // ============================================================
+    var pollTimer = null, paymentId = null;
+
+    function setStatus(type, icon, textKey, detailKey) {
+        var section = document.getElementById('status-section');
+        section.className = 'status-section status-' + type;
+        section.querySelector('.status-icon').textContent = icon;
+        document.getElementById('status-text').textContent = t(textKey);
+        document.getElementById('status-detail').textContent = t(detailKey);
+    }
+
+    async function pollPaymentStatus() {
+        if (!paymentId) return;
+        try {
+            var resp = await fetch('/api/payment/status?payment_id=' + paymentId);
+            var data = await resp.json();
+            if (data.status === 'activated' && data.api_key) {
+                setStatus('confirmed', '✅', 'status_confirmed', 'status_confirmed');
+                document.getElementById('api-key-value').textContent = data.api_key;
+                document.getElementById('key-display').classList.add('show');
+                clearInterval(pollTimer);
+            } else if (data.status === 'confirmed') {
+                setStatus('confirmed', '⏳', 'status_activating', 'status_generating_key');
+            } else if (data.status === 'pending_confirmation') {
+                setStatus('waiting', '⏳', 'status_payment_detected', 'status_waiting_confirm');
+            }
+        } catch(e) { console.error('Poll error:', e); }
+    }
+
+    function startPolling(id) {
+        paymentId = id;
+        setStatus('waiting', '⏳', 'status_payment_detected', 'status_waiting_confirm');
+        pollTimer = setInterval(pollPaymentStatus, 5000);
+        pollPaymentStatus();
+    }
+
+    // ============================================================
+    // Verify TX
+    // ============================================================
+    async function verifyTx() {
+        var txHash = document.getElementById('tx-input').value.trim();
+        if (!txHash) { showToast(t('toast_enter_tx')); return; }
+        if (!txHash.startsWith('0x') || txHash.length < 60) { showToast(t('toast_invalid_tx')); return; }
+        setStatus('waiting', '⏳', 'status_waiting', 'status_waiting_confirm');
+        try {
+            var resp = await fetch('/api/payment/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tx_hash: txHash, email: null, tier: currentTier }),
+            });
+            var data = await resp.json();
+            if (data.success && data.payment_id) {
+                if (data.api_key) {
+                    setStatus('confirmed', '✅', 'status_verified', 'status_verified');
+                    document.getElementById('api-key-value').textContent = data.api_key;
+                    document.getElementById('key-display').classList.add('show');
+                } else {
+                    startPolling(data.payment_id);
+                }
+            } else if (data.error) {
+                setStatus('error', '❌', 'status_verify_fail', 'status_verify_fail');
+            } else {
+                setStatus('error', '❌', 'status_no_payment', 'status_check_tx');
+            }
+        } catch(e) {
+            setStatus('error', '❌', 'status_network_error', 'status_retry');
+        }
+    }
+
+    // ============================================================
+    // Auto-detect
+    // ============================================================
+    async function checkWalletReceived() {
+        try {
+            var resp = await fetch('/api/payment/wallet-check');
+            var data = await resp.json();
+            if (data.detected && data.payment_id) startPolling(data.payment_id);
+        } catch(e) {}
+    }
+    setInterval(checkWalletReceived, 15000);
+    setTimeout(checkWalletReceived, 5000);
+
+    // ============================================================
+    // Toast
+    // ============================================================
+    function showToast(msg) {
+        var toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
+    }
+    </script>
+</body>
+</html>
