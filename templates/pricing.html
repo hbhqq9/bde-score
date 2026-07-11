@@ -338,9 +338,11 @@
 
         
         // Init: restore language preference
+        // Priority: URL param > localStorage > browser lang > default zh
+        const urlLang = new URLSearchParams(window.location.search).get('lang');
         const savedLang = localStorage.getItem('bde_lang');
         const browserLang = navigator.language.startsWith('zh') ? 'zh' : navigator.language.startsWith('ja') ? 'ja' : 'en';
-        const initLang = savedLang || browserLang;
+        const initLang = urlLang || savedLang || browserLang;
         if (initLang && i18n[initLang]) { setLang(initLang); }
 
         document.getElementById('purchaseModal').addEventListener('click', function(e) {
