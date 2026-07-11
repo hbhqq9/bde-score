@@ -1721,12 +1721,14 @@ async def credit_payment_page(request: Request, tier: str = 'starter', lang: str
         price = tier_data['price']
         credits = _format_credits(tier_data['credits'])
         unit = _format_unit(tier_data['unit'])
-        # QR code
-        qr_text = f"{wallet}"
+        # QR code — ERC-681 format with exact USDC amount for Base chain
+        usdc_contract = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
+        usdc_amount_raw = price * 1000000  # USDC 6 decimals
+        qr_text = f"ethereum:{usdc_contract}@8453/transfer?address={wallet}&uint256={int(usdc_amount_raw)}"
         qr_img = _gen_qr_base64(qr_text)
         # Replace ALL placeholders
         html = html.replace('{{ WALLET_ADDRESS }}', wallet)
-        html = html.replace('{{ USDC_CONTRACT }}', '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913')
+        html = html.replace('{{ USDC_CONTRACT }}', usdc_contract)
         html = html.replace('{{ API_BASE }}', str(request.base_url).rstrip('/'))
         html = html.replace('{{ TIER_NAME }}', tier_name)
         html = html.replace('{{ TIER_NAME_EN }}', tier_data['en'])
@@ -1734,9 +1736,80 @@ async def credit_payment_page(request: Request, tier: str = 'starter', lang: str
         html = html.replace('{{ TIER_PRICE }}', str(price))
         # Credits text and unit price text per language
         cred_texts = {'zh': f'{credits} 积分', 'en': f'{credits} Credits', 'ja': f'{credits} クレジット'}
-        unit_texts = {'zh': f'单价：¥{unit}/积分', 'en': f'Unit: ¥{unit}/credit', 'ja': f'単価：¥{unit}/クレジット'}
+        unit_texts = {'zh': f'单价：${unit} USDC/积分', 'en': f'Unit: ${unit} USDC/credit', 'ja': f'単価：${unit} USDC/クレジット'}
         html = html.replace('{{ TIER_CREDITS_FULL }}', cred_texts.get(lang, cred_texts['zh']))
         html = html.replace('{{ TIER_UNIT_FULL }}', unit_texts.get(lang, unit_texts['zh']))
+
+        # === Full server-side i18n rendering (Coze WebView has no JS) ===
+        I18N = {
+            'zh': {
+                'HEADER_TITLE': '📊 积分充值',
+                'HEADER_DESC': '支付后积分立即到账，API Key 自动激活',
+                'EXACT_AMOUNT': '请精确支付',
+                'SCAN_TO_PAY': '扫码即自动填入金额，无需手动输入',
+                'QR_HINT': '扫码自动填入精确金额',
+                'SEND_USDC': '将 USDC 发送至以下地址',
+                'BTN_COPY': '复制',
+                'STATUS_WAITING': '等待支付中...',
+                'STATUS_DETAIL_WAITING': '请完成支付后等待系统自动确认',
+                'TX_HINT': '已发送？输入交易哈希进行验证：',
+                'BTN_VERIFY': '验证',
+                'ACTIVATED': '✅ 充值成功',
+                'FEAT_INSTANT': '即时到账',
+                'FEAT_AUTO_KEY': '自动激活API Key',
+                'FEAT_MARKETS': '美/港/A股市场',
+                'FEAT_PRIVACY': '零个人数据',
+                'FOOTER_DISCLAIMER': '⚠️ 仅为技术分析工具，非金融投资建议。',
+                'FOOTER_BDE': 'BDE Score™',
+                'FOOTER_CHAIN': '链上支付 via Base',
+            },
+            'en': {
+                'HEADER_TITLE': '📊 Credit Recharge',
+                'HEADER_DESC': 'Credits applied instantly after payment, API Key auto-activated',
+                'EXACT_AMOUNT': 'Pay Exactly',
+                'SCAN_TO_PAY': 'Scan QR to auto-fill amount, no manual input needed',
+                'QR_HINT': 'Scan to auto-fill exact amount',
+                'SEND_USDC': 'Send USDC to this address',
+                'BTN_COPY': 'Copy',
+                'STATUS_WAITING': 'Waiting for payment...',
+                'STATUS_DETAIL_WAITING': 'Complete payment and wait for auto-confirmation',
+                'TX_HINT': 'Already sent? Enter transaction hash to verify:',
+                'BTN_VERIFY': 'Verify',
+                'ACTIVATED': '✅ Recharge Successful',
+                'FEAT_INSTANT': 'Instant delivery',
+                'FEAT_AUTO_KEY': 'Auto-activate API Key',
+                'FEAT_MARKETS': 'US / HK / A-share markets',
+                'FEAT_PRIVACY': 'Zero personal data',
+                'FOOTER_DISCLAIMER': '⚠️ Technical analysis tool only. Not investment advice.',
+                'FOOTER_BDE': 'BDE Score™',
+                'FOOTER_CHAIN': 'On-chain payments via Base',
+            },
+            'ja': {
+                'HEADER_TITLE': '📊 クレジットチャージ',
+                'HEADER_DESC': '支払い後クレジット即時反映、APIキー自動有効化',
+                'EXACT_AMOUNT': '正確な金額を支払う',
+                'SCAN_TO_PAY': 'QRコードをスキャンすると金額が自動入力されます',
+                'QR_HINT': 'スキャンで正確な金額を自動入力',
+                'SEND_USDC': '以下のアドレスにUSDCを送信',
+                'BTN_COPY': 'コピー',
+                'STATUS_WAITING': '支払い待ち...',
+                'STATUS_DETAIL_WAITING': '支払い完了後、自動確認をお待ちください',
+                'TX_HINT': '送信済み？トランザクションハッシュを入力して検証：',
+                'BTN_VERIFY': '検証',
+                'ACTIVATED': '✅ チャージ完了',
+                'FEAT_INSTANT': '即時反映',
+                'FEAT_AUTO_KEY': 'APIキー自動有効化',
+                'FEAT_MARKETS': '米国/香港/A株市場',
+                'FEAT_PRIVACY': '個人データゼロ',
+                'FOOTER_DISCLAIMER': '⚠️ 技術分析ツールのみの提供であり、金融投资建议ではありません。',
+                'FOOTER_BDE': 'BDE Score™',
+                'FOOTER_CHAIN': 'Baseチェーン決済',
+            },
+        }
+        lang_i18n = I18N.get(lang, I18N['zh'])
+        for key, val in lang_i18n.items():
+            html = html.replace('{{{{ I18N_{0} }}}}'.format(key), val)
+
         html = html.replace('{{ QR_IMG_SRC }}', qr_img)
         html = html.replace('{{ TIER_PARAM }}', tier)
         return HTMLResponse(content=html)
@@ -1752,7 +1825,7 @@ async def payment_page(request: Request):
         # 注入配置
         wallet = os.environ.get('BDE_WALLET_ADDRESS', '0x349Eea0E2f4d3594797851758325Da3eb49D4343')
         html = html.replace('{{ WALLET_ADDRESS }}', wallet)
-        html = html.replace('{{ USDC_CONTRACT }}', '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913')
+        html = html.replace('{{ USDC_CONTRACT }}', usdc_contract)
         html = html.replace('{{ PREMIUM_PRICE_USD }}', str(PAYMENT_PRICE_USD))
         html = html.replace('{{ API_BASE }}', str(request.base_url).rstrip('/'))
         return HTMLResponse(content=html)

@@ -92,6 +92,14 @@
         .feature-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--text-secondary); }
         .feature-item .check { color: var(--success); font-weight: bold; }
 
+        /* Exact amount badge */
+        .amount-badge { text-align: center; padding: 1.25rem; border-radius: 12px; background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.15)); border: 2px solid rgba(59,130,246,0.4); margin-bottom: 1.5rem; }
+        .amount-badge-label { font-size: 0.75rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+        .amount-badge-value { font-size: 2.5rem; font-weight: 800; color: #fff; line-height: 1.1; }
+        .amount-badge-value span { color: var(--accent); }
+        .amount-badge-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; }
+        .qr-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; text-align: center; }
+
         .footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: var(--text-muted); line-height: 1.5; }
         .footer a { color: var(--accent); text-decoration: none; }
 
@@ -118,8 +126,8 @@
         </div>
 
         <div class="header">
-            <h1 data-i18n="header_title">📊 积分充值</h1>
-            <p data-i18n="header_desc">支付后积分立即到账，API Key 自动激活</p>
+            <h1 data-i18n="header_title">{{ I18N_HEADER_TITLE }}/h1>
+            <p data-i18n="header_desc">{{ I18N_HEADER_DESC }}/p>
         </div>
 
         <div class="card">
@@ -127,10 +135,17 @@
             <div class="tier-summary">
                 <div class="tier-name" id="tier-name">{{ TIER_NAME }}</div>
                 <div class="price-amount">
-                    <span class="currency">¥</span><span id="price-value">{{ TIER_PRICE }}</span>
+                    <span id="price-value">{{ TIER_PRICE }}</span><span class="currency"> USDC</span>
                 </div>
                 <div class="credit-detail" id="credit-detail">{{ TIER_CREDITS_FULL }}</div>
                 <div class="unit-price" id="unit-price">{{ TIER_UNIT_FULL }}</div>
+            </div>
+
+            <!-- Exact Amount Badge -->
+            <div class="amount-badge" id="amount-badge">
+                <div class="amount-badge-label" data-i18n="exact_amount">{{ I18N_EXACT_AMOUNT }}/div>
+                <div class="amount-badge-value"><span id="amount-badge-price">{{ TIER_PRICE }}</span> USDC</div>
+                <div class="amount-badge-hint" data-i18n="scan_to_pay">{{ I18N_SCAN_TO_PAY }}/div>
             </div>
 
             <!-- QR Code (server-rendered base64 image) -->
@@ -138,52 +153,53 @@
                 <div class="qr-wrapper">
                     <img id="qr-img" src="{{ QR_IMG_SRC }}" alt="QR Code" style="width:180px;height:180px;display:block;" />
                 </div>
+                <div class="qr-hint" data-i18n="qr_hint">{{ I18N_QR_HINT }}/div>
             </div>
 
             <!-- Wallet Address -->
             <div class="address-section">
-                <div class="address-label" data-i18n="send_usdc">将 USDC 发送至以下地址</div>
+                <div class="address-label" data-i18n="send_usdc">{{ I18N_SEND_USDC }}/div>
                 <div class="address-box">
                     <span class="address-text" id="wallet-address">{{ WALLET_ADDRESS }}</span>
-                    <button class="copy-btn" onclick="copyAddress()" data-i18n="btn_copy">复制</button>
+                    <button class="copy-btn" onclick="copyAddress()" data-i18n="btn_copy">{{ I18N_BTN_COPY }}/button>
                 </div>
             </div>
 
             <!-- Status -->
             <div id="status-section" class="status-section status-waiting">
                 <div class="status-icon">⏳</div>
-                <div class="status-text" id="status-text" data-i18n="status_waiting">等待支付中...</div>
-                <div class="status-detail" id="status-detail" data-i18n="status_detail_waiting">请完成支付后等待系统自动确认</div>
+                <div class="status-text" id="status-text" data-i18n="status_waiting">{{ I18N_STATUS_WAITING }}/div>
+                <div class="status-detail" id="status-detail" data-i18n="status_detail_waiting">{{ I18N_STATUS_DETAIL_WAITING }}/div>
             </div>
 
             <!-- Manual TX Verification -->
             <div class="tx-input-section">
-                <div class="address-label" style="margin-bottom: 0.5rem;" data-i18n="tx_hint">已发送？输入交易哈希进行验证：</div>
+                <div class="address-label" style="margin-bottom: 0.5rem;" data-i18n="tx_hint">{{ I18N_TX_HINT }}/div>
                 <div class="tx-input-group">
                     <input type="text" class="tx-input" id="tx-input" placeholder="0x..." spellcheck="false">
-                    <button class="copy-btn" onclick="verifyTx()" data-i18n="btn_verify">验证</button>
+                    <button class="copy-btn" onclick="verifyTx()" data-i18n="btn_verify">{{ I18N_BTN_VERIFY }}/button>
                 </div>
             </div>
 
             <!-- API Key Display -->
             <div class="key-display" id="key-display">
-                <div class="key-label" data-i18n="activated">✅ 充值成功</div>
+                <div class="key-label" data-i18n="activated">{{ I18N_ACTIVATED }}/div>
                 <div class="key-value" id="api-key-value"></div>
                 <div class="key-usage" data-i18n="key_usage">在API请求中使用此密钥：<br><code>curl -H "X-API-Key: YOUR_KEY" /api/snapshot</code></div>
             </div>
 
             <!-- Features -->
             <div class="features">
-                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_instant">即时到账</span></div>
-                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_auto_key">自动激活API Key</span></div>
-                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_markets">美/港/A股市场</span></div>
-                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_privacy">零个人数据</span></div>
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_instant">{{ I18N_FEAT_INSTANT }}/span></div>
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_auto_key">{{ I18N_FEAT_AUTO_KEY }}/span></div>
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_markets">{{ I18N_FEAT_MARKETS }}/span></div>
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_privacy">{{ I18N_FEAT_PRIVACY }}/span></div>
             </div>
         </div>
 
         <div class="footer">
-            <p data-i18n="footer_disclaimer">⚠️ 仅为技术分析工具，非金融投资建议。</p>
-            <p>Powered by <a class="i18n-link" href="/?lang=" data-i18n="footer_bde">BDE Score™</a> · <span data-i18n="footer_chain">链上支付 via Base</span></p>
+            <p data-i18n="footer_disclaimer">{{ I18N_FOOTER_DISCLAIMER }}/p>
+            <p>Powered by <a class="i18n-link" href="/?lang=" data-i18n="footer_bde">{{ I18N_FOOTER_BDE }}/a> · <span data-i18n="footer_chain">{{ I18N_FOOTER_CHAIN }}/span></p>
         </div>
     </div>
 
@@ -213,6 +229,9 @@
             footer_disclaimer: '⚠️ 仅为技术分析工具，非金融投资建议。',
             footer_bde: 'BDE Score™',
             footer_chain: '链上支付 via Base',
+            exact_amount: '请精确支付',
+            scan_to_pay: '扫码即自动填入金额，无需手动输入',
+            qr_hint: '扫码自动填入精确金额',
             toast_copied: '地址已复制！',
             toast_enter_tx: '请输入交易哈希',
             toast_invalid_tx: '交易哈希格式无效',
@@ -228,7 +247,7 @@
             status_retry: '请稍后重试',
             status_check_tx: '请检查交易哈希后重试',
             credits_detail: '{credits} 积分',
-            unit_price_text: '单价：¥{price}/积分'
+            unit_price_text: '单价：${price} USDC/积分'
         },
         en: {
             header_title: '📊 Credit Recharge',
@@ -248,6 +267,9 @@
             footer_disclaimer: '⚠️ Technical analysis tool only. Not investment advice.',
             footer_bde: 'BDE Score™',
             footer_chain: 'On-chain payments via Base',
+            exact_amount: 'Pay Exactly',
+            scan_to_pay: 'Scan QR to auto-fill amount, no manual input needed',
+            qr_hint: 'Scan to auto-fill exact amount',
             toast_copied: 'Address copied!',
             toast_enter_tx: 'Please enter a transaction hash',
             toast_invalid_tx: 'Invalid transaction hash format',
@@ -263,7 +285,7 @@
             status_retry: 'Please try again later',
             status_check_tx: 'Check the transaction hash and try again',
             credits_detail: '{credits} Credits',
-            unit_price_text: 'Unit price: ¥{price}/credit'
+            unit_price_text: 'Unit: ${price} USDC/credit'
         },
         ja: {
             header_title: '📊 クレジットチャージ',
@@ -283,6 +305,9 @@
             footer_disclaimer: '️ 技術分析ツールのみの提供であり、金融投资建议ではありません。',
             footer_bde: 'BDE Score™',
             footer_chain: 'Baseチェーン決済',
+            exact_amount: '正確な金額を支払う',
+            scan_to_pay: 'QRコードをスキャンすると金額が自動入力されます',
+            qr_hint: 'スキャンで正確な金額を自動入力',
             toast_copied: 'アドレスをコピーしました！',
             toast_enter_tx: 'トランザクションハッシュを入力してください',
             toast_invalid_tx: 'トランザクションハッシュの形式が無効です',
@@ -298,7 +323,7 @@
             status_retry: '後でもう一度お試しください',
             status_check_tx: 'トランザクションハッシュを確認して再試行してください',
             credits_detail: '{credits} クレジット',
-            unit_price_text: '単価：¥{price}/クレジット'
+            unit_price_text: '単価：${price} USDC/クレジット'
         }
     };
 
@@ -370,6 +395,9 @@
         var rawUnit = tier.unit.toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
         var unitText = t('unit_price_text').replace('{price}', rawUnit);
         document.getElementById('unit-price').textContent = unitText;
+        // Update amount badge
+        var badge = document.getElementById('amount-badge-price');
+        if (badge) badge.textContent = tier.price.toLocaleString();
     }
 
     // ============================================================
