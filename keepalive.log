@@ -588,3 +588,9 @@
 [Sun Jul 12 07:25:01 AM CST 2026] ⚠️ BDE-API 已停止，正在重启...
 [Sun Jul 12 07:25:04 AM CST 2026] ❌ BDE-API 重启失败！
 [Sun Jul 12 07:25:04 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 0进程, CF-Tunnel: 3进程)
+[Sun Jul 12 07:30:01 AM CST 2026] ⚠️ BDE-API 已停止，正在重启...
+[Sun Jul 12 07:30:04 AM CST 2026] ❌ BDE-API 重启失败！
+[Sun Jul 12 07:30:05 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 0进程, CF-Tunnel: 3进程)
+[Sun Jul 12 07:35:01 AM CST 2026] ⚠️ BDE-API 已停止，正在重启...
+[Sun Jul 12 07:35:04 AM CST 2026] ❌ BDE-API 重启失败！
+[Sun Jul 12 07:35:04 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 0进程, CF-Tunnel: 3进程)

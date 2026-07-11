@@ -123,6 +123,13 @@
             .price-amount { font-size: 2.5rem; }
             .features { grid-template-columns: 1fr; }
         }
+    
+        /* QR save hint */
+        .qr-save-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.4rem; text-align: center; }
+        /* Amount select box - no JS needed, user can long-press to copy */
+        .amount-select-box { display: flex; align-items: center; gap: 10px; margin-top: 0.6rem; padding: 8px 14px; border-radius: 8px; background: rgba(59,130,246,0.08); border: 1px dashed rgba(59,130,246,0.4); }
+        .amount-select-label { font-size: 0.7rem; color: var(--accent); font-weight: 600; white-space: nowrap; }
+        .amount-select-value { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); font-family: 'SF Mono', 'Courier New', monospace; letter-spacing: 0.5px; user-select: all; -webkit-user-select: all; cursor: text; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.9); }
     </style>
 </head>
 <body>
@@ -157,10 +164,10 @@
                 <div class="amount-badge-label" data-i18n="exact_amount">{{ I18N_EXACT_AMOUNT }}</div>
                 <div class="amount-badge-value"><span id="amount-badge-price">{{ TIER_PRICE }}</span> USDC</div>
                 <div class="amount-badge-hint" data-i18n="scan_to_pay">{{ I18N_SCAN_TO_PAY }}</div>
-                <button class="copy-amount-btn" onclick="copyAmount()">
-                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                    <span data-i18n="btn_copy_amount">{{ I18N_BTN_COPY_AMOUNT }}</span>
-                </button>
+                <div class="amount-select-box">
+                    <span class="amount-select-label" data-i18n="btn_copy_amount">{{ I18N_BTN_COPY_AMOUNT }}</span>
+                    <span class="amount-select-value">{{ TIER_PRICE }}</span>
+                </div>
             </div>
 
             <!-- QR Code (server-rendered base64 image) -->
@@ -169,10 +176,11 @@
                     <img id="qr-img" src="{{ QR_IMG_SRC }}" alt="QR Code" style="width:180px;height:180px;display:block;" />
                 </div>
                 <div class="qr-hint" data-i18n="qr_hint">{{ I18N_QR_HINT }}</div>
-                <button class="save-qr-btn" onclick="saveQRImage()" data-i18n="btn_save_qr">
+                <a class="save-qr-btn" href="/qr-image?tier={{ TIER_PARAM }}" download="bde-payment-{{ TIER_PARAM }}.png">
                     <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                     {{ I18N_BTN_SAVE_QR }}
-                </button>
+                </a>
+                <p class="qr-save-hint" data-i18n="qr_save_hint">{{ I18N_QR_SAVE_HINT }}</p>
             </div>
 
             <!-- Wallet Address -->

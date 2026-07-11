@@ -1768,6 +1768,26 @@ def _gen_qr_base64(text):
     img.save(buf, format='PNG')
     return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
 
+@app.get("/qr-image")
+async def qr_image_download(tier: str = 'starter'):
+    """Serve QR code as downloadable PNG file - works without JS"""
+    from fastapi.responses import StreamingResponse
+    import qrcode, io
+    tier_data = TIERS_DATA.get(tier, TIERS_DATA['starter'])
+    price = tier_data['price']
+    wallet = os.environ.get('BDE_WALLET_ADDRESS', '0x349Eea0E2f4d359479785175Da3eb49D4343')
+    # Simple wallet address for QR (max compatibility)
+    qr_text = wallet
+    qr = qrcode.QRCode(version=1, box_size=10, border=4)
+    qr.add_data(qr_text)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    buf.seek(0)
+    headers = {"Content-Disposition": f'attachment; filename="bde-payment-{tier}.png"'}
+    return StreamingResponse(buf, media_type="image/png", headers=headers)
+
 @app.get("/credit-payment", response_class=HTMLResponse)
 async def credit_payment_page(request: Request, tier: str = 'starter', lang: str = 'zh'):
     """Credit payment page - server-side rendered tier-specific USDC payment"""
@@ -1812,6 +1832,7 @@ async def credit_payment_page(request: Request, tier: str = 'starter', lang: str
                 'QR_HINT': '扫码获取地址，请按上方金额精确输入',
                 'BTN_SAVE_QR': '一键保存二维码',
                 'BTN_COPY_AMOUNT': '复制金额',
+                'QR_SAVE_HINT': '长按上方二维码图片可直接保存，或点击下载按钮保存PNG',
                 'SEND_USDC': '将 USDC 发送至以下地址',
                 'BTN_COPY': '复制',
                 'STATUS_WAITING': '等待支付中...',
@@ -1835,6 +1856,7 @@ async def credit_payment_page(request: Request, tier: str = 'starter', lang: str
                 'QR_HINT': 'Scan QR for address, enter amount manually',
                 'BTN_SAVE_QR': 'Save QR Code',
                 'BTN_COPY_AMOUNT': 'Copy Amount',
+                'QR_SAVE_HINT': 'Long-press QR image to save, or tap download button',
                 'SEND_USDC': 'Send USDC to this address',
                 'BTN_COPY': 'Copy',
                 'STATUS_WAITING': 'Waiting for payment...',
@@ -1856,6 +1878,9 @@ async def credit_payment_page(request: Request, tier: str = 'starter', lang: str
                 'EXACT_AMOUNT': '正確な金額を支払う',
                 'SCAN_TO_PAY': 'QRコードをスキャンしてアドレスを取得、金額は手動入力してください',
                 'QR_HINT': 'スキャンでアドレス取得、金額は手動入力',
+                'BTN_SAVE_QR': 'QRコードを保存',
+                'BTN_COPY_AMOUNT': '金額をコピー',
+                'QR_SAVE_HINT': 'QRコード画像を長押しで保存、またはダウンロードボタンをタップ',
                 'SEND_USDC': '以下のアドレスにUSDCを送信',
                 'BTN_COPY': 'コピー',
                 'STATUS_WAITING': '支払い待ち...',
