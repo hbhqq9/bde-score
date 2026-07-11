@@ -101,15 +101,20 @@ BDE Score is directly callable by AI agents — no registration, no API keys.
 | Protocol | Platform | Status |
 |----------|----------|--------|
 | **MCP** | Claude Desktop, Cursor, Windsurf, Cline | ✅ Ready |
+| **MCP Registry** | [Official MCP Registry](https://registry.modelcontextprotocol.io) | ✅ `io.github.hbhqq9/bde-score` |
 | **LangChain** | Any LangChain agent | ✅ Ready |
 | **OpenAI Functions** | ChatGPT plugins, GPTs | ✅ Schema ready |
 
 ### MCP Quick Install
 
+**Remote Server (zero-setup):**
 ```bash
-# Claude Code
-claude mcp add bde-score -- python /path/to/bde-score/mcp/bde_score_mcp.py
+# Claude Code — one command
+claude mcp add bde-score --transport http --url https://atlantic-remains-atomic-floor.trycloudflare.com/mcp
+```
 
+**Local Server:**
+```bash
 # Or add to claude_desktop_config.json
 {
   "mcpServers": {
@@ -120,6 +125,8 @@ claude mcp add bde-score -- python /path/to/bde-score/mcp/bde_score_mcp.py
   }
 }
 ```
+
+**Find BDE Score on:** [Glama](https://glama.ai/mcp/servers) · [Smithery](https://smithery.ai/server/bde-score) · [Cline Marketplace](https://github.com/cline/mcp-marketplace/issues/1997)
 
 ### Tools
 
