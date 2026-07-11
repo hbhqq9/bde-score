@@ -163,8 +163,21 @@ usdc_background_task = None
 # ============================================================
 # 🔒 安全中间件
 # ============================================================
+class GlobalRateLimitMiddleware(BaseHTTPMiddleware):
+    """🔒 全局速率限制：所有 /api/ 路径默认每IP每分钟30次"""
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path.startswith('/api/'):
+            client_ip = request.client.host if request.client else "unknown"
+            if not rate_limiter.is_allowed(client_ip):
+                return JSONResponse(
+                    status_code=429,
+                    content={"error": "Rate limit exceeded. Please slow down."},
+                    headers={"Retry-After": "60"}
+                )
+        return await call_next(request)
+
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    """注入安全响应头，防止XSS/Clickjacking/Sniffing等攻击"""
+    """注入安全响应头，防止XSS/Clickjacking/Sniffing等攻击"""""
     async def dispatch(self, request: Request, call_next):
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
@@ -241,6 +254,17 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         return response
 
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(GlobalRateLimitMiddleware)
+
+# 🔒 隐藏服务器版本信息
+@app.middleware("http")
+async def hide_server_header(request: Request, call_next):
+    response = await call_next(request)
+    # MutableHeaders doesn't support pop(), use del instead
+    if "server" in response.headers:
+        del response.headers["server"]
+    response.headers["X-Powered-By"] = "BDE-Score"  # 只暴露品牌名，不暴露技术栈
+    return response
 
 # ============================================================
 # 🔒 速率限制器（内存级，防DoS）
@@ -261,7 +285,8 @@ class RateLimiter:
         self.requests[client_ip].append(now)
         return True
 
-rate_limiter = RateLimiter(max_requests=10, window_seconds=60)  # 每IP每分钟10次
+rate_limiter = RateLimiter(max_requests=10, window_seconds=60)  # 通用：每IP每分钟10次
+payment_rate_limiter = RateLimiter(max_requests=5, window_seconds=60)  # 🔒 支付端点：每IP每分钟5次
 
 # ============================================================
 # 🔑 API Key 付费门控系统
@@ -1311,9 +1336,18 @@ async def credits_recharge(
     amount: int = Query(1000, description="充值积分数", ge=1),
     auth: dict = Depends(optional_api_key)
 ):
-    """模拟充值（暂时手动添加积分，后续接入支付）"""
+    """充值接口 — 🔒 生产环境禁用，仅限开发调试"""
+    # 🔒 安全检查：生产环境禁止此端点
+    import os as _os
+    if _os.environ.get('BDE_ENV', 'production') != 'development':
+        raise HTTPException(status_code=403, detail="This endpoint is disabled in production. USDC payment flow is the only way to recharge.")
+    
     if not auth['authenticated'] or not auth.get('key_prefix'):
         raise HTTPException(status_code=401, detail="API Key required. Provide X-API-Key header.")
+    
+    # 🔒 金额上限：开发模式也限制单次最大10000积分
+    if amount > 10000:
+        raise HTTPException(status_code=400, detail="Max 10,000 credits per recharge in dev mode.")
     
     credit_manager.recharge(auth['key_prefix'], amount, description=f"手动充值 {amount} 积分")
     new_balance = credit_manager.get_balance(auth['key_prefix'])
@@ -1879,6 +1913,11 @@ async def payment_status(payment_id: str = None, tx_hash: str = None):
 @app.post("/api/payment/verify")
 async def verify_payment(request: Request):
     """手动提交tx_hash验证支付"""
+    # 🔒 速率限制
+    client_ip = request.client.host if request.client else "unknown"
+    if not payment_rate_limiter.is_allowed(client_ip):
+        raise HTTPException(status_code=429, detail="Rate limit exceeded. Max 5 verification attempts per minute.")
+    
     global usdc_activator_instance, usdc_listener_instance
     if not usdc_activator_instance:
         return {"status": "disabled", "message": "支付系统未启用"}
@@ -1887,6 +1926,10 @@ async def verify_payment(request: Request):
     tx_hash = body.get("tx_hash")
     if not tx_hash:
         return {"error": "缺少 tx_hash"}
+    
+    # 🔒 tx_hash格式校验：必须是0x开头的66字符hex字符串
+    if not isinstance(tx_hash, str) or not re.match(r'^0x[0-9a-fA-F]{64}$', tx_hash):
+        return {"error": "Invalid tx_hash format. Must be 0x + 64 hex characters."}
     
     # 先查是否已处理
     existing = usdc_activator_instance.get_payment_status(tx_hash=tx_hash)
@@ -1905,8 +1948,13 @@ async def verify_payment(request: Request):
     return verify_result
 
 @app.get("/api/payment/wallet-check")
-async def wallet_check():
+async def wallet_check(request: Request):
     """检测钱包新转入"""
+    # 🔒 速率限制
+    client_ip = request.client.host if request.client else "unknown"
+    if not payment_rate_limiter.is_allowed(client_ip):
+        raise HTTPException(status_code=429, detail="Rate limit exceeded.")
+    
     global usdc_listener_instance
     if not usdc_listener_instance:
         return {"status": "disabled"}
