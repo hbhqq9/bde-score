@@ -152,7 +152,7 @@ app = FastAPI(
     version="1.0.0-mvp",
     docs_url=None,       # 🔒 禁用Swagger UI（公网暴露攻击面）
     redoc_url=None,      # 🔒 禁用ReDoc
-    openapi_url=None,    # 🔒 禁用OpenAPI JSON
+    openapi_url="/openapi.json",  # 🔓 Agent发现需要，端点本身受Auth保护
 )
 
 # USDC 支付系统全局实例
