@@ -1,0 +1,59 @@
+# BDE Score™
+
+> AI-Powered Multi-Market Stock Analysis — One Score, Every Market
+
+BDE Score™ provides comprehensive stock analysis across US, Hong Kong, and China A-share markets with a unified BDE scoring methodology (0-100 scale). It covers fundamental, technical, and ESG dimensions.
+
+## Key Features
+
+- Multi-market coverage: US (NYSE/NASDAQ), HK (HKEX), CN (SSE/SZSE)
+- BDE Score: Composite 0-100 scoring (fundamental + technical + risk)
+- ESG analysis: Environmental, Social, Governance metrics
+- Cross-market comparison: Same company across different exchanges
+- Stock screener: Filter by BDE criteria
+- EU AI Act Article 50 compliant
+
+## API
+
+- [REST API documentation](https://hbhqq9.github.io/bde-score/)
+- [API Health Check](https://hbhqq9.github.io/bde-score/api/health)
+- [BDE Score Endpoint](https://hbhqq9.github.io/bde-score/api/score/{symbol})
+
+## MCP Server
+
+- [MCP installation guide](https://github.com/hbhqq9/bde-score/blob/master/llms-install.md)
+- [MCP README](https://github.com/hbhqq9/bde-score/blob/master/mcp/README.md)
+
+### Available MCP Tools
+
+- `get_bde_score`: Comprehensive BDE scoring for any stock
+- `get_multi_market_comparison`: Cross-market comparison
+- `get_stock_screener`: Screen by criteria
+- `get_esg_analysis`: ESG analysis
+- `get_sector_analysis`: Sector overview
+
+## Quick Start
+
+```python
+import requests
+r = requests.get("https://your-api-url/api/score/AAPL")
+data = r.json()  # BDE Score + breakdown
+```
+
+## Installation
+
+```bash
+git clone https://github.com/hbhqq9/bde-score.git
+cd bde-score
+pip install -r requirements.txt
+```
+
+## Links
+
+- [GitHub Repository](https://github.com/hbhqq9/bde-score)
+- [Live Dashboard](https://hbhqq9.github.io/bde-score/dashboard)
+- [MCP Registry](https://registry.modelcontextprotocol.io) (io.github.hbhqq9/bde-score)
+
+## License
+
+MIT
