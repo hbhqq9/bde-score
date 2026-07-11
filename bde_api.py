@@ -1190,6 +1190,58 @@ async def serve_llms_install():
     return PlainTextResponse(LLMS_INSTALL_MD, media_type="text/markdown")
 
 
+# .well-known discovery protocol routes (Agent-native discovery)
+@app.get("/.well-known/mcp.json")
+async def serve_well_known_mcp():
+    """MCP客户端自动发现协议"""
+    import json
+    mcp_config = {
+        "name": "BDE Score",
+        "description": "Multi-factor quantitative stock analysis for US, HK, and CN A-share markets.",
+        "version": "1.0.1",
+        "transport": {"type": "streamable-http", "url": "https://retrieve-jobs-congress-made.trycloudflare.com/mcp"},
+        "authentication": {"type": "api-key", "header": "X-API-Key", "description": "Free tier: 10 req/min"},
+        "capabilities": {"annotations": True, "read_only": True},
+        "metadata": {
+            "author": "AGL Governance",
+            "license": "MIT",
+            "homepage": "https://hbhqq9.github.io/bde-score/",
+            "repository": "https://github.com/hbhqq9/bde-score",
+            "category": "finance",
+            "tags": ["stocks", "quantitative", "multi-factor", "EU AI Act"]
+        }
+    }
+    return JSONResponse(mcp_config)
+
+
+@app.get("/.well-known/agent.json")
+async def serve_well_known_agent():
+    """A2A Agent-to-Agent发现协议"""
+    agent_config = {
+        "name": "BDE Score Agent",
+        "description": "AI-powered multi-market stock analysis agent providing quantitative BDE scores (0-100) for US, HK, and CN A-share markets.",
+        "url": "https://atlantic-remains-atomic-floor.trycloudflare.com",
+        "version": "1.0.1",
+        "capabilities": {
+            "streaming": False,
+            "pushNotifications": False,
+            "stateTransitionHistory": False
+        },
+        "provider": {"organization": "AGL", "url": "https://github.com/hbhqq9"},
+        "documentation": "https://hbhqq9.github.io/bde-score/llms.txt",
+        "authentication": {"schemes": ["api-key"]},
+        "defaultInputModes": ["application/json"],
+        "defaultOutputModes": ["application/json"],
+        "skills": [
+            {"id": "bde-score", "name": "BDE Score Analysis", "description": "Multi-factor stock scoring (Momentum, Mean Reversion, Volume, Volatility, Trend)"},
+            {"id": "market-comparison", "name": "Cross-Market Comparison", "description": "Compare same company across US/HK/CN markets"},
+            {"id": "stock-screener", "name": "Stock Screener", "description": "Screen stocks by minimum BDE score threshold"},
+            {"id": "sector-analysis", "name": "Sector Analysis", "description": "Sector-level BDE analysis and rankings"}
+        ]
+    }
+    return JSONResponse(agent_config)
+
+
 LLMS_FULL_TXT = """# BDE Score™
 
 > AI-powered multi-market stock analysis with transparent multi-factor scoring. Covers 73 stocks across US, HK, and A-share markets. EU AI Act Art.50 compliant. Open source (MIT).
