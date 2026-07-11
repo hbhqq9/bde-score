@@ -9,6 +9,13 @@
     <meta property="og:description" content="Free, open-source, covers 74 stocks across 3 markets. Try it now with one curl command.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://hbhqq9.github.io/bde-score/">
+    <meta property="og:image" content="https://hbhqq9.github.io/bde-score/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BDE Score™ - Open Source Multi-Market Stock Analysis">
+    <meta name="twitter:description" content="Free open-source stock analysis API covering US, HK, and China A-share markets. 73 stocks, zero registration, one-line API access.">
+    <meta name="keywords" content="stock analysis API, multi-factor scoring, quantitative finance, US stocks, HK stocks, China A-shares, open source stock tool, BDE Score, multi-market analysis, EU AI Act compliant, financial API, stock scoring, free stock API, Python stock analysis, algorithmic trading tool">
+    <meta name="author" content="BDE Score Team">
+    <link rel="canonical" href="https://hbhqq9.github.io/bde-score/">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e0e0e0; }
@@ -130,6 +137,28 @@
         <p style="margin-top:10px">⚠️ This tool is for technical research only. Not investment advice.</p>
     </footer>
 
+    <!-- SoftwareApplication Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "BDE Score",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "description": "Open-source multi-factor stock analysis API covering US, HK, and China A-share markets. 73 stocks, transparent scoring, zero registration required.",
+        "url": "https://hbhqq9.github.io/bde-score/",
+        "codeRepository": "https://github.com/hbhqq9/bde-score",
+        "license": "https://opensource.org/licenses/MIT",
+        "programmingLanguage": "Python",
+        "featureList": "Multi-market stock analysis, BDE scoring, REST API, GitHub Action, factor breakdown, historical data"
+    }
+    </script>
+
     <!-- FAQ Schema for SEO -->
     <script type="application/ld+json">
     {
@@ -141,26 +170,61 @@
                 "name": "What is BDE Score?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "BDE Score is an open-source multi-factor stock analysis tool covering 74 stocks across US, HK, and China A-share markets. It provides composite scores based on fundamentals, technicals, risk, and sentiment analysis."
+                    "text": "BDE Score is an open-source multi-factor stock analysis tool covering 73 stocks across US, HK, and China A-share markets. It provides transparent composite scores based on momentum, mean reversion, volume, volatility, and trend factors."
                 }
             },
             {
                 "@type": "Question",
-                "name": "Is BDE Score free?",
+                "name": "Is BDE Score free to use?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes, BDE Score is free and open source under MIT license. No registration required for basic API access."
+                    "text": "Yes, BDE Score is free and open source under MIT license. No registration required for basic API access. Premium tier at $29/month offers unlimited API access and 365-day history."
                 }
             },
             {
                 "@type": "Question",
-                "name": "How do I use BDE Score?",
+                "name": "How do I analyze stocks with BDE Score API?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Simply make an HTTP request: curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?symbol=AAPL for individual stocks, or ?market=ALL for full market analysis."
+                    "text": "Use curl to get scores: curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/snapshot?market=ALL for all markets, or ?market=US for US stocks only. Python, JavaScript, and any HTTP client work."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I compare stocks across different markets?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. BDE Score provides unified scoring across US, HK, and China A-share markets, enabling direct comparison of stocks like AAPL, 00700 (Tencent), and SH600519 (Moutai) on equal footing."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is BDE Score compliant with EU AI Act?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. BDE Score is designed to comply with EU AI Act Article 50 transparency requirements. All scoring factors are explainable — you can see exactly why each stock received its score."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How does BDE Score differ from other stock analysis tools?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "BDE Score is transparent (5 explainable factors vs black-box AI), multi-market (US/HK/A-share in one API), free (no registration), and open source. It focuses on comparable cross-market scoring rather than individual market depth."
                 }
             }
         ]
+    }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "BDE Score",
+        "url": "https://github.com/hbhqq9/bde-score",
+        "description": "Open-source multi-factor stock analysis platform"
     }
     </script>
 </body>
