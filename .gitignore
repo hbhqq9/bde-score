@@ -41,3 +41,5 @@ local_deploy/
 # MCP Publisher tokens (NEVER commit)
 .mcpregistry_*
 mcp/.mcpregistry_*
+bde_api.py.bak.unsecured
+*.bak.*
