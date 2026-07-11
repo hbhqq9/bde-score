@@ -1,45 +1,33 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
   "name": "io.github.hbhqq9/bde-score",
-  "description": "Multi-market stock analysis MCP server providing BDE scoring (fundamental, technical, ESG) for US, HK, and China A-share markets. Covers 3 major exchanges with unified methodology.",
+  "description": "Multi-market stock analysis MCP server with BDE scoring for US, HK, and CN stocks.",
   "version": "1.0.0",
   "repoUrl": "https://github.com/hbhqq9/bde-score",
   "remote": {
     "transport": "streamable-http",
     "url": "https://atlantic-remains-atomic-floor.trycloudflare.com/mcp"
   },
-  "packages": [
-    {
-      "registry_type": "pypi",
-      "identifier": "bde-score",
-      "version": "1.0.0",
-      "transport": {
-        "type": "stdio",
-        "command": "python",
-        "args": ["-m", "bde_score_mcp"]
-      }
-    }
-  ],
   "tools": [
     {
       "name": "get_bde_score",
-      "description": "Get comprehensive BDE Score for a stock including fundamental, technical, and ESG dimensions. Supports US, HK, and China A-share markets."
+      "description": "Get BDE Score composite analysis (0-100) for a stock."
     },
     {
       "name": "get_multi_market_comparison",
-      "description": "Compare the same company across US/HK/CN markets with BDE scores for each listing."
+      "description": "Compare same company across US/HK/CN markets."
     },
     {
       "name": "get_stock_screener",
-      "description": "Screen stocks by BDE score criteria across multiple markets with customizable filters."
+      "description": "Screen stocks by BDE score criteria."
     },
     {
       "name": "get_esg_analysis",
-      "description": "Detailed ESG (Environmental, Social, Governance) analysis for a specific stock."
+      "description": "ESG analysis for a stock."
     },
     {
       "name": "get_sector_analysis",
-      "description": "Sector-level analysis with average BDE scores and top performers by sector."
+      "description": "Sector-level BDE analysis and rankings."
     }
   ]
 }
