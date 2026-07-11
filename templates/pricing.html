@@ -15,7 +15,7 @@
 <body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 text-white">
     <!-- Header -->
     <nav class="flex items-center justify-between px-6 py-4 border-b border-slate-700/50">
-        <a href="/" class="flex items-center gap-2 text-xl font-bold">
+        <a class="i18n-link flex items-center gap-2 text-xl font-bold" href="/?lang=">
             <span class="text-blue-400">BDE</span> Score
         </a>
         <div class="flex items-center gap-2">
@@ -133,10 +133,10 @@
             <p data-i18n="footer_note">所有价格以人民币(CNY)计价，支持USDC支付。</p>
             <p class="text-xs" data-i18n="footer_disclaimer">技术服务，非金融投资建议。</p>
             <div class="flex justify-center gap-4 mt-4">
-                <a href="/" class="text-slate-400 hover:text-white transition-colors" data-i18n="link_home">首页</a>
-                <a href="/dashboard" class="text-slate-400 hover:text-white transition-colors" data-i18n="link_dashboard">Dashboard</a>
-                <a href="/terms" class="text-slate-400 hover:text-white transition-colors" data-i18n="link_terms">服务条款</a>
-                <a href="/privacy" class="text-slate-400 hover:text-white transition-colors" data-i18n="link_privacy">隐私政策</a>
+                <a class="i18n-link text-slate-400 hover:text-white transition-colors" href="/?lang=" data-i18n="link_home">首页</a>
+                <a class="i18n-link text-slate-400 hover:text-white transition-colors" href="/dashboard?lang=" data-i18n="link_dashboard">Dashboard</a>
+                <a class="i18n-link text-slate-400 hover:text-white transition-colors" href="/terms?lang=" data-i18n="link_terms">服务条款</a>
+                <a class="i18n-link text-slate-400 hover:text-white transition-colors" href="/privacy?lang=" data-i18n="link_privacy">隐私政策</a>
             </div>
         </div>
     </div>
@@ -152,7 +152,7 @@
                     <p class="text-xs text-slate-500 mb-3" data-i18n="modal_usdc_hint">USDC支付（Polygon/ERC20）将在支付页面处理</p>
                 </div>
                 <div class="flex gap-3">
-                    <a href="/payment" id="modalPayBtn" class="flex-1 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 font-medium text-center transition-colors" data-i18n="modal_pay">前往支付</a>
+                    <a class="i18n-link flex-1 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 font-medium text-center transition-colors" href="/payment?lang=" id="modalPayBtn" data-i18n="modal_pay">前往支付</a>
                     <button onclick="closeModal()" class="px-4 py-2.5 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors" data-i18n="modal_cancel">取消</button>
                 </div>
             </div>
@@ -325,6 +325,11 @@
             document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
             document.querySelectorAll('.lang-btn').forEach(b => { b.className = 'lang-btn px-2 py-1 text-xs rounded ' + (b.textContent.trim() === ({zh:'中',en:'EN',ja:'日'}[lang]) ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-300'); });
             localStorage.setItem('bde_lang', lang);
+            // Update cross-page links with lang param
+            document.querySelectorAll('.i18n-link').forEach(a => {
+                const href = a.getAttribute('href').split('?')[0]; // Remove existing lang param
+                a.setAttribute('href', href + '?lang=' + lang);
+            });
         }
 
         function selectTier(tier) {
@@ -344,6 +349,11 @@
         const browserLang = navigator.language.startsWith('zh') ? 'zh' : navigator.language.startsWith('ja') ? 'ja' : 'en';
         const initLang = urlLang || savedLang || browserLang;
         if (initLang && i18n[initLang]) { setLang(initLang); }
+        // Set initial cross-page links
+        document.querySelectorAll('.i18n-link').forEach(a => {
+            const href = a.getAttribute('href').split('?')[0];
+            a.setAttribute('href', href + '?lang=' + initLang);
+        });
 
         document.getElementById('purchaseModal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
