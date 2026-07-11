@@ -134,3 +134,20 @@ BDE Score's AI agent integration means:
 ---
 
 *⚠️ BDE Score is for technical research only. Not financial advice.*
+
+## 📋 MCP Registry
+
+BDE Score is submitted to the [Official MCP Registry](https://github.com/modelcontextprotocol/registry).
+
+Registry entry: `mcp/server.json`
+
+### Discovery Platforms
+
+| Platform | Status | Link |
+|----------|--------|------|
+| Official MCP Registry | 📝 Pending | [registry.modelcontextprotocol.io](https://registry.modelcontextprotocol.io) |
+| awesome-mcp-servers (punkpeye) | 📝 Pending | [GitHub](https://github.com/punkpeye/awesome-mcp-servers) |
+| awesome-mcp-servers (wong2) | 📝 Pending | [GitHub](https://github.com/wong2/awesome-mcp-servers) |
+| awesome-mcp-servers (appcypher) | 📝 Pending | [GitHub](https://github.com/appcypher/awesome-mcp-servers) |
+| MCP.so | 📝 Pending | [mcp.so](https://mcp.so) |
+| Smithery | 📝 Pending | [smithery.ai](https://smithery.ai) |
