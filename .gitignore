@@ -44,3 +44,11 @@ mcp/.mcpregistry_*
 bde_api.py.bak.unsecured
 *.bak.*
 keepalive.log
+*.wallet
+secrets.json
+*private*key*
+.credentials
+.trufflehog
+.gitleaks.toml
+*_audit.log
+*.audit.json
