@@ -1,0 +1,11 @@
+## 新Discussion（2026-07-11 23:20恢复）
+| # | Repo | Stars | Discussion | 状态 |
+|---|------|-------|-----------|------|
+| 1 | AI4Finance-Foundation/FinRL | 15.7K | #1426 | ✅ NEW |
+| 2 | georgezouq/awesome-ai-in-finance | 6.2K | #187 | ✅ NEW |
+| 3 | paperswithbacktest/awesome-systematic-trading | 8.5K | #68 | ✅ NEW |
+
+旧Discussion（已失效→已替代）：
+- ai4finance-foundation/finrl-public #1425 → 404（仓库不存在）
+- techandy42/awesome-ai-in-finance #185 → 404（仓库不存在）
+- seanliu22/awesome_systematic-trading #67 → 404（仓库不存在）

@@ -18,9 +18,14 @@ import sys
 import time
 import hashlib
 import secrets
+import logging
 import httpx
 from datetime import datetime
 from collections import defaultdict
+
+# Security: Audit logger (铁律V)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
+logger = logging.getLogger('bde-mcp')
 from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
 from mcp.types import ToolAnnotations
@@ -133,7 +138,10 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                     headers={"Retry-After": str(WINDOW_SECONDS), **self._security_headers()}
                 )
         
-        # 3. Process request
+        # 3. Audit log (铁律V - 审计日志)
+        logger.info(f"MCP request: {request.method} {request.url.path} from {client_ip}")
+        
+        # 4. Process request
         response = await call_next(request)
         
         # 4. Security headers (Constitution v2.0 §5.2)
@@ -178,8 +186,15 @@ async def call_bde_api(endpoint: str, params: dict = None) -> dict:
                 resp = await client.get(f"{BDE_API_BASE}{endpoint}")
             resp.raise_for_status()
             return resp.json()
+        except httpx.HTTPStatusError as e:
+            logger.warning(f"API error for {endpoint}: HTTP {e.response.status_code}")
+            return {"error": f"Data service returned an error. Please check symbol/market and try again."}
+        except httpx.RequestError as e:
+            logger.error(f"Request failed for {endpoint}: {type(e).__name__}")
+            return {"error": "Data service temporarily unavailable. Please try again later."}
         except Exception as e:
-            return {"error": str(e)}
+            logger.error(f"Unexpected error in {endpoint}: {type(e).__name__}: {str(e)}")
+            return {"error": "Internal error. Please try again or check your parameters."}
 
 
 # ============================================================================

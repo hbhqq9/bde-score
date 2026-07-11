@@ -1182,6 +1182,14 @@ async def serve_llms_txt():
     return PlainTextResponse(LLMS_TXT, media_type="text/plain")
 
 
+LLMS_INSTALL_MD = open("docs/llms-install.md", "r").read() if os.path.exists("docs/llms-install.md") else "# BDE Score Installation Guide\nSee https://hbhqq9.github.io/bde-score/llms-install.md"
+
+@app.get("/llms-install.md")
+async def serve_llms_install():
+    """GEO入口 — Agent安装指南发现协议"""
+    return PlainTextResponse(LLMS_INSTALL_MD, media_type="text/markdown")
+
+
 LLMS_FULL_TXT = """# BDE Score™
 
 > AI-powered multi-market stock analysis with transparent multi-factor scoring. Covers 73 stocks across US, HK, and A-share markets. EU AI Act Art.50 compliant. Open source (MIT).
