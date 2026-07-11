@@ -21,9 +21,7 @@
             --border: rgba(255, 255, 255, 0.06);
             --usdc-blue: #2775ca;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
             background: var(--bg-primary);
@@ -34,318 +32,142 @@
             align-items: center;
             padding: 2rem 1rem;
         }
+        .container { max-width: 520px; width: 100%; }
 
-        .container {
-            max-width: 520px;
-            width: 100%;
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent), #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.25rem;
-        }
-        .header p {
-            color: var(--text-muted);
-            font-size: 0.875rem;
-        }
-
-        /* Card */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Price Display */
-        .price-section {
-            text-align: center;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 1.5rem;
-        }
-        .price-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
-        }
-        .price-amount {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            line-height: 1;
-        }
-        .price-amount .currency {
-            font-size: 1.5rem;
-            color: var(--usdc-blue);
-            vertical-align: super;
-        }
-        .price-period {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
-        }
-        .price-chain {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
-            margin-top: 0.75rem;
-            padding: 0.25rem 0.75rem;
-            background: rgba(39, 117, 202, 0.1);
-            border: 1px solid rgba(39, 117, 202, 0.2);
-            border-radius: 20px;
-            font-size: 0.75rem;
-            color: var(--usdc-blue);
-        }
-        .price-chain .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--usdc-blue);
-        }
-
-        /* QR Section */
-        .qr-section {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        .qr-wrapper {
-            display: inline-block;
-            padding: 12px;
-            background: #fff;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
-        .qr-wrapper img {
-            width: 180px;
-            height: 180px;
-            display: block;
-        }
-        .qr-wrapper canvas {
-            display: block;
-        }
-
-        /* Address */
-        .address-section {
-            margin-bottom: 1.5rem;
-        }
-        .address-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
-        .address-box {
+        /* Nav */
+        .nav-bar {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            background: var(--bg-elevated);
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        .nav-bar .brand {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .lang-group { display: flex; gap: 4px; }
+        .lang-btn {
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 6px;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0.75rem 1rem;
-        }
-        .address-text {
-            flex: 1;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 0.8rem;
+            background: var(--bg-elevated);
             color: var(--text-secondary);
-            word-break: break-all;
-            line-height: 1.4;
-        }
-        .copy-btn {
-            flex-shrink: 0;
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 0.5rem 0.75rem;
-            font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.2s;
+        }
+        .lang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        /* Header */
+        .header { text-align: center; margin-bottom: 2rem; }
+        .header h1 {
+            font-size: 1.5rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 0.25rem;
+        }
+        .header p { color: var(--text-muted); font-size: 0.875rem; }
+
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem;
+        }
+
+        .price-section { text-align: center; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .price-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+        .price-amount { font-size: 3rem; font-weight: 800; color: var(--text-primary); line-height: 1; }
+        .price-amount .currency { font-size: 1.5rem; color: var(--usdc-blue); vertical-align: super; }
+        .price-period { font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.25rem; }
+        .price-chain {
+            display: inline-flex; align-items: center; gap: 0.375rem;
+            margin-top: 0.75rem; padding: 0.25rem 0.75rem;
+            background: rgba(39,117,202,0.1); border: 1px solid rgba(39,117,202,0.2);
+            border-radius: 20px; font-size: 0.75rem; color: var(--usdc-blue);
+        }
+        .price-chain .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--usdc-blue); }
+
+        .qr-section { text-align: center; margin-bottom: 1.5rem; }
+        .qr-wrapper {
+            display: inline-block; padding: 12px; background: #fff;
+            border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .qr-wrapper img { width: 180px; height: 180px; display: block; }
+        .qr-wrapper canvas { display: block; }
+
+        .address-section { margin-bottom: 1.5rem; }
+        .address-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .address-box {
+            display: flex; align-items: center; gap: 0.5rem;
+            background: var(--bg-elevated); border: 1px solid var(--border);
+            border-radius: 10px; padding: 0.75rem 1rem;
+        }
+        .address-text {
+            flex: 1; font-family: 'SF Mono','Fira Code',monospace;
+            font-size: 0.8rem; color: var(--text-secondary); word-break: break-all; line-height: 1.4;
+        }
+        .copy-btn {
+            flex-shrink: 0; background: var(--accent); color: #fff;
+            border: none; border-radius: 8px; padding: 0.5rem 0.75rem;
+            font-size: 0.75rem; cursor: pointer; transition: all 0.2s;
         }
         .copy-btn:hover { opacity: 0.85; transform: scale(1.02); }
         .copy-btn:active { transform: scale(0.98); }
 
-        /* Status */
-        .status-section {
-            text-align: center;
-            padding: 1.25rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-        }
-        .status-waiting {
-            background: rgba(234, 179, 8, 0.08);
-            border: 1px solid rgba(234, 179, 8, 0.2);
-        }
-        .status-confirmed {
-            background: rgba(34, 197, 94, 0.08);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-        }
-        .status-error {
-            background: rgba(239, 68, 68, 0.08);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-        .status-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        .status-text {
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-        .status-detail {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
+        .status-section { text-align: center; padding: 1.25rem; border-radius: 12px; margin-bottom: 1rem; }
+        .status-waiting { background: rgba(234,179,8,0.08); border: 1px solid rgba(234,179,8,0.2); }
+        .status-confirmed { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); }
+        .status-error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); }
+        .status-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .status-text { font-size: 0.875rem; font-weight: 600; }
+        .status-detail { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
         .status-waiting .status-icon { animation: pulse 2s infinite; }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-        /* Spinner */
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 0.5rem;
-        }
+        .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 0.5rem; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Key Display */
         .key-display {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(59, 130, 246, 0.1));
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            margin-top: 1rem;
-            display: none;
+            background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(59,130,246,0.1));
+            border: 1px solid rgba(34,197,94,0.3); border-radius: 12px;
+            padding: 1.5rem; text-align: center; margin-top: 1rem; display: none;
         }
         .key-display.show { display: block; }
-        .key-label {
-            font-size: 0.75rem;
-            color: var(--success);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.75rem;
-        }
+        .key-label { font-size: 0.75rem; color: var(--success); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
         .key-value {
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 0.9rem;
-            color: var(--text-primary);
-            background: var(--bg-primary);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            word-break: break-all;
-            margin-bottom: 0.75rem;
+            font-family: 'SF Mono','Fira Code',monospace; font-size: 0.9rem;
+            color: var(--text-primary); background: var(--bg-primary);
+            padding: 0.75rem 1rem; border-radius: 8px; word-break: break-all; margin-bottom: 0.75rem;
         }
-        .key-usage {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-        .key-usage code {
-            background: var(--bg-elevated);
-            padding: 0.15rem 0.4rem;
-            border-radius: 4px;
-            font-size: 0.7rem;
-        }
+        .key-usage { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+        .key-usage code { background: var(--bg-elevated); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; }
 
-        /* TX Input */
-        .tx-input-section {
-            margin-top: 1rem;
-        }
-        .tx-input-group {
-            display: flex;
-            gap: 0.5rem;
-        }
+        .tx-input-section { margin-top: 1rem; }
+        .tx-input-group { display: flex; gap: 0.5rem; }
         .tx-input {
-            flex: 1;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.6rem 0.75rem;
-            color: var(--text-primary);
-            font-family: monospace;
-            font-size: 0.8rem;
-            outline: none;
+            flex: 1; background: var(--bg-elevated); border: 1px solid var(--border);
+            border-radius: 8px; padding: 0.6rem 0.75rem; color: var(--text-primary);
+            font-family: monospace; font-size: 0.8rem; outline: none;
         }
         .tx-input:focus { border-color: var(--accent); }
         .tx-input::placeholder { color: var(--text-muted); }
 
-        /* Features */
-        .features {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-            margin-top: 1.5rem;
-        }
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-        .feature-item .check {
-            color: var(--success);
-            font-weight: bold;
-        }
+        .features { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1.5rem; }
+        .feature-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--text-secondary); }
+        .feature-item .check { color: var(--success); font-weight: bold; }
 
-        /* Footer */
-        .footer {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-        .footer a {
-            color: var(--accent);
-            text-decoration: none;
-        }
+        .footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: var(--text-muted); line-height: 1.5; }
+        .footer a { color: var(--accent); text-decoration: none; }
 
-        /* Toast */
         .toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--bg-elevated);
-            color: var(--text-primary);
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            font-size: 0.875rem;
-            opacity: 0;
-            transition: all 0.3s;
-            z-index: 100;
-            border: 1px solid var(--border);
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--bg-elevated); color: var(--text-primary); padding: 0.75rem 1.5rem;
+            border-radius: 10px; font-size: 0.875rem; opacity: 0; transition: all 0.3s;
+            z-index: 100; border: 1px solid var(--border);
         }
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* Responsive */
         @media (max-width: 480px) {
             body { padding: 1rem 0.5rem; }
             .card { padding: 1.25rem; }
@@ -357,93 +179,246 @@
 </head>
 <body>
     <div class="container">
+        <!-- Nav with language switcher -->
+        <div class="nav-bar">
+            <a class="brand i18n-link" href="/?lang=">BDE Score™</a>
+            <div class="lang-group">
+                <button class="lang-btn" onclick="setLang('zh')">中</button>
+                <button class="lang-btn" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('ja')">日</button>
+            </div>
+        </div>
+
         <!-- Header -->
         <div class="header">
-            <h1>📊 BDE Score™ Premium</h1>
-            <p>Activate with USDC on Base — Zero account needed</p>
+            <h1 data-i18n="header_title">📊 BDE Score™ Premium</h1>
+            <p data-i18n="header_desc">使用 Base 链上 USDC 激活 — 无需注册账户</p>
         </div>
 
         <!-- Payment Card -->
         <div class="card">
-            <!-- Price -->
             <div class="price-section">
-                <div class="price-label">Amount Due</div>
+                <div class="price-label" data-i18n="amount_due">应付金额</div>
                 <div class="price-amount">
                     <span class="currency">$</span>29
                 </div>
-                <div class="price-period">per month · USDC on Base</div>
+                <div class="price-period" data-i18n="price_period">每月 · Base链上USDC</div>
                 <div class="price-chain">
                     <span class="dot"></span>
-                    Base Network (Chain ID: 8453)
+                    <span data-i18n="chain_info">Base Network (Chain ID: 8453)</span>
                 </div>
             </div>
 
-            <!-- QR Code -->
             <div class="qr-section">
                 <div class="qr-wrapper">
                     <canvas id="qr-canvas"></canvas>
                 </div>
             </div>
 
-            <!-- Wallet Address -->
             <div class="address-section">
-                <div class="address-label">Send USDC to this address</div>
+                <div class="address-label" data-i18n="send_usdc">将 USDC 发送至以下地址</div>
                 <div class="address-box">
                     <span class="address-text" id="wallet-address">Loading...</span>
-                    <button class="copy-btn" onclick="copyAddress()">Copy</button>
+                    <button class="copy-btn" onclick="copyAddress()" data-i18n="btn_copy">复制</button>
                 </div>
             </div>
 
-            <!-- Status -->
             <div id="status-section" class="status-section status-waiting">
                 <div class="status-icon">⏳</div>
-                <div class="status-text" id="status-text">Waiting for payment...</div>
-                <div class="status-detail" id="status-detail">Send exactly $29 USDC to the address above</div>
+                <div class="status-text" id="status-text" data-i18n="status_waiting">等待支付中...</div>
+                <div class="status-detail" id="status-detail" data-i18n="status_detail_waiting">请将正好 $29 USDC 发送至上方地址</div>
             </div>
 
-            <!-- Manual TX Verification -->
             <div class="tx-input-section">
-                <div class="address-label" style="margin-bottom: 0.5rem;">Already sent? Enter transaction hash to verify:</div>
+                <div class="address-label" style="margin-bottom: 0.5rem;" data-i18n="tx_hint">已发送？输入交易哈希进行验证：</div>
                 <div class="tx-input-group">
                     <input type="text" class="tx-input" id="tx-input" placeholder="0x..." spellcheck="false">
-                    <button class="copy-btn" onclick="verifyTx()">Verify</button>
+                    <button class="copy-btn" onclick="verifyTx()" data-i18n="btn_verify">验证</button>
                 </div>
             </div>
 
-            <!-- API Key Display -->
             <div class="key-display" id="key-display">
-                <div class="key-label">✅ Premium Activated</div>
+                <div class="key-label" data-i18n="premium_activated">✅ Premium 已激活</div>
                 <div class="key-value" id="api-key-value"></div>
-                <div class="key-usage">
-                    Use this key in API requests:<br>
+                <div class="key-usage" data-i18n="key_usage_hint">
+                    在API请求中使用此密钥：<br>
                     <code>curl -H "X-API-Key: YOUR_KEY" /api/snapshot</code>
                 </div>
             </div>
 
-            <!-- Features -->
             <div class="features">
-                <div class="feature-item"><span class="check">✓</span> Unlimited API queries</div>
-                <div class="feature-item"><span class="check">✓</span> US / HK / A-share markets</div>
-                <div class="feature-item"><span class="check">✓</span> Real-time snapshots</div>
-                <div class="feature-item"><span class="check">✓</span> Zero personal data</div>
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_unlimited">无限API查询</span></div>
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_markets">美/港/A股市场</span></div>
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_realtime">实时快照</span></div>
+                <div class="feature-item"><span class="check">✓</span> <span data-i18n="feat_privacy">零个人数据</span></div>
             </div>
         </div>
 
-        <!-- Footer -->
         <div class="footer">
-            <p>⚠️ Technical analysis tool only. Not investment advice.</p>
-            <p>Powered by <a href="/">BDE Score™</a> · On-chain payments via Base</p>
+            <p data-i18n="footer_disclaimer">⚠️ 仅为技术分析工具，非金融投资建议。</p>
+            <p>Powered by <a class="i18n-link" href="/?lang=" data-i18n="footer_bde">BDE Score™</a> · <span data-i18n="footer_chain">链上支付 via Base</span></p>
         </div>
     </div>
 
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
     // ============================================================
-    // Config (loaded from API or hardcoded fallback)
+    // i18n
     // ============================================================
-    const CONFIG = {
+    var currentLang = 'zh';
+    var i18n = {
+        zh: {
+            header_title: '📊 BDE Score™ Premium',
+            header_desc: '使用 Base 链上 USDC 激活 — 无需注册账户',
+            amount_due: '应付金额',
+            price_period: '每月 · Base链上USDC',
+            chain_info: 'Base Network (Chain ID: 8453)',
+            send_usdc: '将 USDC 发送至以下地址',
+            btn_copy: '复制',
+            status_waiting: '等待支付中...',
+            status_detail_waiting: '请将正好 $29 USDC 发送至上方地址',
+            tx_hint: '已发送？输入交易哈希进行验证：',
+            btn_verify: '验证',
+            premium_activated: '✅ Premium 已激活',
+            key_usage_hint: '在API请求中使用此密钥：<br><code>curl -H "X-API-Key: YOUR_KEY" /api/snapshot</code>',
+            feat_unlimited: '无限API查询',
+            feat_markets: '美/港/A股市场',
+            feat_realtime: '实时快照',
+            feat_privacy: '零个人数据',
+            footer_disclaimer: '⚠️ 仅为技术分析工具，非金融投资建议。',
+            footer_bde: 'BDE Score™',
+            footer_chain: '链上支付 via Base',
+            toast_copied: '地址已复制！',
+            toast_enter_tx: '请输入交易哈希',
+            toast_invalid_tx: '交易哈希格式无效',
+            status_payment_detected: '已检测到支付！',
+            status_waiting_confirm: '等待区块确认中...',
+            status_confirmed: '支付确认！',
+            status_activating: '已确认，激活中...',
+            status_generating_key: '正在生成API Key...',
+            status_verified: '验证成功！',
+            status_verify_fail: '验证失败',
+            status_no_payment: '未找到有效支付',
+            status_network_error: '网络错误',
+            status_retry: '请稍后重试',
+            status_check_tx: '请检查交易哈希后重试'
+        },
+        en: {
+            header_title: '📊 BDE Score™ Premium',
+            header_desc: 'Activate with USDC on Base — Zero account needed',
+            amount_due: 'Amount Due',
+            price_period: 'per month · USDC on Base',
+            chain_info: 'Base Network (Chain ID: 8453)',
+            send_usdc: 'Send USDC to this address',
+            btn_copy: 'Copy',
+            status_waiting: 'Waiting for payment...',
+            status_detail_waiting: 'Send exactly $29 USDC to the address above',
+            tx_hint: 'Already sent? Enter transaction hash to verify:',
+            btn_verify: 'Verify',
+            premium_activated: '✅ Premium Activated',
+            key_usage_hint: 'Use this key in API requests:<br><code>curl -H "X-API-Key: YOUR_KEY" /api/snapshot</code>',
+            feat_unlimited: 'Unlimited API queries',
+            feat_markets: 'US / HK / A-share markets',
+            feat_realtime: 'Real-time snapshots',
+            feat_privacy: 'Zero personal data',
+            footer_disclaimer: '⚠️ Technical analysis tool only. Not investment advice.',
+            footer_bde: 'BDE Score™',
+            footer_chain: 'On-chain payments via Base',
+            toast_copied: 'Address copied!',
+            toast_enter_tx: 'Please enter a transaction hash',
+            toast_invalid_tx: 'Invalid transaction hash format',
+            status_payment_detected: 'Payment detected!',
+            status_waiting_confirm: 'Waiting for block confirmations...',
+            status_confirmed: 'Payment confirmed!',
+            status_activating: 'Confirmed, activating...',
+            status_generating_key: 'Generating your API Key...',
+            status_verified: 'Verification successful!',
+            status_verify_fail: 'Verification failed',
+            status_no_payment: 'No valid payment found',
+            status_network_error: 'Network error',
+            status_retry: 'Please try again later',
+            status_check_tx: 'Check the transaction hash and try again'
+        },
+        ja: {
+            header_title: '📊 BDE Score™ Premium',
+            header_desc: 'BaseチェーンのUSDCで有効化 — アカウント登録不要',
+            amount_due: '支払金額',
+            price_period: '月額 · BaseチェーンUSDC',
+            chain_info: 'Base Network (Chain ID: 8453)',
+            send_usdc: '以下のアドレスにUSDCを送信',
+            btn_copy: 'コピー',
+            status_waiting: '支払い待ち...',
+            status_detail_waiting: '上記アドレスに正確に$29 USDCを送信してください',
+            tx_hint: '送信済み？トランザクションハッシュを入力して検証：',
+            btn_verify: '検証',
+            premium_activated: '✅ Premium 有効化済み',
+            key_usage_hint: 'APIリクエストにこのキーを使用：<br><code>curl -H "X-API-Key: YOUR_KEY" /api/snapshot</code>',
+            feat_unlimited: '無制限APIクエリ',
+            feat_markets: '米国/香港/A株市場',
+            feat_realtime: 'リアルタイムスナップショット',
+            feat_privacy: '個人データゼロ',
+            footer_disclaimer: '⚠️ 技術分析ツールのみの提供であり、金融投资建议ではありません。',
+            footer_bde: 'BDE Score™',
+            footer_chain: 'Baseチェーン決済',
+            toast_copied: 'アドレスをコピーしました！',
+            toast_enter_tx: 'トランザクションハッシュを入力してください',
+            toast_invalid_tx: 'トランザクションハッシュの形式が無効です',
+            status_payment_detected: '支払いを検出しました！',
+            status_waiting_confirm: 'ブロック確認待ち...',
+            status_confirmed: '支払い確認済み！',
+            status_activating: '確認済み、有効化中...',
+            status_generating_key: 'APIキーを生成中...',
+            status_verified: '検証成功！',
+            status_verify_fail: '検証失敗',
+            status_no_payment: '有効な支払いが見つかりません',
+            status_network_error: 'ネットワークエラー',
+            status_retry: '後でもう一度お試しください',
+            status_check_tx: 'トランザクションハッシュを確認して再試行してください'
+        }
+    };
+
+    function t(key) { return i18n[currentLang]?.[key] || i18n.zh[key] || key; }
+
+    function setLang(lang) {
+        if (!i18n[lang]) return;
+        currentLang = lang;
+        document.querySelectorAll('[data-i18n]').forEach(function(el) {
+            var key = el.getAttribute('data-i18n');
+            var val = t(key);
+            if (val && (val.indexOf('<') > -1)) { el.innerHTML = val; } else { el.textContent = val || key; }
+        });
+        document.querySelectorAll('.lang-btn').forEach(function(b) {
+            var map = {zh:'中', en:'EN', ja:'日'};
+            b.className = 'lang-btn' + (b.textContent.trim() === map[lang] ? ' active' : '');
+        });
+        localStorage.setItem('bde_lang', lang);
+        // Update cross-page links
+        document.querySelectorAll('.i18n-link').forEach(function(a) {
+            var base = a.getAttribute('href').split('?')[0];
+            a.setAttribute('href', base + '?lang=' + lang);
+        });
+    }
+
+    // Init: URL > localStorage > browser > default zh
+    (function() {
+        var urlLang = new URLSearchParams(window.location.search).get('lang');
+        var savedLang = localStorage.getItem('bde_lang');
+        var nav = navigator.language || 'en';
+        var browserLang = nav.indexOf('zh') === 0 ? 'zh' : nav.indexOf('ja') === 0 ? 'ja' : 'en';
+        var initLang = urlLang || savedLang || browserLang;
+        if (i18n[initLang]) setLang(initLang); else setLang('zh');
+        // Set initial cross-page links
+        document.querySelectorAll('.i18n-link').forEach(function(a) {
+            var base = a.getAttribute('href').split('?')[0];
+            a.setAttribute('href', base + '?lang=' + initLang);
+        });
+    })();
+
+    // ============================================================
+    // Config
+    // ============================================================
+    var CONFIG = {
         walletAddress: '{{ WALLET_ADDRESS }}',
         usdcContract: '{{ USDC_CONTRACT }}',
         priceUsd: {{ PREMIUM_PRICE_USD }},
@@ -452,71 +427,39 @@
     };
 
     // ============================================================
-    // QR Code Generator (lightweight, no external dependency)
+    // QR Code
     // ============================================================
     function generateQR(text, canvas) {
-        // Use a simple QR code library via CDN fallback
-        const ctx = canvas.getContext('2d');
-        const size = 180;
-        canvas.width = size;
-        canvas.height = size;
-
-        // Attempt to load qrcode library
-        const script = document.createElement('script');
+        var ctx = canvas.getContext('2d');
+        var size = 180;
+        canvas.width = size; canvas.height = size;
+        var script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
         script.onload = function() {
             try {
-                const qr = qrcode(0, 'M');
-                qr.addData(text);
-                qr.make();
-
-                const moduleCount = qr.getModuleCount();
-                const cellSize = size / moduleCount;
-
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, size, size);
-
+                var qr = qrcode(0, 'M');
+                qr.addData(text); qr.make();
+                var mc = qr.getModuleCount();
+                var cs = size / mc;
+                ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
                 ctx.fillStyle = '#000000';
-                for (let row = 0; row < moduleCount; row++) {
-                    for (let col = 0; col < moduleCount; col++) {
-                        if (qr.isDark(row, col)) {
-                            ctx.fillRect(
-                                Math.round(col * cellSize),
-                                Math.round(row * cellSize),
-                                Math.ceil(cellSize),
-                                Math.ceil(cellSize)
-                            );
+                for (var r = 0; r < mc; r++) {
+                    for (var c = 0; c < mc; c++) {
+                        if (qr.isDark(r, c)) {
+                            ctx.fillRect(Math.round(c*cs), Math.round(r*cs), Math.ceil(cs), Math.ceil(cs));
                         }
                     }
                 }
-            } catch(e) {
-                // Fallback: show address as text
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, size, size);
-                ctx.fillStyle = '#000';
-                ctx.font = '8px monospace';
-                ctx.textAlign = 'center';
-                const lines = text.match(/.{1,22}/g) || [text];
-                lines.forEach((line, i) => {
-                    ctx.fillText(line, size/2, 30 + i * 12);
-                });
-            }
+            } catch(e) { renderFallback(ctx, text, size); }
         };
-        script.onerror = function() {
-            // No CDN: render address as text in canvas
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, size, size);
-            ctx.fillStyle = '#000';
-            ctx.font = '7px monospace';
-            ctx.textAlign = 'center';
-            const lines = text.match(/.{1,22}/g) || [text];
-            lines.forEach((line, i) => {
-                ctx.fillText(line, size/2, 30 + i * 11);
-            });
-            ctx.font = '9px sans-serif';
-            ctx.fillText('Scan address above', size/2, size - 15);
-        };
+        script.onerror = function() { renderFallback(ctx, text, size); };
         document.head.appendChild(script);
+    }
+    function renderFallback(ctx, text, size) {
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
+        ctx.fillStyle = '#000'; ctx.font = '7px monospace'; ctx.textAlign = 'center';
+        var lines = text.match(/.{1,22}/g) || [text];
+        lines.forEach(function(l, i) { ctx.fillText(l, size/2, 30 + i*11); });
     }
 
     // ============================================================
@@ -526,137 +469,113 @@
     generateQR(CONFIG.walletAddress, document.getElementById('qr-canvas'));
 
     // ============================================================
-    // Copy Address
+    // Copy
     // ============================================================
     function copyAddress() {
-        navigator.clipboard.writeText(CONFIG.walletAddress).then(() => {
-            showToast('Address copied!');
-        }).catch(() => {
-            // Fallback
-            const el = document.createElement('textarea');
+        navigator.clipboard.writeText(CONFIG.walletAddress).then(function() {
+            showToast(t('toast_copied'));
+        }).catch(function() {
+            var el = document.createElement('textarea');
             el.value = CONFIG.walletAddress;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-            showToast('Address copied!');
+            document.body.appendChild(el); el.select();
+            document.execCommand('copy'); document.body.removeChild(el);
+            showToast(t('toast_copied'));
         });
     }
 
     // ============================================================
-    // Status Polling
+    // Status
     // ============================================================
-    let pollTimer = null;
-    let paymentId = null;
+    var pollTimer = null, paymentId = null;
 
-    function setStatus(type, icon, text, detail) {
-        const section = document.getElementById('status-section');
+    function setStatus(type, icon, textKey, detailKey) {
+        var section = document.getElementById('status-section');
         section.className = 'status-section status-' + type;
         section.querySelector('.status-icon').textContent = icon;
-        document.getElementById('status-text').textContent = text;
-        document.getElementById('status-detail').textContent = detail;
+        document.getElementById('status-text').textContent = t(textKey);
+        document.getElementById('status-detail').textContent = t(detailKey);
     }
 
     async function pollPaymentStatus() {
         if (!paymentId) return;
-
         try {
-            const resp = await fetch(`/api/payment/status?payment_id=${paymentId}`);
-            const data = await resp.json();
-
+            var resp = await fetch('/api/payment/status?payment_id=' + paymentId);
+            var data = await resp.json();
             if (data.status === 'activated' && data.api_key) {
-                // Show key
-                setStatus('confirmed', '✅', 'Payment confirmed!', 'Your Premium API Key is ready below.');
+                setStatus('confirmed', '✅', 'status_confirmed', 'status_confirmed');
                 document.getElementById('api-key-value').textContent = data.api_key;
                 document.getElementById('key-display').classList.add('show');
                 clearInterval(pollTimer);
             } else if (data.status === 'confirmed') {
-                setStatus('confirmed', '⏳', 'Confirmed, activating...', 'Generating your API Key...');
+                setStatus('confirmed', '⏳', 'status_activating', 'status_generating_key');
             } else if (data.status === 'pending_confirmation') {
-                setStatus('waiting', '⏳', 'Payment detected!', 'Waiting for block confirmations...');
+                setStatus('waiting', '⏳', 'status_payment_detected', 'status_waiting_confirm');
             }
-        } catch(e) {
-            console.error('Poll error:', e);
-        }
+        } catch(e) { console.error('Poll error:', e); }
     }
 
     function startPolling(id) {
         paymentId = id;
-        setStatus('waiting', '⏳', 'Payment detected!', 'Waiting for block confirmations...');
+        setStatus('waiting', '⏳', 'status_payment_detected', 'status_waiting_confirm');
         pollTimer = setInterval(pollPaymentStatus, 5000);
         pollPaymentStatus();
     }
 
     // ============================================================
-    // Manual TX Verification
+    // Verify TX
     // ============================================================
     async function verifyTx() {
-        const txHash = document.getElementById('tx-input').value.trim();
-        if (!txHash) {
-            showToast('Please enter a transaction hash');
-            return;
-        }
-        if (!txHash.startsWith('0x') || txHash.length < 60) {
-            showToast('Invalid transaction hash format');
-            return;
-        }
+        var txHash = document.getElementById('tx-input').value.trim();
+        if (!txHash) { showToast(t('toast_enter_tx')); return; }
+        if (!txHash.startsWith('0x') || txHash.length < 60) { showToast(t('toast_invalid_tx')); return; }
 
-        setStatus('waiting', '⏳', 'Verifying transaction...', 'Checking on-chain data...');
-
+        setStatus('waiting', '⏳', 'status_waiting', 'status_waiting_confirm');
         try {
-            const resp = await fetch('/api/payment/verify', {
+            var resp = await fetch('/api/payment/verify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ tx_hash: txHash, email: null }),
             });
-            const data = await resp.json();
-
+            var data = await resp.json();
             if (data.success && data.payment_id) {
                 if (data.api_key) {
-                    // Already activated
-                    setStatus('confirmed', '✅', 'Payment verified!', 'Your Premium API Key is ready.');
+                    setStatus('confirmed', '✅', 'status_verified', 'status_verified');
                     document.getElementById('api-key-value').textContent = data.api_key;
                     document.getElementById('key-display').classList.add('show');
                 } else {
-                    // Start polling
                     startPolling(data.payment_id);
                 }
             } else if (data.error) {
-                setStatus('error', '❌', 'Verification failed', data.error);
+                setStatus('error', '❌', 'status_verify_fail', 'status_verify_fail');
             } else {
-                setStatus('error', '❌', 'No valid payment found', 'Check the transaction hash and try again.');
+                setStatus('error', '❌', 'status_no_payment', 'status_check_tx');
             }
         } catch(e) {
-            setStatus('error', '❌', 'Network error', 'Please try again later.');
+            setStatus('error', '❌', 'status_network_error', 'status_retry');
         }
     }
 
     // ============================================================
-    // Auto-detect: Periodically check if wallet received payment
+    // Auto-detect
     // ============================================================
     async function checkWalletReceived() {
         try {
-            const resp = await fetch('/api/payment/wallet-check');
-            const data = await resp.json();
-            if (data.detected && data.payment_id) {
-                startPolling(data.payment_id);
-            }
-        } catch(e) { /* silent */ }
+            var resp = await fetch('/api/payment/wallet-check');
+            var data = await resp.json();
+            if (data.detected && data.payment_id) startPolling(data.payment_id);
+        } catch(e) {}
     }
-
-    // Start auto-detection every 15 seconds
     setInterval(checkWalletReceived, 15000);
-    // Initial check after 5 seconds
     setTimeout(checkWalletReceived, 5000);
 
     // ============================================================
     // Toast
     // ============================================================
     function showToast(msg) {
-        const toast = document.getElementById('toast');
+        var toast = document.getElementById('toast');
         toast.textContent = msg;
         toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2500);
+        setTimeout(function() { toast.classList.remove('show'); }, 2500);
     }
     </script>
 </body>

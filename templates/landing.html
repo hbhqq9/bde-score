@@ -325,11 +325,11 @@ tailwind.config = {
         ⚠️ <strong data-i18n="disc_title">Disclaimer:</strong> <span data-i18n="disc_text">BDE Score™ is a technical analysis tool, not financial advice. All investment decisions should be made independently. Past performance does not guarantee future results. BDE Score™ does not provide investment suitability assessments.</span>
       </p>
       <div class="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs">
-        <a href="/terms" class="text-slate-500 hover:text-blue-400 transition" data-i18n="foot_terms">Terms of Service</a>
+        <a href="/terms" class="xpage-link text-slate-500 hover:text-blue-400 transition" data-i18n="foot_terms">Terms of Service</a>
         <span class="text-slate-700">·</span>
-        <a href="/privacy" class="text-slate-500 hover:text-blue-400 transition" data-i18n="foot_privacy">Privacy Policy</a>
+        <a href="/privacy" class="xpage-link text-slate-500 hover:text-blue-400 transition" data-i18n="foot_privacy">Privacy Policy</a>
         <span class="text-slate-700">·</span>
-        <a href="/legal" class="text-slate-500 hover:text-blue-400 transition" data-i18n="foot_legal">Legal Disclaimer</a>
+        <a href="/legal" class="xpage-link text-slate-500 hover:text-blue-400 transition" data-i18n="foot_legal">Legal Disclaimer</a>
       </div>
       <p class="text-xs text-slate-700 mt-4">© 2026 BDE Score™. All rights reserved.</p>
     </div>
@@ -473,6 +473,11 @@ function setLang(lang) {
   document.querySelectorAll('.dashboard-link').forEach(a => {
     a.href = '/dashboard?lang=' + lang;
   });
+  // Update cross-page links (terms/privacy/legal) with lang param
+  document.querySelectorAll('.xpage-link').forEach(a => {
+    var base = a.getAttribute('href').split('?')[0];
+    a.setAttribute('href', base + '?lang=' + lang);
+  });
   document.documentElement.lang = lang;
 }
 
@@ -487,6 +492,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set initial dashboard links with lang param
   document.querySelectorAll('.dashboard-link').forEach(a => {
     a.href = '/dashboard?lang=' + initLang;
+  });
+  // Set initial cross-page links with lang param
+  document.querySelectorAll('.xpage-link').forEach(a => {
+    var base = a.getAttribute('href').split('?')[0];
+    a.setAttribute('href', base + '?lang=' + initLang);
   });
   
   // Bind click events
