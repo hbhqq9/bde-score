@@ -1676,18 +1676,69 @@ LLMs: https://hbhqq9.github.io/bde-score/llms.txt
 # 💰 USDC 支付系统
 # ============================================================
 
+# ============================================================
+# TIERS data for server-side rendering
+# ============================================================
+TIERS_DATA = {
+    'starter':       {'zh': '入门版', 'en': 'Starter',       'ja': 'スターター',       'price': 10,   'credits': 1000,     'unit': 0.010},
+    'standard':      {'zh': '标准版', 'en': 'Standard',      'ja': 'スタンダード',     'price': 90,   'credits': 10000,    'unit': 0.009},
+    'pro':           {'zh': '专业版', 'en': 'Pro',           'ja': 'プロ',             'price': 800,  'credits': 100000,   'unit': 0.008},
+    'institutional': {'zh': '机构版', 'en': 'Institutional', 'ja': '機関投資家',       'price': 6000, 'credits': 1000000,  'unit': 0.006},
+}
+
+def _format_credits(n):
+    """Format number with commas: 1000 -> 1,000"""
+    return f"{n:,}"
+
+def _format_unit(u):
+    """Format unit price: 0.01 -> 0.01, 0.009 -> 0.009"""
+    s = f"{u:.3f}".rstrip('0').rstrip('.')
+    return s
+
+def _gen_qr_base64(text):
+    """Generate QR code as base64 PNG data URI"""
+    import qrcode, base64, io
+    qr = qrcode.QRCode(box_size=8, border=2)
+    qr.add_data(text)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+
 @app.get("/credit-payment", response_class=HTMLResponse)
-async def credit_payment_page(request: Request):
-    """Credit payment page - tier-specific USDC payment"""
+async def credit_payment_page(request: Request, tier: str = 'starter', lang: str = 'zh'):
+    """Credit payment page - server-side rendered tier-specific USDC payment"""
     try:
         template_path = os.path.join(os.path.dirname(__file__), 'templates', 'credit-payment.html')
         with open(template_path, 'r') as f:
             html = f.read()
         # Inject config
         wallet = os.environ.get('BDE_WALLET_ADDRESS', '0x349Eea0E2f4d3594797851758325Da3eb49D4343')
+        # Tier data (server-side rendering for no-JS environments)
+        tier_data = TIERS_DATA.get(tier, TIERS_DATA['starter'])
+        tier_name = tier_data.get(lang, tier_data['zh'])  # use lang param for tier name
+        price = tier_data['price']
+        credits = _format_credits(tier_data['credits'])
+        unit = _format_unit(tier_data['unit'])
+        # QR code
+        qr_text = f"{wallet}"
+        qr_img = _gen_qr_base64(qr_text)
+        # Replace ALL placeholders
         html = html.replace('{{ WALLET_ADDRESS }}', wallet)
         html = html.replace('{{ USDC_CONTRACT }}', '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913')
         html = html.replace('{{ API_BASE }}', str(request.base_url).rstrip('/'))
+        html = html.replace('{{ TIER_NAME }}', tier_name)
+        html = html.replace('{{ TIER_NAME_EN }}', tier_data['en'])
+        html = html.replace('{{ TIER_NAME_JA }}', tier_data['ja'])
+        html = html.replace('{{ TIER_PRICE }}', str(price))
+        # Credits text and unit price text per language
+        cred_texts = {'zh': f'{credits} 积分', 'en': f'{credits} Credits', 'ja': f'{credits} クレジット'}
+        unit_texts = {'zh': f'单价：¥{unit}/积分', 'en': f'Unit: ¥{unit}/credit', 'ja': f'単価：¥{unit}/クレジット'}
+        html = html.replace('{{ TIER_CREDITS_FULL }}', cred_texts.get(lang, cred_texts['zh']))
+        html = html.replace('{{ TIER_UNIT_FULL }}', unit_texts.get(lang, unit_texts['zh']))
+        html = html.replace('{{ QR_IMG_SRC }}', qr_img)
+        html = html.replace('{{ TIER_PARAM }}', tier)
         return HTMLResponse(content=html)
     except Exception as e:
         return HTMLResponse(content=f"<h1>Credit payment page load failed</h1><p>{str(e)}</p>", status_code=500)

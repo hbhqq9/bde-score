@@ -123,20 +123,20 @@
         </div>
 
         <div class="card">
-            <!-- Tier Info (dynamically filled) -->
+            <!-- Tier Info (server-rendered, JS enhances for i18n) -->
             <div class="tier-summary">
-                <div class="tier-name" id="tier-name">--</div>
+                <div class="tier-name" id="tier-name">{{ TIER_NAME }}</div>
                 <div class="price-amount">
-                    <span class="currency">¥</span><span id="price-value">--</span>
+                    <span class="currency">¥</span><span id="price-value">{{ TIER_PRICE }}</span>
                 </div>
-                <div class="credit-detail" id="credit-detail">--</div>
-                <div class="unit-price" id="unit-price">--</div>
+                <div class="credit-detail" id="credit-detail">{{ TIER_CREDITS_FULL }}</div>
+                <div class="unit-price" id="unit-price">{{ TIER_UNIT_FULL }}</div>
             </div>
 
-            <!-- QR Code -->
+            <!-- QR Code (server-rendered base64 image) -->
             <div class="qr-section">
                 <div class="qr-wrapper">
-                    <canvas id="qr-canvas"></canvas>
+                    <img id="qr-img" src="{{ QR_IMG_SRC }}" alt="QR Code" style="width:180px;height:180px;display:block;" />
                 </div>
             </div>
 
@@ -144,7 +144,7 @@
             <div class="address-section">
                 <div class="address-label" data-i18n="send_usdc">将 USDC 发送至以下地址</div>
                 <div class="address-box">
-                    <span class="address-text" id="wallet-address">Loading...</span>
+                    <span class="address-text" id="wallet-address">{{ WALLET_ADDRESS }}</span>
                     <button class="copy-btn" onclick="copyAddress()" data-i18n="btn_copy">复制</button>
                 </div>
             </div>
@@ -367,7 +367,8 @@
         document.getElementById('price-value').textContent = tier.price;
         var credText = t('credits_detail').replace('{credits}', formatNumber(tier.credits));
         document.getElementById('credit-detail').textContent = credText;
-        var unitText = t('unit_price_text').replace('{price}', tier.unit.toFixed(3).replace(/0+$/, '').replace(/\.$/, ''));
+        var rawUnit = tier.unit.toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
+        var unitText = t('unit_price_text').replace('{price}', rawUnit);
         document.getElementById('unit-price').textContent = unitText;
     }
 
@@ -415,12 +416,12 @@
     }
 
     // ============================================================
-    // Init display
+    // Init display — server already rendered tier info, wallet, QR
+    // JS only handles i18n switch & status polling
     // ============================================================
     currentTier = getTierParam();
+    // If server rendered tier info (no-JS fallback), only refresh i18n text
     renderTierInfo();
-    document.getElementById('wallet-address').textContent = CONFIG.walletAddress;
-    generateQR(CONFIG.walletAddress, document.getElementById('qr-canvas'));
 
     // ============================================================
     // Copy
