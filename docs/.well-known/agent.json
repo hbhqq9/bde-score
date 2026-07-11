@@ -1,0 +1,50 @@
+{
+  "name": "BDE Score Agent",
+  "description": "AI-powered multi-market stock analysis agent providing quantitative BDE scores (0-100) for US, HK, and CN A-share markets. Covers momentum, volatility, value, quality, and ESG factors.",
+  "version": "1.0.0",
+  "protocol": "a2a",
+  "capabilities": {
+    "tools": [
+      {
+        "id": "bde-score-analysis",
+        "name": "BDE Score Analysis",
+        "description": "Get comprehensive BDE score analysis for stocks across US/HK/CN markets",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "market": {"type": "string", "enum": ["US", "HK", "A", "ALL"]},
+            "min_score": {"type": "number", "minimum": 0, "maximum": 100}
+          }
+        }
+      },
+      {
+        "id": "stock-comparison",
+        "name": "Cross-market Stock Comparison",
+        "description": "Compare the same company's BDE scores across US, HK, and CN markets"
+      },
+      {
+        "id": "esg-analysis",
+        "name": "ESG Analysis",
+        "description": "Get ESG analysis derived from quantitative factors"
+      }
+    ]
+  },
+  "endpoints": {
+    "mcp": "https://retrieve-jobs-congress-made.trycloudflare.com/mcp",
+    "rest": "https://atlantic-remains-atomic-floor.trycloudflare.com/api",
+    "dashboard": "https://hbhqq9.github.io/bde-score/"
+  },
+  "authentication": {
+    "type": "api-key",
+    "header": "X-API-Key"
+  },
+  "metadata": {
+    "author": "AGL Governance",
+    "license": "MIT",
+    "homepage": "https://hbhqq9.github.io/bde-score/",
+    "repository": "https://github.com/hbhqq9/bde-score",
+    "category": "finance",
+    "tags": ["stocks", "quantitative", "multi-factor", "US", "HK", "A-shares", "ESG", "EU AI Act"],
+    "compliance": ["EU AI Act Art.50"]
+  }
+}
