@@ -1,0 +1,132 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "BDE Score\u2122 - AI Quantitative Analysis API",
+    "description": "Multi-factor quantitative scoring engine for equity markets (US/HK/CN A-shares). Technical analysis tool only \u2014 not investment advice.",
+    "version": "1.0.0-mvp",
+    "contact": {
+      "url": "https://github.com/hbhqq9/bde-score"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://hbhqq9.github.io/bde-score",
+      "description": "GitHub Pages (Dashboard + Discovery)"
+    }
+  ],
+  "paths": {
+    "/api/analyze": {
+      "get": {
+        "summary": "Full BDE analysis for a market",
+        "parameters": [
+          {
+            "name": "market",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "US",
+                "HK",
+                "A",
+                "ALL"
+              ]
+            },
+            "description": "Market to analyze"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Analysis results with BDE scores"
+          }
+        }
+      }
+    },
+    "/api/snapshot": {
+      "get": {
+        "summary": "Market snapshot with top movers",
+        "responses": {
+          "200": {
+            "description": "Snapshot data"
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Health check endpoint",
+        "responses": {
+          "200": {
+            "description": "Service health status"
+          }
+        }
+      }
+    },
+    "/api/market-status": {
+      "get": {
+        "summary": "Current market trading status",
+        "responses": {
+          "200": {
+            "description": "Market status for US/HK/CN"
+          }
+        }
+      }
+    },
+    "/api/history": {
+      "get": {
+        "summary": "Historical BDE scores",
+        "parameters": [
+          {
+            "name": "symbol",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Stock symbol"
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 30
+            },
+            "description": "Number of days"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historical score data"
+          }
+        }
+      }
+    },
+    "/api/badge": {
+      "get": {
+        "summary": "SVG badge for a stock BDE score",
+        "parameters": [
+          {
+            "name": "symbol",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SVG badge image"
+          }
+        }
+      }
+    }
+  },
+  "x-mcp-server": {
+    "url": "https://retrieve-jobs-congress-made.trycloudflare.com/mcp",
+    "transport": "streamable-http",
+    "authentication": "api-key (X-API-Key header)"
+  }
+}

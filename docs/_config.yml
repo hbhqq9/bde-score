@@ -4,8 +4,15 @@ theme: minima
 baseurl: /bde-score
 url: https://hbhqq9.github.io
 
+# Include dotfiles and data files needed for discovery protocols
+include:
+  - .well-known
+  - robots.txt
+  - openapi.json
+  - llms-install.md
+  - llms.txt
+
 # Exclude from processing
 exclude:
   - llms-full.txt
-  - robots.txt
   - sitemap.xml
