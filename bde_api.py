@@ -431,7 +431,174 @@ class KeyManager:
         self._save()
         return key_hash
 
+
+    def verify_with_prefix(self, key):
+        """验证API Key，返回 (tier, key_prefix) 元组"""
+        if not key:
+            return None, None
+        key_bytes = key.encode('utf-8')
+        for entry in self.keys.values():
+            if not entry.get('active'):
+                continue
+            stored_hash = entry.get('key_hash', '')
+            try:
+                if bcrypt.checkpw(key_bytes, stored_hash.encode('utf-8')):
+                    entry['last_used'] = datetime.now().isoformat()
+                    self._save()
+                    return entry['tier'], entry.get('key_prefix', '')
+            except (ValueError, TypeError):
+                continue
+        return None, None
+
 key_manager = KeyManager()
+
+
+
+# ============================================================
+# 💰 积分计费系统 (Credit-Based Billing)
+# ============================================================
+CREDIT_PRICING = {
+    "free_gift": 1000,
+    "cost_per_analyze": 10,
+    "packages": [
+        {"name": "体验包", "credits": 1000,    "price_cny": 10},
+        {"name": "标准包", "credits": 10000,   "price_cny": 90},
+        {"name": "专业包", "credits": 100000,  "price_cny": 800},
+        {"name": "机构包", "credits": 1000000, "price_cny": 6000},
+    ],
+    "tiers": {
+        "free":          {"daily_limit": 3,    "credits": 0},
+        "starter":       {"daily_limit": None, "credits": 1000},
+        "pro":           {"daily_limit": None, "credits": None},
+        "institutional": {"daily_limit": None, "credits": None},
+    }
+}
+
+class CreditManager:
+    """积分管理：充值/扣减/查询/流水"""
+    
+    COST_PER_CALL = 10  # 每次analyze调用消耗10积分
+    
+    def __init__(self, db_path):
+        self.db_path = db_path
+        self._init_tables()
+    
+    def _init_tables(self):
+        """创建积分相关数据表"""
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS user_credits (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    key_prefix TEXT NOT NULL,
+                    balance INTEGER DEFAULT 1000,
+                    total_recharged INTEGER DEFAULT 1000,
+                    total_consumed INTEGER DEFAULT 0,
+                    tier TEXT DEFAULT 'starter',
+                    created_at TEXT DEFAULT (datetime('now')),
+                    updated_at TEXT DEFAULT (datetime('now')),
+                    UNIQUE(key_prefix)
+                )
+            ''')
+            conn.execute('''
+                CREATE TABLE IF NOT EXISTS credit_ledger (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    key_prefix TEXT NOT NULL,
+                    amount INTEGER NOT NULL,
+                    balance_after INTEGER NOT NULL,
+                    type TEXT NOT NULL,
+                    description TEXT,
+                    created_at TEXT DEFAULT (datetime('now'))
+                )
+            ''')
+            conn.execute('CREATE INDEX IF NOT EXISTS idx_ledger_prefix ON credit_ledger(key_prefix)')
+            conn.execute('CREATE INDEX IF NOT EXISTS idx_ledger_time ON credit_ledger(created_at)')
+            conn.commit()
+    
+    def ensure_user(self, key_prefix):
+        """确保用户有积分记录，新用户送1000积分"""
+        with sqlite3.connect(self.db_path) as conn:
+            row = conn.execute(
+                "SELECT id FROM user_credits WHERE key_prefix = ?", (key_prefix,)
+            ).fetchone()
+            if not row:
+                gift = CREDIT_PRICING["free_gift"]
+                conn.execute(
+                    "INSERT INTO user_credits (key_prefix, balance, total_recharged, tier) VALUES (?, ?, ?, ?)",
+                    (key_prefix, gift, gift, "starter")
+                )
+                conn.execute(
+                    "INSERT INTO credit_ledger (key_prefix, amount, balance_after, type, description) VALUES (?, ?, ?, ?, ?)",
+                    (key_prefix, gift, gift, "gift", "新用户注册赠送")
+                )
+                conn.commit()
+                return True  # 新用户
+        return False  # 已存在
+    
+    def get_balance(self, key_prefix):
+        """返回 {balance, total_recharged, total_consumed, tier}"""
+        self.ensure_user(key_prefix)
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            row = conn.execute(
+                "SELECT balance, total_recharged, total_consumed, tier FROM user_credits WHERE key_prefix = ?",
+                (key_prefix,)
+            ).fetchone()
+            if row:
+                return dict(row)
+        return {"balance": 0, "total_recharged": 0, "total_consumed": 0, "tier": "unknown"}
+    
+    def deduct(self, key_prefix, amount, description="API call"):
+        """扣减积分，余额不足返回False"""
+        self.ensure_user(key_prefix)
+        with sqlite3.connect(self.db_path) as conn:
+            row = conn.execute(
+                "SELECT balance FROM user_credits WHERE key_prefix = ?", (key_prefix,)
+            ).fetchone()
+            current_balance = row[0] if row else 0
+            if current_balance < amount:
+                return False
+            new_balance = current_balance - amount
+            conn.execute(
+                "UPDATE user_credits SET balance = balance - ?, total_consumed = total_consumed + ?, updated_at = datetime('now') WHERE key_prefix = ?",
+                (amount, amount, key_prefix)
+            )
+            conn.execute(
+                "INSERT INTO credit_ledger (key_prefix, amount, balance_after, type, description) VALUES (?, ?, ?, ?, ?)",
+                (key_prefix, -amount, new_balance, "consume", description)
+            )
+            conn.commit()
+            return True
+    
+    def recharge(self, key_prefix, amount, description="充值"):
+        """充值积分"""
+        self.ensure_user(key_prefix)
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute(
+                "UPDATE user_credits SET balance = balance + ?, total_recharged = total_recharged + ?, updated_at = datetime('now') WHERE key_prefix = ?",
+                (amount, amount, key_prefix)
+            )
+            row = conn.execute(
+                "SELECT balance FROM user_credits WHERE key_prefix = ?", (key_prefix,)
+            ).fetchone()
+            new_balance = row[0] if row else amount
+            conn.execute(
+                "INSERT INTO credit_ledger (key_prefix, amount, balance_after, type, description) VALUES (?, ?, ?, ?, ?)",
+                (key_prefix, amount, new_balance, "recharge", description)
+            )
+            conn.commit()
+            return True
+    
+    def get_ledger(self, key_prefix, limit=20):
+        """查询消费流水"""
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(
+                "SELECT amount, balance_after, type, description, created_at FROM credit_ledger WHERE key_prefix = ? ORDER BY created_at DESC LIMIT ?",
+                (key_prefix, limit)
+            ).fetchall()
+            return [dict(r) for r in rows]
+
+credit_manager = CreditManager(DB_PATH)
 
 # 🔑 API Key验证依赖
 from fastapi import Header, Depends
@@ -439,10 +606,10 @@ from fastapi import Header, Depends
 async def optional_api_key(x_api_key: str = Header(None)):
     """可选API Key验证：有key走付费通道，无key走免费配额"""
     if x_api_key:
-        tier = key_manager.verify(x_api_key)
+        tier, key_prefix = key_manager.verify_with_prefix(x_api_key)
         if tier:
-            return {'authenticated': True, 'tier': tier}
-    return {'authenticated': False, 'tier': 'free'}
+            return {'authenticated': True, 'tier': tier, 'key_prefix': key_prefix}
+    return {'authenticated': False, 'tier': 'free', 'key_prefix': None}
 
 # 🔒 并发分析锁（防止同时触发多个重型计算）
 _analyze_lock = asyncio.Lock()
@@ -938,9 +1105,10 @@ async def add_waitlist(request: Request):
 async def api_analyze(
     request: Request,
     force: bool = Query(False, description="强制刷新，忽略缓存"),
-    market: str = Query("US", description="市场: US(美股), HK(港股), A(A股), ALL(全部)")
+    market: str = Query("US", description="市场: US(美股), HK(港股), A(A股), ALL(全部)"),
+    auth: dict = Depends(optional_api_key)
 ):
-    """运行BDE多因子分析（🔒 带速率限制+并发锁+输入校验）"""
+    """运行BDE多因子分析（🔒 带速率限制+并发锁+输入校验+积分计费）"""
     # 🔒 输入白名单校验
     market_upper = market.upper().strip()
     if market_upper not in VALID_MARKETS:
@@ -950,6 +1118,43 @@ async def api_analyze(
     client_ip = request.client.host if request.client else "unknown"
     if not rate_limiter.is_allowed(client_ip):
         raise HTTPException(status_code=429, detail="Rate limit exceeded. Max 10 requests per minute.")
+    
+    # 💰 积分计费 / 免费配额检查
+    if auth['authenticated'] and auth.get('key_prefix'):
+        # 有API Key的用户：检查积分余额
+        key_prefix = auth['key_prefix']
+        credit_cost = CREDIT_PRICING["cost_per_analyze"]
+        balance_info = credit_manager.get_balance(key_prefix)
+        if balance_info['balance'] < credit_cost:
+            raise HTTPException(
+                status_code=402,
+                detail={
+                    "error": "Insufficient credits",
+                    "required": credit_cost,
+                    "balance": balance_info['balance'],
+                    "message": f"积分不足，需要{credit_cost}积分，当前余额{balance_info['balance']}积分。请充值后重试。",
+                    "recharge": "POST /api/credits/recharge",
+                    "pricing": "GET /api/credits/pricing"
+                }
+            )
+        # 扣减积分（先扣后用）
+        deducted = credit_manager.deduct(key_prefix, credit_cost, f"analyze market={market_upper}")
+        if not deducted:
+            raise HTTPException(
+                status_code=402,
+                detail={"error": "Insufficient credits", "message": "积分扣减失败，请充值。"}
+            )
+    else:
+        # 无API Key的免费用户：保持原有3次/天限制
+        if not key_manager.check_free_quota(client_ip):
+            raise HTTPException(
+                status_code=429,
+                detail={
+                    "error": "Free tier limit reached",
+                    "message": "免费用户每日限3次调用。注册API Key获得1000免费积分！",
+                    "upgrade": "GET /api/credits/pricing"
+                }
+            )
     
     # 🔒 并发锁：同一时刻只允许一个分析任务
     if _analyze_lock.locked():
@@ -964,6 +1169,14 @@ async def api_analyze(
         try:
             _analyze_last_run = time.time()
             result = run_analysis(force_refresh=force, market=market_upper)
+            # 附加积分信息到响应
+            if auth['authenticated'] and auth.get('key_prefix'):
+                bal = credit_manager.get_balance(auth['key_prefix'])
+                if isinstance(result, dict):
+                    result['credits'] = {
+                        'balance': bal['balance'],
+                        'consumed_this_session': CREDIT_PRICING["cost_per_analyze"],
+                    }
             return result
         except HTTPException:
             raise
@@ -1051,6 +1264,82 @@ async def revoke_key(
     if key_manager.revoke_by_prefix(key_prefix):
         return {"status": "revoked", "key_prefix": key_prefix}
     raise HTTPException(status_code=404, detail="Key not found by the given prefix.")
+
+
+# ============================================================
+# 💰 积分管理端点 (Credit Management Endpoints)
+# ============================================================
+@app.get("/api/credits/balance")
+async def credits_balance(request: Request, auth: dict = Depends(optional_api_key)):
+    """查询积分余额（需API Key）"""
+    if not auth['authenticated'] or not auth.get('key_prefix'):
+        raise HTTPException(status_code=401, detail="API Key required. Provide X-API-Key header.")
+    
+    balance_info = credit_manager.get_balance(auth['key_prefix'])
+    return {
+        "key_prefix": auth['key_prefix'],
+        "balance": balance_info['balance'],
+        "total_recharged": balance_info['total_recharged'],
+        "total_consumed": balance_info['total_consumed'],
+        "tier": balance_info['tier'],
+        "cost_per_analyze": CREDIT_PRICING["cost_per_analyze"],
+        "estimated_calls_remaining": balance_info['balance'] // CREDIT_PRICING["cost_per_analyze"],
+    }
+
+
+@app.get("/api/credits/ledger")
+async def credits_ledger(
+    request: Request,
+    limit: int = Query(20, description="返回条数", ge=1, le=100),
+    auth: dict = Depends(optional_api_key)
+):
+    """查询消费流水（需API Key）"""
+    if not auth['authenticated'] or not auth.get('key_prefix'):
+        raise HTTPException(status_code=401, detail="API Key required. Provide X-API-Key header.")
+    
+    ledger = credit_manager.get_ledger(auth['key_prefix'], limit=limit)
+    return {
+        "key_prefix": auth['key_prefix'],
+        "count": len(ledger),
+        "transactions": ledger,
+    }
+
+
+@app.post("/api/credits/recharge")
+async def credits_recharge(
+    request: Request,
+    amount: int = Query(1000, description="充值积分数", ge=1),
+    auth: dict = Depends(optional_api_key)
+):
+    """模拟充值（暂时手动添加积分，后续接入支付）"""
+    if not auth['authenticated'] or not auth.get('key_prefix'):
+        raise HTTPException(status_code=401, detail="API Key required. Provide X-API-Key header.")
+    
+    credit_manager.recharge(auth['key_prefix'], amount, description=f"手动充值 {amount} 积分")
+    new_balance = credit_manager.get_balance(auth['key_prefix'])
+    return {
+        "status": "success",
+        "key_prefix": auth['key_prefix'],
+        "recharged": amount,
+        "new_balance": new_balance['balance'],
+        "total_recharged": new_balance['total_recharged'],
+        "message": f"成功充值 {amount} 积分，当前余额 {new_balance['balance']} 积分",
+        "note": "⚠️ 当前为模拟充值，正式版将接入在线支付"
+    }
+
+
+@app.get("/api/credits/pricing")
+async def credits_pricing():
+    """获取定价信息（公开）"""
+    return {
+        "pricing": CREDIT_PRICING,
+        "cost_per_analyze": CREDIT_PRICING["cost_per_analyze"],
+        "free_daily_limit": 3,
+        "new_user_gift": CREDIT_PRICING["free_gift"],
+        "packages": CREDIT_PRICING["packages"],
+        "message": "新用户注册即送1000积分（可调用100次分析）",
+    }
+
 
 @app.get("/api/history")
 async def api_history(

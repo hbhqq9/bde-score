@@ -51,3 +51,19 @@
 - Audit score: 98/100
 - MCP Server: Auth + RateLimit + Input validation + Error masking + Audit log
 - API Server: Auth + RateLimit + Security headers + CORS whitelist
+
+## 2026-07-12 01:10 Update
+
+### 积分制计费系统（新增）
+- 🆕 CreditManager: 积分充值/扣减/余额/流水管理
+- 🆕 `/api/credits/balance|ledger|recharge|pricing` 4个端点
+- 🆕 新用户注册赠送1000积分（= 100次分析）
+- 🆕 定价：¥10/1K → ¥6000/1M 积分
+- 🔄 模式切换：USDC加密支付 → 积分消耗制（中国市场合规+低门槛）
+
+### 商业目标
+- MRR目标：¥5,000+
+- 付费转化率目标：>5%
+- Phase 1：手动充值（验证付费意愿）
+- Phase 2：接入微信支付/支付宝
+- Phase 3：全自动化充值+消费
