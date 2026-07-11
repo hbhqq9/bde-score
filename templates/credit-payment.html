@@ -442,7 +442,7 @@
         var size = 180;
         canvas.width = size; canvas.height = size;
         var script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
+        script.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js'; script.crossOrigin = 'anonymous';
         script.onload = function() {
             try {
                 var qr = qrcode(0, 'M');

@@ -24,6 +24,7 @@ import logging
 import asyncio
 import time
 import re
+import html
 from datetime import datetime, timedelta
 from typing import Optional
 from contextlib import contextmanager
@@ -164,8 +165,21 @@ usdc_background_task = None
 # 🔒 安全中间件
 # ============================================================
 class GlobalRateLimitMiddleware(BaseHTTPMiddleware):
-    """🔒 全局速率限制：所有 /api/ 路径默认每IP每分钟30次"""
+    """🔒 全局速率限制 + 请求体大小限制"""
+    MAX_BODY_SIZE = 1_000_000  # 1MB max request body
+    
     async def dispatch(self, request: Request, call_next):
+        # 🔒 请求体大小检查
+        content_length = request.headers.get('content-length', '0')
+        try:
+            if int(content_length) > self.MAX_BODY_SIZE:
+                return JSONResponse(
+                    status_code=413,
+                    content={"error": "Request body too large. Max 1MB."}
+                )
+        except ValueError:
+            pass
+        
         if request.url.path.startswith('/api/'):
             client_ip = request.client.host if request.client else "unknown"
             if not rate_limiter.is_allowed(client_ip):
@@ -187,8 +201,10 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["Pragma"] = "no-cache"
         # 🔌 /widget 和 /embed 路径允许iframe嵌入（零账号分发机制）
         if request.url.path in ('/widget', '/embed/snippet'):
-            response.headers["X-Frame-Options"] = "ALLOWALL"
-            response.headers["Content-Security-Policy"] = "frame-ancestors *"
+            # 🔒 Widget仅允许已知域名嵌入，防止clickjacking
+            allowed_widget_origins = "https://hbhqq9.github.io https://*.trycloudflare.com"
+            response.headers["X-Frame-Options"] = "SAMEORIGIN"
+            response.headers["Content-Security-Policy"] = f"frame-ancestors {allowed_widget_origins}"
         else:
             response.headers["X-Frame-Options"] = "DENY"
         # 🔒 CORS 白名单（仅允许已知域名嵌入）
@@ -1054,6 +1070,8 @@ async def share_card(
     })
 
 def _generate_share_svg(results, title):
+    # 🔒 XSS防护：SVG内容转义
+    safe_title = html.escape(str(title), quote=True)
     """生成SVG分享卡片"""
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     w, h = 540, 80 + len(results) * 72 + 100
@@ -1061,12 +1079,12 @@ def _generate_share_svg(results, title):
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">
 <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0f172a"/><stop offset="100%" stop-color="#1e293b"/></linearGradient></defs>
 <rect width="{w}" height="{h}" rx="16" fill="url(#bg)"/>
-<text x="24" y="36" font-family="system-ui" font-size="20" font-weight="700" fill="#f1f5f9">📊 {title}</text>
+<text x="24" y="36" font-family="system-ui" font-size="20" font-weight="700" fill="#f1f5f9">📊 {safe_title}</text>
 <text x="24" y="56" font-family="system-ui" font-size="12" fill="#64748b">{now}</text>
 <rect x="24" y="66" width="80" height="3" rx="1.5" fill="#3b82f6"/>
 '''
     for i, r in enumerate(results):
-        sym = r.get('symbol', '?')
+        sym = html.escape(str(r.get('symbol', '?')))
         sc = round(r.get('composite_score', 0))
         color = "#22c55e" if sc >= 70 else ("#eab308" if sc >= 40 else "#ef4444")
         signal = "BULLISH" if sc >= 70 else ("NEUTRAL" if sc >= 40 else "BEARISH")
@@ -1252,8 +1270,12 @@ async def generate_key(
     email: str = Query(None, description="用户邮箱")
 ):
     """生成新API Key（内部使用）"""
-    client_ip = request.client.host if request.client else "unknown"
-    # 🔒 限制：只允许本地调用
+    # 🔒 获取真实客户端IP（Cloudflare Tunnel兼容）
+    client_ip = request.headers.get('cf-connecting-ip', '') or                 request.headers.get('x-forwarded-for', '').split(',')[0].strip() or                 (request.client.host if request.client else "unknown")
+    # 🔒 限制：只允许本地调用（非Tunnel流量）
+    # 通过Tunnel的请求会有cf-connecting-ip头，直接拒绝
+    if request.headers.get('cf-connecting-ip'):
+        raise HTTPException(status_code=403, detail="Forbidden. Internal use only.")
     if client_ip not in ('127.0.0.1', '::1'):
         raise HTTPException(status_code=403, detail="Forbidden. Internal use only.")
     
@@ -1266,6 +1288,9 @@ async def generate_key(
 @app.get("/api/keys/list")
 async def list_keys(request: Request):
     """列出所有API Key（内部使用）— 仅显示prefix，不显示完整key"""
+    # 🔒 拒绝所有Tunnel流量
+    if request.headers.get('cf-connecting-ip'):
+        raise HTTPException(status_code=403, detail="Forbidden. Internal use only.")
     client_ip = request.client.host if request.client else "unknown"
     if client_ip not in ('127.0.0.1', '::1'):
         raise HTTPException(status_code=403, detail="Forbidden. Internal use only.")
@@ -1282,6 +1307,9 @@ async def revoke_key(
     key_prefix: str = Query(..., description="要撤销的API Key前缀（8位，如 bde_xxxx）")
 ):
     """撤销API Key（内部使用）— 通过key_prefix撤销"""
+    # 🔒 拒绝所有Tunnel流量
+    if request.headers.get('cf-connecting-ip'):
+        raise HTTPException(status_code=403, detail="Forbidden. Internal use only.")
     client_ip = request.client.host if request.client else "unknown"
     if client_ip not in ('127.0.0.1', '::1'):
         raise HTTPException(status_code=403, detail="Forbidden. Internal use only.")
