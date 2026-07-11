@@ -2,18 +2,154 @@
 BDE Score™ Remote MCP Server (Streamable HTTP)
 ================================================
 Provides BDE Score tools via MCP protocol over HTTP.
-Mounted as a standalone server that can be exposed via Cloudflare Tunnel.
+Mounted as a standalone server behind Cloudflare Tunnel.
+
+Security (Constitution v2.0 §5 compliant):
+- API Key authentication (X-API-Key header)
+- Rate limiting (10 req/min per IP)
+- Security headers on all responses
+- No docs exposure
 """
 
 import asyncio
 import json
+import os
+import sys
+import time
+import hashlib
+import secrets
 import httpx
 from datetime import datetime
+from collections import defaultdict
 from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
 from mcp.types import ToolAnnotations
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
-# Disable DNS rebinding protection to allow dynamic Cloudflare tunnel URLs
+# ============================================================================
+# Security Configuration
+# ============================================================================
+
+# Load API key from .env
+def load_env():
+    """Load environment variables from .env file."""
+    # Handle both direct execution and module import
+    _this_file = os.path.abspath(__file__) if '__file__' in dir() else os.path.abspath(sys.argv[0])
+    env_path = os.path.join(os.path.dirname(os.path.dirname(_this_file)), '.env')
+    if os.path.exists(env_path):
+        with open(env_path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, _, value = line.partition('=')
+                    os.environ.setdefault(key.strip(), value.strip())
+
+load_env()
+
+MCP_API_KEY = os.environ.get('MCP_API_KEY', '')
+if not MCP_API_KEY:
+    raise RuntimeError(
+        "FATAL: MCP_API_KEY not set. "
+        "Generate one with: python3 -c \"import secrets; print(secrets.token_urlsafe(32))\" "
+        "and add to BDE-Stock/.env"
+    )
+
+# Rate limiting config (same as BDE API)
+MAX_REQUESTS = 10
+WINDOW_SECONDS = 60
+
+# Rate limiter state
+_rate_limiter = defaultdict(list)
+
+def check_rate_limit(client_ip: str) -> bool:
+    """Check if client is within rate limit. Returns True if allowed."""
+    now = time.time()
+    # Clean old entries
+    _rate_limiter[client_ip] = [t for t in _rate_limiter[client_ip] if now - t < WINDOW_SECONDS]
+    if len(_rate_limiter[client_ip]) >= MAX_REQUESTS:
+        return False
+    _rate_limiter[client_ip].append(now)
+    return True
+
+def get_client_ip(request: Request) -> str:
+    """Extract client IP, respecting Cloudflare headers."""
+    cf_ip = request.headers.get("CF-Connecting-IP")
+    if cf_ip:
+        return cf_ip
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+# ============================================================================
+# Authentication & Security Middleware
+# ============================================================================
+
+class SecurityMiddleware(BaseHTTPMiddleware):
+    """
+    Security middleware for MCP Server (Constitution v2.0 §5.2 compliant):
+    - API Key validation (X-API-Key header)
+    - Rate limiting (10 req/min per IP)
+    - Security headers on all responses
+    """
+    
+    @staticmethod
+    def _security_headers() -> dict:
+        """Return security headers to add to every response."""
+        return {
+            "X-Content-Type-Options": "nosniff",
+            "X-XSS-Protection": "1; mode=block",
+            "X-Frame-Options": "DENY",
+            "Referrer-Policy": "no-referrer",
+            "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        }
+    
+    async def dispatch(self, request: Request, call_next):
+        # Only protect /mcp endpoint
+        if request.url.path == "/mcp":
+            # 1. API Key authentication
+            api_key = request.headers.get("X-API-Key", "")
+            if not api_key:
+                return JSONResponse(
+                    {"error": "Authentication required. Provide X-API-Key header."},
+                    status_code=401,
+                    headers={"WWW-Authenticate": "ApiKey", **self._security_headers()}
+                )
+            if not secrets.compare_digest(api_key, MCP_API_KEY):
+                return JSONResponse(
+                    {"error": "Invalid API key."},
+                    status_code=403,
+                    headers=self._security_headers()
+                )
+            
+            # 2. Rate limiting
+            client_ip = get_client_ip(request)
+            if not check_rate_limit(client_ip):
+                return JSONResponse(
+                    {"error": f"Rate limit exceeded. Max {MAX_REQUESTS} requests per {WINDOW_SECONDS}s."},
+                    status_code=429,
+                    headers={"Retry-After": str(WINDOW_SECONDS), **self._security_headers()}
+                )
+        
+        # 3. Process request
+        response = await call_next(request)
+        
+        # 4. Security headers (Constitution v2.0 §5.2)
+        for key, value in self._security_headers().items():
+            response.headers[key] = value
+        # Remove Server header to prevent version leakage
+        if "Server" in response.headers:
+            del response.headers["Server"]
+        
+        return response
+
+# ============================================================================
+# MCP Server Setup
+# ============================================================================
+
+# Disable DNS rebinding protection for Cloudflare tunnel
 security_settings = TransportSecuritySettings(
     enable_dns_rebinding_protection=False
 )
@@ -45,6 +181,10 @@ async def call_bde_api(endpoint: str, params: dict = None) -> dict:
         except Exception as e:
             return {"error": str(e)}
 
+
+# ============================================================================
+# Tools (all readOnly)
+# ============================================================================
 
 @mcp.tool(
     title="Get BDE Scores",
@@ -234,6 +374,23 @@ async def get_esg_analysis(symbol: str) -> str:
     return json.dumps(esg_data, ensure_ascii=False, default=str)
 
 
+# ============================================================================
+# Secure Entry Point
+# ============================================================================
+
 if __name__ == "__main__":
+    import uvicorn
+    
     print("Starting BDE Score MCP Server (streamable-http) on port 8891...")
-    mcp.run(transport="streamable-http")
+    print("Security: API Key authentication enabled")
+    print(f"Security: Rate limiting {MAX_REQUESTS} req/{WINDOW_SECONDS}s per IP")
+    print("Security: Security headers on all responses")
+    
+    # Get the underlying Starlette app from FastMCP
+    app = mcp.streamable_http_app()
+    
+    # Add security middleware
+    app.add_middleware(SecurityMiddleware)
+    
+    # Run with uvicorn (no Server header leakage)
+    uvicorn.run(app, host="127.0.0.1", port=8891, server_header=False)
