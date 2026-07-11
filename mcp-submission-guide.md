@@ -1,39 +1,31 @@
-# MCP Server Submission Guide — BDE Score™
+# BDE Score MCP Server — 目录分发跟踪
 
-## Status Tracker
+## 提交状态总览（2026-07-11 更新）
 
-| # | Platform | Stars | Status | PR Link | Date |
-|---|----------|-------|--------|---------|------|
-| 1 | yzfly/Awesome-MCP-ZH | 7,417★ | ✅ PR OPEN | [PR #384](https://github.com/yzfly/Awesome-MCP-ZH/pull/384) | 2026-07-11 |
-| 2 | punkpeye/awesome-mcp-servers | 90,589★ | 📝 PR In Progress | Sub-agent handling | 2026-07-11 |
-| 3 | wong2/awesome-mcp-servers | 4,202★ | ⏳ Branch ready, auth issue | Pending token fix | 2026-07-11 |
-| 4 | appcypher/awesome-mcp-servers | 5,677★ | ⏳ Branch ready, auth issue | Pending token fix | 2026-07-11 |
-| 5 | Official MCP Registry | 7,002★ | 📋 server.json ready | Need GitHub OAuth | 2026-07-11 |
-| 6 | MCP.so | — | 📝 Pending | TBD | — |
-| 7 | Smithery | — | 📝 Pending | TBD | — |
-| 8 | PulseMCP | 7,800+ servers | 📝 Pending | TBD | — |
-| 9 | Glama | auto-synced | ⏳ Auto | Syncs from punkpeye | Auto |
-| 10 | chatmcp/mcpso | 2,025★ | 📝 Pending | TBD | — |
+| # | 平台 | Stars/规模 | 状态 | 链接 |
+|---|------|-----------|------|------|
+| 1 | **Official MCP Registry** | 权威源 | 🔄 OAuth认证中 | registry.modelcontextprotocol.io |
+| 2 | **punkpeye/awesome-mcp-servers** | 90,589★ | ✅ PR #9829 | [链接](https://github.com/punkpeye/awesome-mcp-servers/pull/9829) |
+| 3 | **yzfly/Awesome-MCP-ZH** | 7,417★ | ✅ PR #384 | [链接](https://github.com/yzfly/Awesome-MCP-ZH/pull/384) |
+| 4 | **Cline MCP Marketplace** | VS Code生态 | ✅ Issue #1997 | [链接](https://github.com/cline/mcp-marketplace/issues/1997) |
+| 5 | **wong2/awesome-mcp-servers** | 4,202★ | ⏳ 手动PR | [compare URL](https://github.com/wong2/awesome-mcp-servers/compare/main...hbhqq9:awesome-mcp-servers-1:add-bde-score?expand=1) |
+| 6 | **appcypher/awesome-mcp-servers** | 5,677★ | ⏳ 手动PR | [compare URL](https://github.com/appcypher/awesome-mcp-servers/compare/main...hbhqq9:awesome-mcp-servers-2:add-bde-score?expand=1) |
+| 7 | **Glama** | ~21k indexed | 🔍 自动索引 | 从GitHub topics自动同步（已添加mcp topics） |
+| 8 | **PulseMCP** | ~14.9k indexed | 🔍 自动索引 | 从Registry+GitHub自动同步 |
+| 9 | **mcp.so** | ~19k indexed | 📝 待提交 | mcp.so/submit（需浏览器表单） |
+| 10 | **Smithery** | ~7k curated | 📝 待提交 | smithery.ai（需浏览器表单） |
+| 11 | **cursor.directory** | 250K MAU | 📝 待提交 | 需浏览器 |
+| 12 | **MCPize Marketplace** | 增长中 | 📝 待提交 | 需mcpize.json |
 
-## Coverage Summary
+## 自动索引说明
+- **Glama**: 自动从GitHub topics（mcp, model-context-protocol, mcp-server）+ README索引 ✅ 已配置
+- **PulseMCP**: 自动从Official Registry + GitHub topics同步 — 一旦Registry发布即自动出现
+- **mcpservers.org**: wong2列表的Web界面，mcpservers.org/submit 表单提交
 
-**MCP directory submissions:**
-- Confirmed PRs: 1 (7,417★)
-- In progress: 3+ (100K+★)
-- **Total potential reach: ~117,000+ GitHub stars**
+## GitHub Topics（已更新，20个）
+ai, api, eu-ai-act, fintech, quantitative-finance, stock-analysis, a-shares, fastapi, financial-analysis, hk-stocks, market-data, multi-factor, python, real-time, stock-scoring, trading-api, us-stocks, **mcp**, **model-context-protocol**, **mcp-server**
 
-**Combined with existing awesome list PRs:**
-- 25 awesome list PRs: ~550K★
-- MCP directory PRs: ~117K★
-- **Total discovery surface: ~667K+ stars**
-
-## Entry Description (Universal)
-> Multi-market stock analysis (US/HK/A-shares) with composite BDE Score™ (0-100), fundamental metrics, technical indicators, and risk assessment. EU AI Act compliant. MCP + LangChain + OpenAI Functions integration. Free API.
-
-## Key Differentiators
-1. **Multi-market**: US + HK + China A-shares in one API
-2. **Composite scoring**: 0-100 BDE Score™ across fundamental/technical/risk
-3. **Triple integration**: MCP + LangChain + OpenAI Functions
-4. **Compliance**: EU AI Act metadata
-5. **Free & open-source**: MIT license
-6. **Remote accessible**: Cloudflare Tunnel endpoint
+## 变现方案
+- 免费层: 5次/天
+- 付费层: $0.01/call（x402协议）
+- 详情见 x402-monetization-research.md
