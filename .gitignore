@@ -38,3 +38,6 @@ waitlist.json
 
 # Local deploy
 local_deploy/
+# MCP Publisher tokens (NEVER commit)
+.mcpregistry_*
+mcp/.mcpregistry_*
