@@ -43,3 +43,4 @@ local_deploy/
 mcp/.mcpregistry_*
 bde_api.py.bak.unsecured
 *.bak.*
+keepalive.log
