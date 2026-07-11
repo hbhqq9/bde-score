@@ -461,10 +461,10 @@ CREDIT_PRICING = {
     "free_gift": 1000,
     "cost_per_analyze": 10,
     "packages": [
-        {"name": "体验包", "credits": 1000,    "price_cny": 10},
-        {"name": "标准包", "credits": 10000,   "price_cny": 90},
-        {"name": "专业包", "credits": 100000,  "price_cny": 800},
-        {"name": "机构包", "credits": 1000000, "price_cny": 6000},
+        {"name": "starter",  "credits": 1000,    "price_cny": 10,   "price_usd": 1.4},
+        {"name": "standard", "credits": 10000,   "price_cny": 90,   "price_usd": 12.5},
+        {"name": "pro",      "credits": 100000,  "price_cny": 800,  "price_usd": 110},
+        {"name": "institutional", "credits": 1000000, "price_cny": 6000, "price_usd": 830},
     ],
     "tiers": {
         "free":          {"daily_limit": 3,    "credits": 0},
@@ -1330,14 +1330,14 @@ async def credits_recharge(
 
 @app.get("/api/credits/pricing")
 async def credits_pricing():
-    """获取定价信息（公开）"""
+    """Get pricing information (public)"""
     return {
         "pricing": CREDIT_PRICING,
         "cost_per_analyze": CREDIT_PRICING["cost_per_analyze"],
         "free_daily_limit": 3,
         "new_user_gift": CREDIT_PRICING["free_gift"],
         "packages": CREDIT_PRICING["packages"],
-        "message": "新用户注册即送1000积分（可调用100次分析）",
+        "message": "New users get 1000 free credits (100 analyses). Each analysis costs 10 credits.",
     }
 
 

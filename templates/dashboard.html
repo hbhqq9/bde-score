@@ -7,8 +7,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-  body { font-family: 'Inter', system-ui, sans-serif; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
+  body { font-family: 'Inter', 'Noto Sans SC', 'Noto Sans JP', system-ui, sans-serif; }
   .mono { font-family: 'JetBrains Mono', monospace; }
   .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
   .score-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden; }
@@ -25,6 +25,9 @@
   .market-tab { transition: all 0.2s; }
   .market-tab.active { background: rgba(59, 130, 246, 0.3); border-color: #3b82f6; color: #93c5fd; }
   .market-tab:hover:not(.active) { background: rgba(255,255,255,0.05); }
+  .lang-btn { transition: all 0.2s; cursor: pointer; }
+  .lang-btn.active { background: rgba(59, 130, 246, 0.3); border-color: #3b82f6; }
+  .lang-btn:hover:not(.active) { background: rgba(255,255,255,0.05); }
 </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen">
@@ -36,17 +39,23 @@
       <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center font-bold text-lg">B</div>
       <div>
         <h1 class="text-lg font-semibold tracking-tight">BDE Score™</h1>
-        <p class="text-xs text-slate-400">AI Multi-Factor · Multi-Market Engine</p>
+        <p class="text-xs text-slate-400" data-i18n="subtitle">AI Multi-Factor · Multi-Market Engine</p>
       </div>
     </div>
     <div class="flex items-center gap-4">
+      <!-- Language Switcher -->
+      <div class="flex gap-1 border border-slate-700 rounded-lg p-0.5">
+        <button onclick="setLang('zh')" class="lang-btn active px-2 py-1 rounded-md text-xs font-medium" data-lang="zh">中文</button>
+        <button onclick="setLang('en')" class="lang-btn px-2 py-1 rounded-md text-xs font-medium" data-lang="en">EN</button>
+        <button onclick="setLang('ja')" class="lang-btn px-2 py-1 rounded-md text-xs font-medium" data-lang="ja">日本語</button>
+      </div>
       <div id="marketStatus" class="flex items-center gap-2 text-sm">
         <div class="pulse-dot bg-slate-500"></div>
-        <span class="text-slate-400">检测中...</span>
+        <span class="text-slate-400" data-i18n="detecting">检测中...</span>
       </div>
       <button id="refreshBtn" onclick="loadData(true)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-medium transition-colors flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-        刷新
+        <span data-i18n="refresh">刷新</span>
       </button>
     </div>
   </div>
@@ -57,31 +66,31 @@
   <!-- Market Tabs -->
   <div class="flex gap-2 mb-6">
     <button onclick="switchMarket('US')" class="market-tab active px-4 py-2 rounded-lg border border-slate-700 text-sm font-medium" data-market="US">
-      🇺🇸 美股 <span class="text-slate-500 ml-1">14</span>
+      🇺🇸 <span data-i18n="us_stock">美股</span> <span class="text-slate-500 ml-1">14</span>
     </button>
     <button onclick="switchMarket('HK')" class="market-tab px-4 py-2 rounded-lg border border-slate-700 text-sm font-medium" data-market="HK">
-      🇭🇰 港股 <span class="text-slate-500 ml-1">14</span>
+      🇭🇰 <span data-i18n="hk_stock">港股</span> <span class="text-slate-500 ml-1">14</span>
     </button>
     <button onclick="switchMarket('A')" class="market-tab px-4 py-2 rounded-lg border border-slate-700 text-sm font-medium" data-market="A">
-      🇨🇳 A股 <span class="text-slate-500 ml-1">12</span>
+      🇨🇳 <span data-i18n="a_stock">A股</span> <span class="text-slate-500 ml-1">12</span>
     </button>
     <button onclick="switchMarket('ALL')" class="market-tab px-4 py-2 rounded-lg border border-slate-700 text-sm font-medium" data-market="ALL">
-      🌐 全市场 <span class="text-slate-500 ml-1">40</span>
+      🌐 <span data-i18n="all_market">全市场</span> <span class="text-slate-500 ml-1">40</span>
     </button>
   </div>
 
   <!-- Loading -->
   <div id="loadingState" class="flex flex-col items-center justify-center py-20">
     <div class="loading-spinner mb-4"></div>
-    <p class="text-slate-400">正在获取行情数据并运行多因子分析...</p>
+    <p class="text-slate-400" data-i18n="loading">正在获取行情数据并运行多因子分析...</p>
   </div>
 
   <!-- Error -->
   <div id="errorState" class="hidden glass rounded-2xl p-8 text-center">
     <div class="text-4xl mb-4">⚠️</div>
-    <h3 class="text-lg font-semibold mb-2">数据获取失败</h3>
+    <h3 class="text-lg font-semibold mb-2" data-i18n="error_title">数据获取失败</h3>
     <p id="errorMsg" class="text-slate-400 mb-4"></p>
-    <button onclick="loadData(true)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-medium">重试</button>
+    <button onclick="loadData(true)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-medium" data-i18n="retry">重试</button>
   </div>
 
   <!-- Content -->
@@ -90,15 +99,15 @@
     <!-- Summary -->
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
       <div class="glass rounded-xl p-4">
-        <p class="text-xs text-slate-400 mb-1">当前市场</p>
+        <p class="text-xs text-slate-400 mb-1" data-i18n="current_market">当前市场</p>
         <p id="currentMarket" class="text-lg font-bold">—</p>
       </div>
       <div class="glass rounded-xl p-4">
-        <p class="text-xs text-slate-400 mb-1">综合情绪</p>
+        <p class="text-xs text-slate-400 mb-1" data-i18n="sentiment">综合情绪</p>
         <p id="sentiment" class="text-xl font-bold">—</p>
       </div>
       <div class="glass rounded-xl p-4">
-        <p class="text-xs text-slate-400 mb-1">平均得分</p>
+        <p class="text-xs text-slate-400 mb-1" data-i18n="avg_score">平均得分</p>
         <p id="avgScore" class="text-xl font-bold mono">—</p>
       </div>
       <div class="glass rounded-xl p-4">
@@ -106,7 +115,7 @@
         <p class="text-xl font-bold"><span id="buyCount" class="signal-buy mono">—</span> <span class="text-slate-600">/</span> <span id="holdCount" class="signal-hold mono">—</span></p>
       </div>
       <div class="glass rounded-xl p-4">
-        <p class="text-xs text-slate-400 mb-1">SELL 信号</p>
+        <p class="text-xs text-slate-400 mb-1" data-i18n="sell_signals">SELL 信号</p>
         <p id="avoidCount" class="text-xl font-bold signal-avoid mono">—</p>
       </div>
     </div>
@@ -124,23 +133,23 @@
       <!-- Table -->
       <div class="lg:col-span-2 glass rounded-2xl overflow-hidden">
         <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
-          <h2 class="font-semibold">多因子评分排行</h2>
-          <span id="tableNote" class="text-xs text-slate-500">按综合分降序</span>
+          <h2 class="font-semibold" data-i18n="factor_ranking">多因子评分排行</h2>
+          <span id="tableNote" class="text-xs text-slate-500" data-i18n="sort_by_score">按综合分降序</span>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-sm">
             <thead>
               <tr class="text-left text-slate-400 text-xs border-b border-slate-800">
                 <th class="px-4 py-3">#</th>
-                <th class="px-4 py-3">代码</th>
-                <th class="px-4 py-3">价格</th>
-                <th class="px-4 py-3">综合分</th>
-                <th class="px-4 py-3">信号</th>
-                <th class="px-4 py-3">动量</th>
-                <th class="px-4 py-3">回归</th>
-                <th class="px-4 py-3">量能</th>
-                <th class="px-4 py-3">波动</th>
-                <th class="px-4 py-3">趋势</th>
+                <th class="px-4 py-3" data-i18n="th_code">代码</th>
+                <th class="px-4 py-3" data-i18n="th_price">价格</th>
+                <th class="px-4 py-3" data-i18n="th_composite">综合分</th>
+                <th class="px-4 py-3" data-i18n="th_signal">信号</th>
+                <th class="px-4 py-3" data-i18n="th_momentum">动量</th>
+                <th class="px-4 py-3" data-i18n="th_reversion">回归</th>
+                <th class="px-4 py-3" data-i18n="th_volume">量能</th>
+                <th class="px-4 py-3" data-i18n="th_volatility">波动</th>
+                <th class="px-4 py-3" data-i18n="th_trend">趋势</th>
               </tr>
             </thead>
             <tbody id="scoreTable"></tbody>
@@ -150,29 +159,206 @@
 
       <!-- Radar -->
       <div class="glass rounded-2xl p-6">
-        <h2 class="font-semibold mb-4">因子分布（Top 5）</h2>
+        <h2 class="font-semibold mb-4" data-i18n="radar_title">因子分布（Top 5）</h2>
         <canvas id="radarChart" width="300" height="300"></canvas>
       </div>
     </div>
 
     <!-- Bar Chart -->
     <div class="glass rounded-2xl p-6 mb-8">
-      <h2 class="font-semibold mb-4">综合评分分布</h2>
+      <h2 class="font-semibold mb-4" data-i18n="bar_title">综合评分分布</h2>
       <canvas id="barChart" height="100"></canvas>
+    </div>
+
+    <!-- Credits Info -->
+    <div class="glass rounded-xl p-4 mb-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">💰</span>
+        <div>
+          <p class="text-sm font-medium" data-i18n="credits_title">积分计费系统已上线</p>
+          <p class="text-xs text-slate-400" data-i18n="credits_desc">新用户注册送1000积分 · 每次分析仅消耗10积分</p>
+        </div>
+      </div>
+      <a href="/api/credits/pricing" target="_blank" class="px-3 py-1.5 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 text-xs font-medium text-blue-300 transition-colors" data-i18n="view_pricing">查看定价</a>
     </div>
 
     <!-- Disclaimer -->
     <div class="glass rounded-xl p-4 text-center text-xs text-slate-500">
-      ⚠️ BDE Score™ 仅提供技术分析与数据评分，不构成任何投资建议。投资有风险，决策需谨慎。<br>
-      Technical analysis only. Not investment advice. Past performance does not guarantee future results.
+      <span data-i18n="disclaimer_cn">⚠️ BDE Score™ 仅提供技术分析与数据评分，不构成任何投资建议。投资有风险，决策需谨慎。</span><br>
+      <span data-i18n="disclaimer_en">Technical analysis only. Not investment advice. Past performance does not guarantee future results.</span>
     </div>
   </div>
 </main>
 
 <script>
+// ============================================================
+// i18n System
+// ============================================================
+const i18n = {
+  zh: {
+    subtitle: 'AI多因子 · 多市场量化引擎',
+    detecting: '检测中...',
+    refresh: '刷新',
+    us_stock: '美股',
+    hk_stock: '港股',
+    a_stock: 'A股',
+    all_market: '全市场',
+    loading: '正在获取行情数据并运行多因子分析...',
+    error_title: '数据获取失败',
+    retry: '重试',
+    current_market: '当前市场',
+    sentiment: '综合情绪',
+    avg_score: '平均得分',
+    sell_signals: 'SELL 信号',
+    factor_ranking: '多因子评分排行',
+    sort_by_score: '按综合分降序',
+    th_code: '代码',
+    th_price: '价格',
+    th_composite: '综合分',
+    th_signal: '信号',
+    th_momentum: '动量',
+    th_reversion: '回归',
+    th_volume: '量能',
+    th_volatility: '波动',
+    th_trend: '趋势',
+    radar_title: '因子分布（Top 5）',
+    bar_title: '综合评分分布',
+    credits_title: '积分计费系统已上线',
+    credits_desc: '新用户注册送1000积分 · 每次分析仅消耗10积分',
+    view_pricing: '查看定价',
+    disclaimer_cn: '⚠️ BDE Score™ 仅提供技术分析与数据评分，不构成任何投资建议。投资有风险，决策需谨慎。',
+    disclaimer_en: 'Technical analysis only. Not investment advice. Past performance does not guarantee future results.',
+    radar_labels: ['动量', '均值回归', '量能', '波动', '趋势'],
+    bar_label: '综合评分',
+    meta_run_time: '分析时间',
+    meta_data_source: '数据源',
+    meta_symbols: '标的数',
+  },
+  en: {
+    subtitle: 'AI Multi-Factor · Multi-Market Engine',
+    detecting: 'Detecting...',
+    refresh: 'Refresh',
+    us_stock: 'US Stock',
+    hk_stock: 'HK Stock',
+    a_stock: 'CN A-Share',
+    all_market: 'All Markets',
+    loading: 'Fetching market data and running multi-factor analysis...',
+    error_title: 'Data Fetch Failed',
+    retry: 'Retry',
+    current_market: 'Market',
+    sentiment: 'Sentiment',
+    avg_score: 'Avg Score',
+    sell_signals: 'SELL Signals',
+    factor_ranking: 'Multi-Factor Score Ranking',
+    sort_by_score: 'Sorted by composite score',
+    th_code: 'Code',
+    th_price: 'Price',
+    th_composite: 'Score',
+    th_signal: 'Signal',
+    th_momentum: 'Momentum',
+    th_reversion: 'Reversion',
+    th_volume: 'Volume',
+    th_volatility: 'Volatility',
+    th_trend: 'Trend',
+    radar_title: 'Factor Distribution (Top 5)',
+    bar_title: 'Composite Score Distribution',
+    credits_title: 'Credit Billing System Live',
+    credits_desc: 'New users get 1,000 free credits · Each analysis costs only 10 credits',
+    view_pricing: 'View Pricing',
+    disclaimer_cn: '⚠️ BDE Score™ provides technical analysis and data scoring only. Not investment advice. Investment involves risks.',
+    disclaimer_en: 'Technical analysis only. Not investment advice. Past performance does not guarantee future results.',
+    radar_labels: ['Momentum', 'Mean Reversion', 'Volume', 'Volatility', 'Trend'],
+    bar_label: 'Composite Score',
+    meta_run_time: 'Analysis Time',
+    meta_data_source: 'Data Source',
+    meta_symbols: 'Symbols',
+  },
+  ja: {
+    subtitle: 'AIマルチファクター・マルチマーケットエンジン',
+    detecting: '検出中...',
+    refresh: '更新',
+    us_stock: '米国株',
+    hk_stock: '香港株',
+    a_stock: 'A株',
+    all_market: '全市場',
+    loading: 'マーケットデータを取得し、マルチファクター分析を実行中...',
+    error_title: 'データ取得失敗',
+    retry: '再試行',
+    current_market: '対象市場',
+    sentiment: '総合センチメント',
+    avg_score: '平均スコア',
+    sell_signals: 'SELL シグナル',
+    factor_ranking: 'マルチファクタースコアランキング',
+    sort_by_score: '総合スコア降順',
+    th_code: 'コード',
+    th_price: '価格',
+    th_composite: '総合スコア',
+    th_signal: 'シグナル',
+    th_momentum: 'モメンタム',
+    th_reversion: '平均回帰',
+    th_volume: '出来高',
+    th_volatility: 'ボラティリティ',
+    th_trend: 'トレンド',
+    radar_title: 'ファクター分布（Top 5）',
+    bar_title: '総合スコア分布',
+    credits_title: 'クレジット課金システム稼働中',
+    credits_desc: '新規ユーザーに1,000クレジットプレゼント · 1分析あたり10クレジット',
+    view_pricing: '料金を見る',
+    disclaimer_cn: '⚠️ BDE Score™ は技術分析とデータスコアリングのみを提供します。投資助言ではありません。投資にはリスクが伴います。',
+    disclaimer_en: 'Technical analysis only. Not investment advice. Past performance does not guarantee future results.',
+    radar_labels: ['モメンタム', '平均回帰', '出来高', 'ボラティリティ', 'トレンド'],
+    bar_label: '総合スコア',
+    meta_run_time: '分析時刻',
+    meta_data_source: 'データソース',
+    meta_symbols: '銘柄数',
+  }
+};
+
+let currentLang = 'zh';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang === 'ja' ? 'ja' : 'en';
+  
+  // Update active button
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  
+  // Update all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (i18n[lang] && i18n[lang][key]) {
+      el.textContent = i18n[lang][key];
+    }
+  });
+  
+  // Re-render charts with new labels if data exists
+  if (lastData) {
+    renderRadarChart(lastData.results.slice(0, 5));
+    renderBarChart(lastData.results);
+    // Update meta info
+    const t = i18n[lang];
+    document.getElementById('runTime').textContent = `${t.meta_run_time}: ${lastData.run_time}`;
+    document.getElementById('dataSource').textContent = `${t.meta_data_source}: ${lastData.data_source}`;
+    document.getElementById('symbolsCount').textContent = `${t.meta_symbols}: ${lastData.symbols_count}`;
+  }
+  
+  // Save preference
+  localStorage.setItem('bde_lang', lang);
+}
+
+function t(key) {
+  return (i18n[currentLang] && i18n[currentLang][key]) || key;
+}
+
+// ============================================================
+// Dashboard Logic
+// ============================================================
 let radarChart = null, barChart = null;
 let currentMarketCode = 'US';
-const marketNames = { US: '🇺🇸 美股', HK: '🇭🇰 港股', A: '🇨🇳 A股', ALL: '🌐 全市场' };
+let lastData = null;
+const marketNames = { US: '🇺🇸 US', HK: '🇭🇰 HK', A: '🇨🇳 CN', ALL: '🌐 ALL' };
 const pricePrefix = { US: '$', HK: 'HK$', A: '¥', ALL: '' };
 
 function switchMarket(market) {
@@ -215,6 +401,7 @@ async function loadData(forceRefresh = false) {
     const resp = await fetch(url);
     if (!resp.ok) { const err = await resp.json(); throw new Error(err.detail || 'Error'); }
     const data = await resp.json();
+    lastData = data;
     renderDashboard(data);
     loading.classList.add('hidden');
     content.classList.remove('hidden');
@@ -248,9 +435,12 @@ function renderDashboard(data) {
   document.getElementById('buyCount').textContent = data.market_summary.buy_signals;
   document.getElementById('holdCount').textContent = data.market_summary.hold_signals;
   document.getElementById('avoidCount').textContent = data.market_summary.avoid_signals;
-  document.getElementById('runTime').textContent = `分析时间: ${data.run_time}`;
-  document.getElementById('dataSource').textContent = `数据源: ${data.data_source}`;
-  document.getElementById('symbolsCount').textContent = `标的数: ${data.symbols_count}`;
+  
+  // Meta info with i18n
+  const tr = i18n[currentLang];
+  document.getElementById('runTime').textContent = `${tr.meta_run_time}: ${data.run_time}`;
+  document.getElementById('dataSource').textContent = `${tr.meta_data_source}: ${data.data_source}`;
+  document.getElementById('symbolsCount').textContent = `${tr.meta_symbols}: ${data.symbols_count}`;
   
   // Table
   const tbody = document.getElementById('scoreTable');
@@ -285,7 +475,7 @@ function renderRadarChart(top5) {
   const ctx = document.getElementById('radarChart').getContext('2d');
   if (radarChart) radarChart.destroy();
   const factors = ['momentum', 'mean_reversion', 'volume', 'volatility', 'trend'];
-  const labels = ['动量', '均值回归', '量能', '波动', '趋势'];
+  const labels = t('radar_labels');
   const colors = ['#3b82f6', '#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444'];
   radarChart = new Chart(ctx, {
     type: 'radar',
@@ -311,7 +501,7 @@ function renderBarChart(results) {
     type: 'bar',
     data: {
       labels: results.map(r => r.symbol),
-      datasets: [{ label: '综合评分', data: results.map(r => r.composite_score), backgroundColor: results.map(r => scoreColor(r.composite_score) + '80'), borderColor: results.map(r => scoreColor(r.composite_score)), borderWidth: 1, borderRadius: 4 }]
+      datasets: [{ label: t('bar_label'), data: results.map(r => r.composite_score), backgroundColor: results.map(r => scoreColor(r.composite_score) + '80'), borderColor: results.map(r => scoreColor(r.composite_score)), borderWidth: 1, borderRadius: 4 }]
     },
     options: {
       responsive: true,
@@ -319,6 +509,12 @@ function renderBarChart(results) {
       plugins: { legend: { display: false } }
     }
   });
+}
+
+// Init: restore language preference
+const savedLang = localStorage.getItem('bde_lang');
+if (savedLang && i18n[savedLang]) {
+  setLang(savedLang);
 }
 
 setInterval(() => loadData(false), 15 * 60 * 1000);
