@@ -434,3 +434,21 @@
 [Sun Jul 12 01:30:04 AM CST 2026] ⚠️ MCP-HTTP-Server 已停止，正在重启...
 [Sun Jul 12 01:30:07 AM CST 2026] ✅ MCP-HTTP-Server 重启成功
 [Sun Jul 12 01:30:07 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 3进程)
+[Sun Jul 12 01:35:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 3进程)
+[Sun Jul 12 01:40:03 AM CST 2026] ⚠️ FutuOpenD 已停止，正在重启...
+[Sun Jul 12 01:40:06 AM CST 2026] ✅ FutuOpenD 重启成功
+[Sun Jul 12 01:40:06 AM CST 2026] ⚠️ BDE-API 已停止，正在重启...
+[Sun Jul 12 01:40:09 AM CST 2026] ✅ BDE-API 重启成功
+[Sun Jul 12 01:40:09 AM CST 2026] ⚠️ MCP-HTTP-Server 已停止，正在重启...
+[Sun Jul 12 01:40:12 AM CST 2026] ✅ MCP-HTTP-Server 重启成功
+[Sun Jul 12 01:40:12 AM CST 2026] MCP-Tunnel stopped, restarting...
+[Sun Jul 12 01:40:15 AM CST 2026] MCP-Tunnel restart FAILED
+[Sun Jul 12 01:40:15 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 1进程)
+[Sun Jul 12 01:45:01 AM CST 2026] MCP-Tunnel stopped, restarting...
+[Sun Jul 12 01:45:04 AM CST 2026] MCP-Tunnel restart FAILED
+[Sun Jul 12 01:45:04 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 1进程)
+[Sun Jul 12 01:50:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 3进程)
+[Sun Jul 12 01:55:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 3进程)
+[Sun Jul 12 02:00:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 3进程)
+[Sun Jul 12 02:05:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 3进程)
+[Sun Jul 12 02:10:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 3进程)

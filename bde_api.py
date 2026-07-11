@@ -1341,6 +1341,54 @@ async def credits_pricing():
     }
 
 
+# ============================================================
+# 🔓 Freemium: Stock Unlock Endpoint
+# ============================================================
+@app.get("/api/stock/unlock")
+async def unlock_stock(
+    request: Request,
+    symbol: str = Query(..., description="Stock symbol to unlock"),
+    x_api_key: str = Header(None)
+):
+    """Unlock detailed factor scores for a specific stock (costs 10 credits)"""
+    if not x_api_key:
+        return JSONResponse({"error": "API key required", "message": "请绑定API Key后解锁"}, status_code=401)
+    
+    # Verify key
+    key_data = key_manager.verify_with_prefix(x_api_key)
+    if not key_data:
+        return JSONResponse({"error": "Invalid API key"}, status_code=401)
+    
+    prefix = key_data[1]
+    
+    # Ensure user exists in credit system
+    credit_manager.ensure_user(prefix)
+    
+    # Check balance
+    balance_info = credit_manager.get_balance(prefix)
+    unlock_cost = 10
+    if balance_info['balance'] < unlock_cost:
+        return JSONResponse({
+            "error": "Insufficient credits",
+            "balance": balance_info['balance'],
+            "required": unlock_cost,
+            "message": f"积分不足，需要{unlock_cost}积分，当前余额{balance_info['balance']}积分"
+        }, status_code=402)
+    
+    # Deduct credits
+    deducted = credit_manager.deduct(prefix, unlock_cost, f"Unlock {symbol}")
+    if not deducted:
+        return JSONResponse({"error": "Deduction failed"}, status_code=500)
+    
+    new_balance = credit_manager.get_balance(prefix)
+    return {
+        "symbol": symbol,
+        "unlocked": True,
+        "credits_remaining": new_balance['balance'],
+        "cost": unlock_cost
+    }
+
+
 @app.get("/api/history")
 async def api_history(
     symbol: Optional[str] = Query(None, description="股票代码过滤"),

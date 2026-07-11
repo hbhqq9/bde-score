@@ -28,13 +28,36 @@
   .lang-btn { transition: all 0.2s; cursor: pointer; }
   .lang-btn.active { background: rgba(59, 130, 246, 0.3); border-color: #3b82f6; }
   .lang-btn:hover:not(.active) { background: rgba(255,255,255,0.05); }
+  /* Freemium styles */
+  .locked-row { cursor: pointer; transition: background 0.2s; }
+  .locked-row:hover { background: rgba(59, 130, 246, 0.08) !important; }
+  .locked-row td { position: relative; }
+  .factor-blur { filter: blur(5px); opacity: 0.4; user-select: none; pointer-events: none; transition: all 0.4s ease; }
+  .factor-unblurred { transition: all 0.4s ease; }
+  .unlock-flash { animation: unlockFlash 0.8s ease; }
+  @keyframes unlockFlash { 0% { background: rgba(34,197,94,0.25); } 100% { background: transparent; } }
+  .lock-cell-overlay {
+    position: absolute; inset: 0; z-index: 2;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(1px);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .locked-row:hover .lock-cell-overlay { background: rgba(15, 23, 42, 0.4); }
+  .api-key-bar { transition: all 0.3s; }
+  .credit-badge { animation: creditPulse 2s infinite; }
+  @keyframes creditPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); } 50% { box-shadow: 0 0 0 4px rgba(59,130,246,0); } }
+  /* Modal */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; }
+  .modal-content { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; max-width: 400px; width: 90%; }
 </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen">
 
 <!-- Header -->
 <header class="glass sticky top-0 z-50 px-6 py-4">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
+  <div class="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-3">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center font-bold text-lg">B</div>
       <div>
@@ -42,7 +65,16 @@
         <p class="text-xs text-slate-400" data-i18n="subtitle">AI Multi-Factor · Multi-Market Engine</p>
       </div>
     </div>
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-3 flex-wrap">
+      <!-- API Key Bar -->
+      <div id="apiKeyBar" class="api-key-bar flex items-center gap-2 bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-1.5">
+        <span class="text-xs text-slate-400">🔑</span>
+        <input id="apiKeyInput" type="password" placeholder="API Key" class="bg-transparent text-xs w-28 outline-none placeholder-slate-500 text-slate-300" data-i18n-placeholder="enter_api_key">
+        <button id="bindKeyBtn" onclick="bindApiKey()" class="px-2 py-0.5 rounded bg-blue-600 hover:bg-blue-500 text-xs font-medium transition-colors" data-i18n="bind_key">绑定</button>
+        <span id="creditDisplay" class="hidden items-center gap-1 text-xs font-medium text-amber-400 credit-badge bg-amber-500/10 px-2 py-0.5 rounded-md">
+          💰 <span id="creditBalance">0</span>
+        </span>
+      </div>
       <!-- Language Switcher -->
       <div class="flex gap-1 border border-slate-700 rounded-lg p-0.5">
         <button onclick="setLang('zh')" class="lang-btn active px-2 py-1 rounded-md text-xs font-medium" data-lang="zh">中文</button>
@@ -77,6 +109,18 @@
     <button onclick="switchMarket('ALL')" class="market-tab px-4 py-2 rounded-lg border border-slate-700 text-sm font-medium" data-market="ALL">
       🌐 <span data-i18n="all_market">全市场</span> <span class="text-slate-500 ml-1">40</span>
     </button>
+  </div>
+
+  <!-- Freemium Info Banner -->
+  <div class="glass rounded-xl p-4 mb-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">✨</span>
+      <div>
+        <p class="text-sm font-medium" data-i18n="freemium_title">Top 3 免费查看 · 其余消耗积分解锁详细因子</p>
+        <p class="text-xs text-slate-400" data-i18n="freemium_desc">每只股票仅需10积分 · 解锁后可查看完整5因子评分</p>
+      </div>
+    </div>
+    <a href="/api/credits/pricing" target="_blank" class="px-3 py-1.5 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 text-xs font-medium text-blue-300 transition-colors whitespace-nowrap" data-i18n="get_api_key">获取API Key</a>
   </div>
 
   <!-- Loading -->
@@ -190,6 +234,21 @@
   </div>
 </main>
 
+<!-- No API Key Modal -->
+<div id="noKeyModal" class="modal-backdrop hidden">
+  <div class="modal-content">
+    <div class="text-center mb-4">
+      <span class="text-4xl">🔑</span>
+      <h3 class="text-lg font-semibold mt-2" data-i18n="need_api_key">需要API Key</h3>
+      <p class="text-sm text-slate-400 mt-2" data-i18n="need_api_key_desc">绑定API Key后即可解锁详细因子分析，新用户赠送1000积分</p>
+    </div>
+    <div class="flex gap-2">
+      <a href="/api/credits/pricing" target="_blank" class="flex-1 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-medium text-center transition-colors" data-i18n="get_api_key">获取API Key</a>
+      <button onclick="closeNoKeyModal()" class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-sm font-medium transition-colors" data-i18n="close">关闭</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ============================================================
 // i18n System
@@ -233,6 +292,22 @@ const i18n = {
     meta_run_time: '分析时间',
     meta_data_source: '数据源',
     meta_symbols: '标的数',
+    unlock_hint: '消耗10积分解锁详细分析',
+    get_api_key: '获取API Key',
+    enter_api_key: '输入API Key',
+    bind_key: '绑定',
+    credits_balance: '积分余额',
+    locked: '已锁定',
+    unlock_success: '已解锁',
+    insufficient_credits: '积分不足',
+    freemium_title: 'Top 3 免费查看 · 其余消耗积分解锁详细因子',
+    freemium_desc: '每只股票仅需10积分 · 解锁后可查看完整5因子评分',
+    need_api_key: '需要API Key',
+    need_api_key_desc: '绑定API Key后即可解锁详细因子分析，新用户赠送1000积分',
+    close: '关闭',
+    bind_success: '绑定成功',
+    bind_failed: '绑定失败，请检查Key',
+    key_bound: '已绑定',
   },
   en: {
     subtitle: 'AI Multi-Factor · Multi-Market Engine',
@@ -272,6 +347,22 @@ const i18n = {
     meta_run_time: 'Analysis Time',
     meta_data_source: 'Data Source',
     meta_symbols: 'Symbols',
+    unlock_hint: 'Spend 10 credits to unlock detailed analysis',
+    get_api_key: 'Get API Key',
+    enter_api_key: 'Enter API Key',
+    bind_key: 'Bind',
+    credits_balance: 'Credits',
+    locked: 'Locked',
+    unlock_success: 'Unlocked',
+    insufficient_credits: 'Insufficient credits',
+    freemium_title: 'Top 3 free · Spend credits to unlock factor details',
+    freemium_desc: 'Only 10 credits per stock · Unlock full 5-factor scores',
+    need_api_key: 'API Key Required',
+    need_api_key_desc: 'Bind an API Key to unlock detailed factor analysis. New users get 1,000 free credits.',
+    close: 'Close',
+    bind_success: 'Bound successfully',
+    bind_failed: 'Bind failed, check your key',
+    key_bound: 'Bound',
   },
   ja: {
     subtitle: 'AIマルチファクター・マルチマーケットエンジン',
@@ -311,6 +402,22 @@ const i18n = {
     meta_run_time: '分析時刻',
     meta_data_source: 'データソース',
     meta_symbols: '銘柄数',
+    unlock_hint: '10クレジットで詳細分析をアンロック',
+    get_api_key: 'APIキーを取得',
+    enter_api_key: 'APIキーを入力',
+    bind_key: 'バインド',
+    credits_balance: 'クレジット残高',
+    locked: 'ロック中',
+    unlock_success: 'アンロック済み',
+    insufficient_credits: 'クレジット不足',
+    freemium_title: 'Top 3 無料 · クレジットでファクター詳細をアンロック',
+    freemium_desc: '1銘柄あたり10クレジット · 5ファクタースコアを完全表示',
+    need_api_key: 'APIキーが必要です',
+    need_api_key_desc: 'APIキーをバインドすると詳細ファクター分析をアンロックできます。新規ユーザーに1,000クレジットプレゼント。',
+    close: '閉じる',
+    bind_success: 'バインド成功',
+    bind_failed: 'バインド失敗、キーを確認してください',
+    key_bound: 'バインド済み',
   }
 };
 
@@ -333,15 +440,25 @@ function setLang(lang) {
     }
   });
   
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (i18n[lang] && i18n[lang][key]) {
+      el.placeholder = i18n[lang][key];
+    }
+  });
+  
   // Re-render charts with new labels if data exists
   if (lastData) {
     renderRadarChart(lastData.results.slice(0, 5));
     renderBarChart(lastData.results);
     // Update meta info
-    const t = i18n[lang];
-    document.getElementById('runTime').textContent = `${t.meta_run_time}: ${lastData.run_time}`;
-    document.getElementById('dataSource').textContent = `${t.meta_data_source}: ${lastData.data_source}`;
-    document.getElementById('symbolsCount').textContent = `${t.meta_symbols}: ${lastData.symbols_count}`;
+    const tr = i18n[lang];
+    document.getElementById('runTime').textContent = `${tr.meta_run_time}: ${lastData.run_time}`;
+    document.getElementById('dataSource').textContent = `${tr.meta_data_source}: ${lastData.data_source}`;
+    document.getElementById('symbolsCount').textContent = `${tr.meta_symbols}: ${lastData.symbols_count}`;
+    // Re-render table to update lock overlay text
+    renderTable(lastData.results);
   }
   
   // Save preference
@@ -350,6 +467,154 @@ function setLang(lang) {
 
 function t(key) {
   return (i18n[currentLang] && i18n[currentLang][key]) || key;
+}
+
+// ============================================================
+// API Key & Credits Management
+// ============================================================
+let boundApiKey = localStorage.getItem('bde_api_key') || null;
+let creditBalance = 0;
+
+function initApiKey() {
+  if (boundApiKey) {
+    document.getElementById('apiKeyInput').value = '••••••••';
+    document.getElementById('apiKeyInput').disabled = true;
+    document.getElementById('bindKeyBtn').textContent = t('key_bound');
+    document.getElementById('bindKeyBtn').disabled = true;
+    document.getElementById('bindKeyBtn').classList.add('opacity-50');
+    fetchCredits();
+  }
+}
+
+async function bindApiKey() {
+  const input = document.getElementById('apiKeyInput');
+  const key = input.value.trim();
+  if (!key) return;
+  
+  // Test the key by checking balance
+  try {
+    const resp = await fetch('/api/credits/balance', {
+      headers: { 'X-API-Key': key }
+    });
+    if (!resp.ok) {
+      showToast(t('bind_failed'), 'error');
+      return;
+    }
+    const data = await resp.json();
+    boundApiKey = key;
+    localStorage.setItem('bde_api_key', key);
+    creditBalance = data.balance;
+    
+    input.value = '••••••••';
+    input.disabled = true;
+    document.getElementById('bindKeyBtn').textContent = t('key_bound');
+    document.getElementById('bindKeyBtn').disabled = true;
+    document.getElementById('bindKeyBtn').classList.add('opacity-50');
+    
+    showCreditDisplay();
+    showToast(t('bind_success') + ` · 💰 ${creditBalance}`, 'success');
+    
+    // Re-render table to update lock overlays
+    if (lastData) renderTable(lastData.results);
+  } catch(e) {
+    showToast(t('bind_failed'), 'error');
+  }
+}
+
+async function fetchCredits() {
+  if (!boundApiKey) return;
+  try {
+    const resp = await fetch('/api/credits/balance', {
+      headers: { 'X-API-Key': boundApiKey }
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      creditBalance = data.balance;
+      showCreditDisplay();
+    }
+  } catch(e) {}
+}
+
+function showCreditDisplay() {
+  const el = document.getElementById('creditDisplay');
+  el.classList.remove('hidden');
+  el.classList.add('flex');
+  document.getElementById('creditBalance').textContent = creditBalance;
+}
+
+function showToast(message, type = 'info') {
+  const toast = document.createElement('div');
+  toast.className = `fixed top-20 right-6 z-[200] px-4 py-2 rounded-lg text-sm font-medium shadow-lg transition-all ${
+    type === 'error' ? 'bg-red-600 text-white' : 
+    type === 'success' ? 'bg-green-600 text-white' : 
+    'bg-slate-700 text-white'
+  }`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+// ============================================================
+// Unlock Logic
+// ============================================================
+function getUnlockedSet() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem('bde_unlocked') || '[]'));
+  } catch { return new Set(); }
+}
+
+function saveUnlockedSet(s) {
+  localStorage.setItem('bde_unlocked', JSON.stringify([...s]));
+}
+
+async function unlockStock(symbol, rowEl) {
+  if (!boundApiKey) {
+    document.getElementById('noKeyModal').classList.remove('hidden');
+    return;
+  }
+  
+  const unlocked = getUnlockedSet();
+  if (unlocked.has(symbol)) return;
+  
+  try {
+    const resp = await fetch(`/api/stock/unlock?symbol=${encodeURIComponent(symbol)}`, {
+      headers: { 'X-API-Key': boundApiKey }
+    });
+    const data = await resp.json();
+    
+    if (resp.ok && data.unlocked) {
+      unlocked.add(symbol);
+      saveUnlockedSet(unlocked);
+      creditBalance = data.credits_remaining;
+      document.getElementById('creditBalance').textContent = creditBalance;
+      
+      // Animate unlock
+      rowEl.classList.add('unlock-flash');
+      // Remove overlays and unblur
+      rowEl.querySelectorAll('.lock-cell-overlay').forEach(el => el.remove());
+      rowEl.querySelectorAll('.factor-blur').forEach(el => {
+        el.classList.remove('factor-blur');
+      });
+      rowEl.classList.remove('locked-row');
+      rowEl.style.cursor = '';
+      rowEl.onclick = null;
+      // Remove lock icon from signal cell
+      const lockIcons = rowEl.querySelectorAll('[title]');
+      lockIcons.forEach(el => { if (el.textContent === '🔒') el.remove(); });
+      
+      showToast(`${symbol} ${t('unlock_success')} ✅`, 'success');
+    } else if (resp.status === 402) {
+      showToast(t('insufficient_credits') + ` (${data.balance || 0})`, 'error');
+    } else {
+      showToast(data.error || data.message || 'Error', 'error');
+    }
+  } catch(e) {
+    showToast('Network error', 'error');
+  }
+}
+
+function closeNoKeyModal() {
+  document.getElementById('noKeyModal').classList.add('hidden');
 }
 
 // ============================================================
@@ -442,11 +707,55 @@ function renderDashboard(data) {
   document.getElementById('dataSource').textContent = `${tr.meta_data_source}: ${data.data_source}`;
   document.getElementById('symbolsCount').textContent = `${tr.meta_symbols}: ${data.symbols_count}`;
   
-  // Table
+  renderTable(data.results);
+  renderRadarChart(data.results.slice(0, 5));
+  renderBarChart(data.results);
+}
+
+function renderTable(results) {
+  const prefix = pricePrefix[currentMarketCode] || '';
   const tbody = document.getElementById('scoreTable');
-  tbody.innerHTML = data.results.map((r, i) => `
-    <tr class="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
-      <td class="px-4 py-3 text-slate-500 mono text-xs">${i + 1}</td>
+  const unlocked = getUnlockedSet();
+  
+  tbody.innerHTML = results.map((r, i) => {
+    const rank = i + 1;
+    const isFree = rank <= 3;
+    const isUnlocked = unlocked.has(r.symbol);
+    const showFactors = isFree || isUnlocked;
+    const isLocked = !isFree && !isUnlocked;
+    
+    // Factor cells - blurred for locked rows, with overlay
+    const factorCells = ['momentum', 'mean_reversion', 'volume', 'volatility', 'trend'].map((f, fi) => {
+      const val = r.scores[f] || '—';
+      if (showFactors) {
+        return `<td class="px-4 py-3 mono text-xs">${val}</td>`;
+      } else {
+        // First factor cell gets the lock overlay spanning all 5
+        if (fi === 0) {
+          return `<td class="px-4 py-3 mono text-xs factor-blur" style="position:relative;">
+            ${val}
+            <div class="lock-cell-overlay" style="left:0; right:calc(-400% - 0px); width:calc(500%);">
+              <span>🔒</span>
+              <span class="text-xs font-medium text-slate-300">${t('unlock_hint')}</span>
+            </div>
+          </td>`;
+        }
+        return `<td class="px-4 py-3 mono text-xs factor-blur">${val}</td>`;
+      }
+    }).join('');
+    
+    // Signal cell
+    let signalHtml = `<span class="px-2 py-1 rounded-md text-xs font-medium ${signalBg(r.signal)}">${r.signal}</span>`;
+    if (isLocked) {
+      signalHtml = `<span class="relative inline-flex items-center gap-1"><span class="px-2 py-1 rounded-md text-xs font-medium ${signalBg(r.signal)}">${r.signal}</span><span class="text-xs" title="${t('unlock_hint')}">🔒</span></span>`;
+    }
+    
+    const rowClass = isLocked ? 'locked-row' : '';
+    const onclick = isLocked ? ` onclick="unlockStock('${r.symbol}', this)"` : '';
+    const cursor = isLocked ? 'cursor:pointer;' : '';
+    
+    return `<tr class="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors ${rowClass}" style="${cursor}"${onclick}>
+      <td class="px-4 py-3 text-slate-500 mono text-xs">${rank}</td>
       <td class="px-4 py-3">
         <span class="font-medium">${r.symbol}</span>
         <span class="text-xs text-slate-500 ml-1">${r.futu_code}</span>
@@ -458,17 +767,10 @@ function renderDashboard(data) {
           <div class="score-bar w-16"><div class="score-fill" style="width:${r.composite_score}%; background:${scoreColor(r.composite_score)}"></div></div>
         </div>
       </td>
-      <td class="px-4 py-3"><span class="px-2 py-1 rounded-md text-xs font-medium ${signalBg(r.signal)}">${r.signal}</span></td>
-      <td class="px-4 py-3 mono text-xs">${r.scores.momentum || '—'}</td>
-      <td class="px-4 py-3 mono text-xs">${r.scores.mean_reversion || '—'}</td>
-      <td class="px-4 py-3 mono text-xs">${r.scores.volume || '—'}</td>
-      <td class="px-4 py-3 mono text-xs">${r.scores.volatility || '—'}</td>
-      <td class="px-4 py-3 mono text-xs">${r.scores.trend || '—'}</td>
-    </tr>
-  `).join('');
-  
-  renderRadarChart(data.results.slice(0, 5));
-  renderBarChart(data.results);
+      <td class="px-4 py-3">${signalHtml}</td>
+      ${factorCells}
+    </tr>`;
+  }).join('');
 }
 
 function renderRadarChart(top5) {
@@ -516,6 +818,9 @@ const savedLang = localStorage.getItem('bde_lang');
 if (savedLang && i18n[savedLang]) {
   setLang(savedLang);
 }
+
+// Init API Key from storage
+initApiKey();
 
 setInterval(() => loadData(false), 15 * 60 * 1000);
 loadMarketStatus();
