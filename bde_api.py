@@ -153,8 +153,18 @@ app = FastAPI(
     version="1.0.0-mvp",
     docs_url=None,       # 🔒 禁用Swagger UI（公网暴露攻击面）
     redoc_url=None,      # 🔒 禁用ReDoc
-    openapi_url="/openapi.json",  # 🔓 Agent发现需要，端点本身受Auth保护
+    openapi_url=None if os.environ.get("BDE_ENV", "production") == "production" else "/openapi.json",  # 🔒 P2: 生产环境禁用OpenAPI spec
 )
+
+
+# 🔒 P2: SQLite WAL mode helper - 提升并发性能，防止写入冲突
+def _get_db(db_path=DB_PATH):
+    """获取WAL模式的SQLite连接"""
+    conn = sqlite3.connect(db_path, timeout=10)
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA busy_timeout=5000")
+    conn.execute("PRAGMA synchronous=NORMAL")
+    return conn
 
 # USDC 支付系统全局实例
 usdc_listener_instance = None
@@ -286,7 +296,9 @@ async def hide_server_header(request: Request, call_next):
 # 🔒 速率限制器（内存级，防DoS）
 # ============================================================
 class RateLimiter:
-    """简单滑动窗口速率限制"""
+    """🔒 P2: 滑动窗口速率限制 + 内存泄漏防护"""
+    MAX_TRACKED_IPS = 10000  # 防止内存泄漏：最多追踪10K个IP
+    
     def __init__(self, max_requests: int = 10, window_seconds: int = 60):
         self.max_requests = max_requests
         self.window = window_seconds
@@ -294,8 +306,14 @@ class RateLimiter:
     
     def is_allowed(self, client_ip: str) -> bool:
         now = time.time()
-        # 清理过期记录
+        # 🔒 内存泄漏防护：超过上限时清理所有过期IP
+        if len(self.requests) > self.MAX_TRACKED_IPS:
+            self.requests.clear()
+        # 清理该IP的过期记录
         self.requests[client_ip] = [t for t in self.requests[client_ip] if now - t < self.window]
+        if not self.requests[client_ip]:
+            del self.requests[client_ip]  # 清理空条目
+            return True
         if len(self.requests[client_ip]) >= self.max_requests:
             return False
         self.requests[client_ip].append(now)
@@ -1131,6 +1149,9 @@ async def add_waitlist(request: Request):
         if any(entry.get("email") == email for entry in waitlist):
             return {"status": "ok", "message": "Already on the list."}
         
+        # 🔒 P2: Waitlist容量上限防护
+        if len(waitlist) >= 1000:
+            return {"status": "full", "message": "Waitlist is full. Please try again later."}
         waitlist.append({"email": email, "time": datetime.now().isoformat()})
         with open(waitlist_path, 'w') as f:
             json.dump(waitlist, f, indent=2)
@@ -1775,7 +1796,10 @@ async def qr_image_download(tier: str = 'starter'):
     import qrcode, io
     tier_data = TIERS_DATA.get(tier, TIERS_DATA['starter'])
     price = tier_data['price']
-    wallet = os.environ.get('BDE_WALLET_ADDRESS', '0x349Eea0E2f4d359479785175Da3eb49D4343')
+    wallet = os.environ.get('BDE_WALLET_ADDRESS')
+    if not wallet:
+        logger.warning('⚠️ BDE_WALLET_ADDRESS not set, using fallback')
+        wallet = '0x349Eea0E2f4d359479785175Da3eb49D4343'
     # Simple wallet address for QR (max compatibility)
     qr_text = wallet
     qr = qrcode.QRCode(version=1, box_size=10, border=4)
@@ -1791,6 +1815,11 @@ async def qr_image_download(tier: str = 'starter'):
 @app.get("/credit-payment", response_class=HTMLResponse)
 async def credit_payment_page(request: Request, tier: str = 'starter', lang: str = 'zh'):
     """Credit payment page - server-side rendered tier-specific USDC payment"""
+    # 🔒 P3: 参数白名单校验
+    if tier not in ('starter', 'standard', 'pro', 'institutional'):
+        tier = 'starter'
+    if lang not in ('zh', 'en', 'ja'):
+        lang = 'zh'
     try:
         template_path = os.path.join(os.path.dirname(__file__), 'templates', 'credit-payment.html')
         with open(template_path, 'r') as f:
@@ -1905,7 +1934,7 @@ async def credit_payment_page(request: Request, tier: str = 'starter', lang: str
         html = html.replace('{{ TIER_PARAM }}', tier)
         return HTMLResponse(content=html)
     except Exception as e:
-        return HTMLResponse(content=f"<h1>Credit payment page load failed</h1><p>{str(e)}</p>", status_code=500)
+        logger.error(f"Credit payment page error: {e}"); return HTMLResponse(content="<h1>Page load failed</h1><p>Please retry later.</p>", status_code=500)
 @app.get("/payment", response_class=HTMLResponse)
 async def payment_page(request: Request):
     """支付页面 - 用户发送USDC后自动激活API Key"""
@@ -1921,7 +1950,7 @@ async def payment_page(request: Request):
         html = html.replace('{{ API_BASE }}', str(request.base_url).rstrip('/'))
         return HTMLResponse(content=html)
     except Exception as e:
-        return HTMLResponse(content=f"<h1>支付页面加载失败</h1><p>{str(e)}</p>", status_code=500)
+        logger.error(f"Payment page error: {e}"); return HTMLResponse(content="<h1>页面加载失败</h1><p>请稍后重试</p>", status_code=500)
 
 @app.get("/api/payment/config")
 async def payment_config():
