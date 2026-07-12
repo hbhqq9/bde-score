@@ -1,6 +1,6 @@
 # BDE Score™ MCP Directory Submission Tracker
 
-**Last updated: 2026-07-12 09:45 UTC (v3.1)**
+**Last updated: 2026-07-12 10:10 UTC (v3.2)**
 
 ## Registry Status
 
@@ -16,7 +16,7 @@
 | # | Platform | Status | URL / Reference |
 |---|----------|--------|----------------|
 | 1 | Official MCP Registry | ✅ ACTIVE v1.0.1 | https://registry.modelcontextprotocol.io |
-| 2 | punkpeye/awesome-mcp-servers (90K★) | ✅ PR #9829 OPEN | Pending review |
+| 2 | punkpeye/awesome-mcp-servers (90K★) | ✅ PR #9829 OPEN (CI fix pushed 07-12) | Fixed name-check + emoji-check |
 | 3 | yzfly/Awesome-MCP-ZH (7.4K★) | ✅ PR #384 OPEN | Pending review |
 | 4 | Cline MCP Marketplace | ✅ Issue #1997 | Pending review |
 | 5 | Glama (53K+ servers) | ❌ NOT LISTED (07-12 verified) | glama.json in repo + needs manual GitHub OAuth submission |
@@ -36,7 +36,7 @@
 | 8 | Smithery (~7K) | ❌ NOT LISTED (07-12 verified) | Needs manual publish via smithery.yaml + CLI |
 | 9 | Artifacta.io (9.8K ranked) | 🔍 Next regen ~Jul 13 | v1.0.1 repo fix should enable listing |
 | 10 | Skillful.sh (469K/55dirs) | 🔍 Aggregating | Pulls from multiple directories |
-| 11 | MCPFind (15.8K+ servers) | ⏳ Browser submission pending | Open-source directory |
+| 11 | MCPFind/mcp-find | ✅ PR #95 OPEN (07-12) | Auto-discovered by promo engine, Vercel deploying |
 
 ### Queued / Needs Browser
 
@@ -54,6 +54,10 @@
 | 16 | appcypher/awesome-mcp-servers (5.7K★) | ❌ DROPPED | Repo owner disabled PRs |
 | 17 | Smithery CLI | ❌ Needs API Key | Registration required |
 | 18 | Microsoft Partner Center | ❌ Needs partner account | Enterprise certification |
+| 25 | vinta/awesome-python (86.9K★) | ❌ CLOSED PR #3247 | Repo age <3 months, stars <100 |
+| 26 | r0f1/datascience (15K★) | ❌ CLOSED PR #65 | Auto-closed, no comment |
+| 27 | leoncuhk/awesome-quant-ai | ❌ CLOSED PR #40 | Repo too new, low stars |
+| 28 | lorien/awesome-web-scraping | ❌ CLOSED PR #263 | Not standalone software |
 
 ## Technical Readiness
 
@@ -98,7 +102,8 @@ EOF
 
 ## Awesome Lists PR Status
 
-25 PRs submitted (1 MERGED, 2 CLOSED, 22 OPEN).
+41 PRs submitted total (2 MERGED, 12 CLOSED, 27 OPEN).
+Plus 3 Issues (thuquant #49, firmai #37, mcpservers.org #1).
 See full list in mcp-submission-guide.md.
 
 ## Monitoring
