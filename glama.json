@@ -1,4 +1,12 @@
 {
-  "$schema": "https://glama.ai/mcp/schemas/server.json",
-  "maintainers": ["hbhqq9"]
+  "name": "BDE Score",
+  "description": "AI-Powered Multi-Market Stock Analysis MCP Server — transparent, multi-factor quantitative scoring system covering US, HK, and A-share markets. EU AI Act Art.50 compliant. $0.01/query x402 micropayments.",
+  "category": "finance",
+  "tags": ["stock-analysis", "finance", "quantitative", "mcp-server", "ai-agents"],
+  "env": {
+    "API_KEY": {
+      "description": "Premium API key for unlimited access (optional, free tier: 3 queries/day)",
+      "required": false
+    }
+  }
 }
