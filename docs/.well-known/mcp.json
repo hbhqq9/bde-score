@@ -4,7 +4,7 @@
   "version": "1.0.1",
   "transport": {
     "type": "streamable-http",
-    "url": "https://pupils-camel-population-willow.trycloudflare.com/mcp"
+    "url": "https://edt-anderson-trivia-relationships.trycloudflare.com/mcp"
   },
   "authentication": {
     "type": "api-key",
