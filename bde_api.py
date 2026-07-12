@@ -566,7 +566,7 @@ class CreditManager:
     
     def _init_tables(self):
         """创建积分相关数据表"""
-        with sqlite3.connect(self.db_path) as conn:
+        with _get_db(self.db_path) as conn:
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS user_credits (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -597,7 +597,7 @@ class CreditManager:
     
     def ensure_user(self, key_prefix):
         """确保用户有积分记录，新用户送1000积分"""
-        with sqlite3.connect(self.db_path) as conn:
+        with _get_db(self.db_path) as conn:
             row = conn.execute(
                 "SELECT id FROM user_credits WHERE key_prefix = ?", (key_prefix,)
             ).fetchone()
@@ -618,7 +618,7 @@ class CreditManager:
     def get_balance(self, key_prefix):
         """返回 {balance, total_recharged, total_consumed, tier}"""
         self.ensure_user(key_prefix)
-        with sqlite3.connect(self.db_path) as conn:
+        with _get_db(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             row = conn.execute(
                 "SELECT balance, total_recharged, total_consumed, tier FROM user_credits WHERE key_prefix = ?",
@@ -631,7 +631,7 @@ class CreditManager:
     def deduct(self, key_prefix, amount, description="API call"):
         """扣减积分，余额不足返回False"""
         self.ensure_user(key_prefix)
-        with sqlite3.connect(self.db_path) as conn:
+        with _get_db(self.db_path) as conn:
             row = conn.execute(
                 "SELECT balance FROM user_credits WHERE key_prefix = ?", (key_prefix,)
             ).fetchone()
@@ -653,7 +653,7 @@ class CreditManager:
     def recharge(self, key_prefix, amount, description="充值"):
         """充值积分"""
         self.ensure_user(key_prefix)
-        with sqlite3.connect(self.db_path) as conn:
+        with _get_db(self.db_path) as conn:
             conn.execute(
                 "UPDATE user_credits SET balance = balance + ?, total_recharged = total_recharged + ?, updated_at = datetime('now') WHERE key_prefix = ?",
                 (amount, amount, key_prefix)
@@ -671,7 +671,7 @@ class CreditManager:
     
     def get_ledger(self, key_prefix, limit=20):
         """查询消费流水"""
-        with sqlite3.connect(self.db_path) as conn:
+        with _get_db(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             rows = conn.execute(
                 "SELECT amount, balance_after, type, description, created_at FROM credit_ledger WHERE key_prefix = ? ORDER BY created_at DESC LIMIT ?",
@@ -715,7 +715,7 @@ logger = logging.getLogger('bde_api')
 # ============================================================
 def init_db():
     """初始化SQLite数据库"""
-    with sqlite3.connect(DB_PATH) as conn:
+    with _get_db() as conn:
         conn.execute('''
             CREATE TABLE IF NOT EXISTS analysis_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -736,7 +736,7 @@ def init_db():
 
 def save_results_to_db(results: list, data_source: str, run_time: str):
     """保存分析结果到数据库"""
-    with sqlite3.connect(DB_PATH) as conn:
+    with _get_db() as conn:
         for r in results:
             conn.execute('''
                 INSERT INTO analysis_history 
@@ -1506,7 +1506,7 @@ async def api_history(
     
     cutoff = (datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d %H:%M:%S')
     
-    with sqlite3.connect(DB_PATH) as conn:
+    with _get_db() as conn:
         conn.row_factory = sqlite3.Row
         if symbol:
             rows = conn.execute('''
@@ -2630,7 +2630,7 @@ async def badge(market: str = "ALL", symbol: str = None):
 def get_latest_snapshot():
     """Get latest analysis snapshot from DB"""
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = _get_db()
         # Find latest run_time
         row = conn.execute("SELECT DISTINCT run_time FROM analysis_history ORDER BY run_time DESC LIMIT 1").fetchone()
         if not row:
