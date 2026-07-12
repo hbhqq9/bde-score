@@ -1,6 +1,6 @@
 # BDE Score™ MCP Directory Submission Tracker
 
-**Last updated: 2026-07-12 09:50 UTC**
+**Last updated: 2026-07-12 09:45 UTC (v3.1)**
 
 ## Registry Status
 
@@ -19,17 +19,21 @@
 | 2 | punkpeye/awesome-mcp-servers (90K★) | ✅ PR #9829 OPEN | Pending review |
 | 3 | yzfly/Awesome-MCP-ZH (7.4K★) | ✅ PR #384 OPEN | Pending review |
 | 4 | Cline MCP Marketplace | ✅ Issue #1997 | Pending review |
-| 5 | Glama (53K+ servers) | ⏳ glama.json submitted | Awaiting 24h index |
+| 5 | Glama (53K+ servers) | ❌ NOT LISTED (07-12 verified) | glama.json in repo + needs manual GitHub OAuth submission |
 | 6 | mcp.so (~19K) | ✅ Issue #3121 SUBMITTED | chatmcp/mcpso |
 | 19 | mcp.directory | ✅ SUBMITTED (07-12) | 24h review, "Server Submitted!" |
 | 20 | mcpservers.org | ✅ Issue #1 (07-12) | tmrseoteam-commits/mcpservers-org |
+| 21 | LLMQuant/awesome-trading-agents (345★) | ✅ PR #32 OPEN (07-12) | MCPs → Research tools section |
+| 22 | thuquant/awesome-quant (5.5K★) | ✅ Issue #49 (07-12) | Fork network conflict, submitted as Issue |
+| 23 | firmai/financial-machine-learning (8.7K★) | ✅ Issue #37 (07-12) | Suggested addition via Issue |
+| 24 | MCPMarket.com | ✅ AUTO-LISTED (07-12) | Auto-synced from GitHub/Registry |
 
 ### Auto-Sync (from Official Registry)
 
 | # | Platform | Status | Notes |
 |---|----------|--------|-------|
 | 7 | PulseMCP (~15K) | 🔍 Auto-syncing | Pulls from Official Registry |
-| 8 | Smithery (~7K) | 🔍 Auto-syncing | Pulls from Official Registry |
+| 8 | Smithery (~7K) | ❌ NOT LISTED (07-12 verified) | Needs manual publish via smithery.yaml + CLI |
 | 9 | Artifacta.io (9.8K ranked) | 🔍 Next regen ~Jul 13 | v1.0.1 repo fix should enable listing |
 | 10 | Skillful.sh (469K/55dirs) | 🔍 Aggregating | Pulls from multiple directories |
 | 11 | MCPFind (15.8K+ servers) | ⏳ Browser submission pending | Open-source directory |
