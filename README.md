@@ -73,6 +73,64 @@ curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/history?symbol=
 
 **Payment:** USDC on Base chain (Base) → `0x349Eea0E2f4d3594797851758325Da3eb49D4343`
 
+### 💸 x402 Micro-Payments (Agent-Native, Zero Registration)
+
+BDE Score™ supports the [x402 protocol](https://x402.org) — HTTP 402 Payment Required as an open standard. AI Agents can pay per query in USDC with **no registration, no API keys, no subscriptions**.
+
+| Method | Price | How |
+|--------|-------|-----|
+| **Free** | $0 | 3 queries/day per IP (auto) |
+| **x402 Pay-per-query** | $0.01/query | `X-Payment` header with USDC on Base |
+| **API Key (Premium)** | $29/mo | `X-API-Key` header, unlimited |
+
+#### Quick Start (x402)
+
+```bash
+# 1. Discover pricing & config
+curl https://atlantic-remains-atomic-floor.trycloudflare.com/pay/info
+
+# 2. Check your free quota
+curl https://atlantic-remains-atomic-floor.trycloudflare.com/pay/free
+
+# 3. First 3 queries are FREE! No payment needed.
+curl https://atlantic-remains-atomic-floor.trycloudflare.com/pay/query?symbol=AAPL
+
+# 4. After free quota, pay $0.01 with x402 (USDC on Base)
+# The server returns HTTP 402 with payment requirements:
+curl -i https://atlantic-remains-atomic-floor.trycloudflare.com/pay/query?symbol=NVDA
+
+# Response: 402 Payment Required
+# {
+#   "accepts": [{
+#     "scheme": "exact",
+#     "network": "eip155:8453",
+#     "maxAmountRequired": "10000",  // 10000 = $0.01 USDC (6 decimals)
+#     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+#     "payTo": "0x349Eea0E2f4d3594797851758325Da3eb49D4343"
+#   }]
+# }
+
+# 5. Sign payment & retry with X-Payment header
+# (use x402 SDK: pip install x402[fastapi,httpx,evm])
+```
+
+#### x402 Python Client Example
+
+```python
+from x402 import x402Client
+from x402.mechanisms.evm.exact import ExactEvmScheme
+
+client = x402Client()
+client.register("eip155:*", ExactEvmScheme(signer=your_signer))
+
+# Auto-pays $0.01 USDC on Base, returns BDE Score
+response = await client.get(
+    "https://atlantic-remains-atomic-floor.trycloudflare.com/pay/query?symbol=AAPL"
+)
+```
+
+**Economics:** $0.01/query revenue, $0.000752/event cost → **>92% profit margin**
+
 ## 🌏 Coverage
 
 ### US Market (25 stocks)

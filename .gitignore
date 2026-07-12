@@ -12,6 +12,9 @@ keepalive.log
 
 # Database
 bde_history.db
+x402_payments.db*
+usdc_payments.json
+activation_log.json
 
 # Distribution status
 distribution/STATUS.md

@@ -3,5 +3,10 @@ fastapi>=0.135.0
 uvicorn>=0.30.0
 pandas>=2.0.0
 numpy>=1.24.0
+bcrypt>=4.0.0
+web3>=7.0.0
+# x402 Micro-Payment Protocol (optional, enables x402 payment verification)
+# Install with: pip install x402[fastapi,evm]
+# x402>=2.13.0
 # futu-api  # 仅在部署环境安装了FutuOpenD时需要
 # 备选：Sina JSONP（纯标准库，无额外依赖）

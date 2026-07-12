@@ -13,6 +13,16 @@ Endpoints:
   GET  /api/history       → 历史分析结果
   GET  /api/health        → 系统健康检查
   GET  /api/market-status → 市场状态
+  GET  /pay/info          → x402 协议信息（定价/网络/免费额度）
+  GET  /pay/free          → 检查免费额度状态
+  GET  /pay/balance       → x402 支付统计
+  POST /pay/query         → x402 支付+查询一体（$0.01/query, 3 free/day）
+  GET  /pay/query         → x402 支付+查询（GET方法）
+
+x402 微支付:
+  定价: $0.01/query | 成本: $0.000752/event | 利润率: >92%
+  链: Base Mainnet | 币种: USDC | 协议: x402 v2
+  认证优先级: API Key > x402 Payment > Free Quota > 402
 """
 
 import os
@@ -36,6 +46,15 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 import uvicorn
 from usdc_listener import USDCListener, PaymentActivator, BackgroundListener
+from x402_middleware import (
+    X402PaymentMiddleware, X402_ENABLED,
+    free_quota, get_x402_info, get_payment_stats,
+    build_402_response, verify_x402_payment, record_payment,
+    X402_PRICE_USD, X402_CHAIN_ID, X402_PAY_TO,
+    X402_USDC_CONTRACT, X402_FREE_QUOTA_PER_DAY,
+    X402_COST_PER_EVENT, X402_PROFIT_MARGIN,
+    X402_NETWORK,
+)
 
 
 # 🔒 安全JSON序列化（处理NaN/Inf）
@@ -281,6 +300,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(GlobalRateLimitMiddleware)
+# x402 微支付中间件（保护 /pay/query 端点，兼容 API Key 认证）
+if X402_ENABLED:
+    app.add_middleware(X402PaymentMiddleware)
 
 # 🔒 隐藏服务器版本信息
 @app.middleware("http")
@@ -2635,6 +2657,175 @@ def get_latest_snapshot():
     except:
         pass
     return None
+
+
+# ============================================================
+# 💸 x402 微支付端点 (Agent-native, zero-registration)
+# ============================================================
+@app.get("/pay/info")
+async def pay_info():
+    """
+    x402 协议信息发现端点。
+    Agent 调用此端点获取定价、支付方式、网络配置。
+    免费端点，无需支付。
+    """
+    return JSONResponse(content=get_x402_info())
+
+
+@app.get("/pay/free")
+async def pay_free_check(request: Request):
+    """
+    检查当前IP的免费额度状态。
+    免费端点，无需支付。
+    """
+    client_ip = request.headers.get('cf-connecting-ip', '') or \
+                request.headers.get('x-forwarded-for', '').split(',')[0].strip() or \
+                (request.client.host if request.client else "unknown")
+    
+    status = free_quota.get_status(client_ip)
+    status['network'] = X402_NETWORK
+    status['chain_id'] = X402_CHAIN_ID
+    status['price_if_paid_usd'] = X402_PRICE_USD
+    return JSONResponse(content=status)
+
+
+@app.get("/pay/balance")
+async def pay_balance():
+    """
+    查询 x402 支付统计。
+    公开端点，展示收入数据和利润空间。
+    """
+    stats = get_payment_stats()
+    stats['disclaimer'] = 'Technical analysis only. Not investment advice.'
+    return JSONResponse(content=stats)
+
+
+@app.post("/pay/query")
+async def pay_query(
+    request: Request,
+    symbol: str = Query(None, description="股票代码 (如 AAPL, 00700, SH600519)"),
+    market: str = Query("US", description="市场: US/HK/A/ALL"),
+):
+    """
+    x402 支付+查询一体端点。
+    
+    认证优先级:
+    1. X-API-Key → 现有认证（免费）
+    2. X-Payment → x402 USDC 微支付（$0.01/query）
+    3. 免费额度 → 3次/天/IP
+    
+    未认证且免费额度用尽 → 返回 402 Payment Required
+    """
+    # 🔒 输入验证
+    market_upper = market.upper().strip() if market else "US"
+    if market_upper not in VALID_MARKETS:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid market. Must be one of: US, HK, A, ALL"
+        )
+    
+    # 🔒 获取认证信息
+    client_ip = request.headers.get('cf-connecting-ip', '') or \
+                request.headers.get('x-forwarded-for', '').split(',')[0].strip() or \
+                (request.client.host if request.client else "unknown")
+    
+    # 检查认证来源
+    auth_source = "free"
+    payment_info = None
+    
+    # 检查 API Key
+    api_key = request.headers.get('X-API-Key') or request.headers.get('x-api-key')
+    if api_key:
+        tier, key_prefix = key_manager.verify_with_prefix(api_key)
+        if tier:
+            auth_source = f"api_key:{tier}"
+    
+    # 检查 x402 支付
+    if hasattr(request.state, 'x402_payment'):
+        auth_source = "x402_payment"
+        payment_info = request.state.x402_payment
+    
+    # 检查免费额度
+    if hasattr(request.state, 'x402_free'):
+        auth_source = "x402_free"
+    
+    # 执行分析
+    try:
+        snapshot = get_latest_snapshot()
+        if not snapshot:
+            # 无缓存，运行一次分析
+            async with _analyze_lock:
+                result = run_analysis(market=market_upper)
+        else:
+            # 如果有指定 symbol，过滤结果
+            if symbol:
+                symbol_upper = symbol.upper().strip()
+                filtered = [
+                    s for s in snapshot
+                    if symbol_upper in s.get('symbol', '').upper()
+                ]
+                if filtered:
+                    snapshot = filtered
+                else:
+                    raise HTTPException(
+                        status_code=404,
+                        detail=f"Symbol '{symbol}' not found. Use /pay/info for supported symbols."
+                    )
+            result = {
+                'run_time': datetime.now().isoformat(),
+                'data_source': 'cache',
+                'results': snapshot,
+                'market': market_upper,
+            }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("x402 pay/query analysis failed")
+        raise HTTPException(
+            status_code=503,
+            detail="Service temporarily unavailable. Please retry."
+        )
+    
+    # 构建响应
+    response = {
+        'auth_source': auth_source,
+        'disclaimer': '⚠️ Technical analysis only. Not investment advice. Past performance does not guarantee future results.',
+    }
+    
+    if isinstance(result, dict):
+        response.update(sanitize_for_json(result))
+    else:
+        response['data'] = sanitize_for_json(result)
+    
+    # 附加 x402 支付确认信息
+    if payment_info:
+        response['x402_receipt'] = {
+            'paid': X402_PRICE_USD,
+            'currency': 'USDC',
+            'network': X402_CHAIN_ID,
+            'payer': _mask_address_x402(payment_info.get('payer', '')),
+            'tx_hash': payment_info.get('tx_hash', ''),
+            'verified_at': payment_info.get('verified_at', ''),
+        }
+    
+    return JSONResponse(content=response)
+
+
+@app.get("/pay/query")
+async def pay_query_get(request: Request, market: str = Query("US")):
+    """
+    GET /pay/query — x402 支付查询（GET方法，方便浏览器测试）。
+    与 POST /pay/query 相同逻辑，由 x402 中间件保护。
+    """
+    # 复用 POST 逻辑
+    return await pay_query(request, symbol=None, market=market)
+
+
+def _mask_address_x402(address: str) -> str:
+    """🔒 地址脱敏"""
+    if not address or len(address) < 12:
+        return "***"
+    return f"{address[:6]}...{address[-4:]}"
 
 
 if __name__ == '__main__':
