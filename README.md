@@ -9,11 +9,11 @@
 
 ### 📈 Live BDE Scores (real-time)
 
-[![Market](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge)](https://github.com/hbhqq9/bde-score)
-[![AAPL](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge?symbol=AAPL)]()
-[![NVDA](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge?symbol=NVDA)]()
-[![00700](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge?symbol=00700)]()
-[![SH600519](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge?symbol=SH600519)]()
+[![Market](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge)](https://github.com/hbhqq9/bde-score)
+[![AAPL](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge?symbol=AAPL)]()
+[![NVDA](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge?symbol=NVDA)]()
+[![00700](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge?symbol=00700)]()
+[![SH600519](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge?symbol=SH600519)]()
 
 ---
 
@@ -30,6 +30,51 @@ BDE Score™ is a **transparent, multi-factor quantitative scoring system** that
 | **Trend** | Moving average alignment |
 
 **73 stocks. 3 markets. One comparable score.**
+
+
+
+---
+
+## 🔍 Agent Compliance Quick Check (NEW!)
+
+**Free tool to assess EU AI Act readiness for your MCP endpoint:**
+
+```bash
+# Get compliance score (JSON)
+curl "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/compliance-check?url=https://your-mcp-endpoint.com"
+
+# Get visual report (HTML)
+# Open in browser: https://bathroom-ebooks-isa-accommodation.trycloudflare.com/compliance-check?url=https://your-mcp-endpoint.com
+```
+
+**10 automated checks** covering HTTPS, security headers, API documentation, privacy policy, rate limiting, and EU AI Act Art.50 transparency.
+
+**Rate limit**: 3 checks per IP per minute
+
+---
+
+## 🤖 MCP Server Integration
+
+BDE Score is available as an MCP server for AI agent integration:
+
+```json
+{
+  "mcpServers": {
+    "bde-score": {
+      "transport": {
+        "type": "streamable-http",
+        "url": "https://tex-adequate-date-facing.trycloudflare.com/mcp"
+      }
+    }
+  }
+}
+```
+
+### Available MCP Tools
+- `analyze_stock` - Get BDE Score for any stock (US/HK/A-share)
+- `check_compliance` - Run EU AI Act compliance assessment
+- `get_trust_score` - Evaluate MCP server reliability
+
 
 ## 🚀 Quick Start
 
@@ -50,17 +95,17 @@ Results appear in GitHub Step Summary. [Learn more](#github-action)
 
 ```bash
 # Get latest scores (US market)
-curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/snapshot?market=US
+curl https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/snapshot?market=US
 
 # Get all markets
-curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/snapshot?market=ALL
+curl https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/snapshot?market=ALL
 
 # With Premium API Key (unlimited access)
 curl -H "X-API-Key: bde_your_key_here" \
-  https://atlantic-remains-atomic-floor.trycloudflare.com/api/snapshot?market=ALL
+  https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/snapshot?market=ALL
 
 # Historical data
-curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/history?symbol=AAPL&days=30
+curl https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/history?symbol=AAPL&days=30
 ```
 
 ### Pricing
@@ -87,17 +132,17 @@ BDE Score™ supports the [x402 protocol](https://x402.org) — HTTP 402 Payment
 
 ```bash
 # 1. Discover pricing & config
-curl https://atlantic-remains-atomic-floor.trycloudflare.com/pay/info
+curl https://bathroom-ebooks-isa-accommodation.trycloudflare.com/pay/info
 
 # 2. Check your free quota
-curl https://atlantic-remains-atomic-floor.trycloudflare.com/pay/free
+curl https://bathroom-ebooks-isa-accommodation.trycloudflare.com/pay/free
 
 # 3. First 3 queries are FREE! No payment needed.
-curl https://atlantic-remains-atomic-floor.trycloudflare.com/pay/query?symbol=AAPL
+curl https://bathroom-ebooks-isa-accommodation.trycloudflare.com/pay/query?symbol=AAPL
 
 # 4. After free quota, pay $0.01 with x402 (USDC on Base)
 # The server returns HTTP 402 with payment requirements:
-curl -i https://atlantic-remains-atomic-floor.trycloudflare.com/pay/query?symbol=NVDA
+curl -i https://bathroom-ebooks-isa-accommodation.trycloudflare.com/pay/query?symbol=NVDA
 
 # Response: 402 Payment Required
 # {
@@ -125,7 +170,7 @@ client.register("eip155:*", ExactEvmScheme(signer=your_signer))
 
 # Auto-pays $0.01 USDC on Base, returns BDE Score
 response = await client.get(
-    "https://atlantic-remains-atomic-floor.trycloudflare.com/pay/query?symbol=AAPL"
+    "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/pay/query?symbol=AAPL"
 )
 ```
 
@@ -168,7 +213,7 @@ BDE Score is directly callable by AI agents — no registration, no API keys.
 **Remote Server (zero-setup):**
 ```bash
 # Claude Code — one command
-claude mcp add bde-score --transport http --url https://atlantic-remains-atomic-floor.trycloudflare.com/mcp
+claude mcp add bde-score --transport http --url https://bathroom-ebooks-isa-accommodation.trycloudflare.com/mcp
 ```
 
 **Local Server:**

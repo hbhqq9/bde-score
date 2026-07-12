@@ -1,50 +1,33 @@
 {
-  "name": "BDE Score Agent",
-  "description": "AI-powered multi-market stock analysis agent providing quantitative BDE scores (0-100) for US, HK, and CN A-share markets. Covers momentum, volatility, value, quality, and ESG factors.",
+  "name": "BDE Score",
+  "description": "AI Agent trust evaluation and EU AI Act compliance assessment. Provides reliability scoring, compliance checking, and trust badges for MCP servers and AI agents.",
   "version": "1.0.0",
-  "protocol": "a2a",
   "capabilities": {
-    "tools": [
-      {
-        "id": "bde-score-analysis",
-        "name": "BDE Score Analysis",
-        "description": "Get comprehensive BDE score analysis for stocks across US/HK/CN markets",
-        "inputSchema": {
-          "type": "object",
-          "properties": {
-            "market": {"type": "string", "enum": ["US", "HK", "A", "ALL"]},
-            "min_score": {"type": "number", "minimum": 0, "maximum": 100}
-          }
-        }
-      },
-      {
-        "id": "stock-comparison",
-        "name": "Cross-market Stock Comparison",
-        "description": "Compare the same company's BDE scores across US, HK, and CN markets"
-      },
-      {
-        "id": "esg-analysis",
-        "name": "ESG Analysis",
-        "description": "Get ESG analysis derived from quantitative factors"
-      }
-    ]
+    "trust_evaluation": {
+      "description": "Evaluate the reliability and trustworthiness of AI agents and MCP servers",
+      "input": {"type": "url", "description": "MCP endpoint URL to evaluate"},
+      "output": {"type": "score", "range": [0, 100], "grade": "A-F"}
+    },
+    "compliance_check": {
+      "description": "Automated EU AI Act Article 50 compliance assessment",
+      "input": {"type": "url", "description": "MCP endpoint URL to check"},
+      "output": {"type": "report", "checks": 10, "max_score": 100}
+    },
+    "stock_analysis": {
+      "description": "Multi-market stock analysis with BDE scoring system",
+      "markets": ["US", "HK", "A-share"],
+      "factors": ["momentum", "mean_reversion", "volume", "volatility", "trend"]
+    }
   },
   "endpoints": {
-    "mcp": "https://retrieve-jobs-congress-made.trycloudflare.com/mcp",
-    "rest": "https://atlantic-remains-atomic-floor.trycloudflare.com/api",
-    "dashboard": "https://hbhqq9.github.io/bde-score/"
+    "api": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com",
+    "mcp": "https://tex-adequate-date-facing.trycloudflare.com/mcp",
+    "compliance_check": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/compliance-check"
   },
   "authentication": {
-    "type": "api-key",
-    "header": "X-API-Key"
+    "type": "api_key",
+    "free_tier": "3 compliance checks/day"
   },
-  "metadata": {
-    "author": "AGL Governance",
-    "license": "MIT",
-    "homepage": "https://hbhqq9.github.io/bde-score/",
-    "repository": "https://github.com/hbhqq9/bde-score",
-    "category": "finance",
-    "tags": ["stocks", "quantitative", "multi-factor", "US", "HK", "A-shares", "ESG", "EU AI Act"],
-    "compliance": ["EU AI Act Art.50"]
-  }
+  "documentation": "https://github.com/hbhqq9/bde-score",
+  "contact": "support@bde-score.com"
 }

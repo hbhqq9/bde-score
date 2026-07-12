@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "BDE Score",
+  "name_for_model": "bde_score",
+  "description_for_human": "AI Agent reliability assessment and EU AI Act compliance scoring. Trust evaluation for MCP servers.",
+  "description_for_model": "BDE Score provides trust evaluation and compliance assessment for AI agents and MCP servers. Use this to check if an AI agent is reliable, compliant with EU AI Act Article 50, and safe to delegate tasks to. Supports compliance quick checks, trust scoring, and detailed audit reports.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/openapi.json",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/static/logo.png",
+  "contact_email": "support@bde-score.com",
+  "legal_info_url": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/privacy"
+}
