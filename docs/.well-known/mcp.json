@@ -4,7 +4,7 @@
   "version": "1.0.1",
   "transport": {
     "type": "streamable-http",
-    "url": "https://retrieve-jobs-congress-made.trycloudflare.com/mcp"
+    "url": "https://humanitarian-compliance-objects-jesse.trycloudflare.com/mcp"
   },
   "authentication": {
     "type": "api-key",
