@@ -2828,6 +2828,608 @@ def _mask_address_x402(address: str) -> str:
     return f"{address[:6]}...{address[-4:]}"
 
 
+
+
+# ============================================================
+# 🔍 Agent Compliance Quick Check (EU AI Act)
+# ============================================================
+# BDE Score 引流入口：检测 MCP endpoint 的合规性
+# 自动检测 HTTPS、安全头、API文档、透明度声明等
+# ============================================================
+
+import httpx
+from urllib.parse import urlparse
+
+# 合规检测专用速率限制：每IP每分钟3次 (fixed version - original RateLimiter has a counting bug)
+class _ComplianceRateLimiter:
+    """Fixed rate limiter for compliance checks: 3 req/min/IP"""
+    def __init__(self, max_requests=3, window_seconds=60):
+        self.max_requests = max_requests
+        self.window = window_seconds
+        self.requests = defaultdict(list)
+    
+    def is_allowed(self, client_ip: str) -> bool:
+        now = time.time()
+        # Clean expired entries for this IP
+        self.requests[client_ip] = [t for t in self.requests[client_ip] if now - t < self.window]
+        if len(self.requests[client_ip]) >= self.max_requests:
+            return False
+        self.requests[client_ip].append(now)
+        return True
+
+compliance_rate_limiter = _ComplianceRateLimiter(max_requests=3, window_seconds=60)
+
+
+async def _check_endpoint(client, url, timeout=10):
+    """检测单个端点是否可访问，返回 (status_code, response_time, headers, body_snippet)"""
+    try:
+        start = time.time()
+        resp = await client.get(url, follow_redirects=True, timeout=timeout)
+        elapsed = time.time() - start
+        body_text = ""
+        try:
+            body_text = resp.text[:5000]  # 只取前5000字符
+        except Exception:
+            pass
+        return {
+            "status": resp.status_code,
+            "time": round(elapsed, 3),
+            "headers": dict(resp.headers),
+            "body_snippet": body_text,
+            "final_url": str(resp.url),
+            "ok": True,
+        }
+    except httpx.TimeoutException:
+        return {"ok": False, "error": "timeout", "status": 0, "time": timeout, "headers": {}, "body_snippet": "", "final_url": url}
+    except httpx.ConnectError as e:
+        return {"ok": False, "error": f"connection_failed: {str(e)[:100]}", "status": 0, "time": 0, "headers": {}, "body_snippet": "", "final_url": url}
+    except Exception as e:
+        return {"ok": False, "error": str(e)[:200], "status": 0, "time": 0, "headers": {}, "body_snippet": "", "final_url": url}
+
+
+async def _run_compliance_checks(target_url: str) -> dict:
+    """执行所有合规检测项，返回完整报告"""
+    parsed = urlparse(target_url)
+    base_url = f"{parsed.scheme}://{parsed.netloc}"
+    
+    checks = []
+    total_score = 0
+    max_score = 100
+    issues = []
+    recommendations = []
+    
+    async with httpx.AsyncClient(
+        verify=False,  # 允许自签证书检测
+        headers={"User-Agent": "BDE-ComplianceCheck/1.0 (+https://github.com/hbhqq9/bde-score)"}
+    ) as client:
+        
+        # ---- 1. HTTPS 检测 (10分) ----
+        https_ok = parsed.scheme == "https"
+        https_score = 10 if https_ok else 0
+        checks.append({
+            "id": "https",
+            "name": "HTTPS Enabled",
+            "description": "Endpoint uses HTTPS encryption",
+            "max_score": 10,
+            "score": https_score,
+            "passed": https_ok,
+            "detail": f"Scheme: {parsed.scheme}" if https_ok else "Endpoint does not use HTTPS — all traffic is unencrypted",
+            "severity": "critical" if not https_ok else "none",
+        })
+        if not https_ok:
+            issues.append("HTTPS not enabled — all data transmitted in plaintext")
+            recommendations.append("Enable HTTPS/TLS immediately. Use Let's Encrypt for free certificates.")
+        
+        # ---- 主页面请求 (获取 headers + body) ----
+        main_result = await _check_endpoint(client, target_url)
+        
+        if not main_result["ok"]:
+            # 连接失败，返回错误报告
+            return {
+                "success": False,
+                "error": main_result["error"],
+                "url": target_url,
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+            }
+        
+        headers = main_result["headers"]
+        body = main_result["body_snippet"]
+        response_time = main_result["time"]
+        
+        # ---- 2. Security Headers (15分) ----
+        security_headers = {
+            "Content-Security-Policy": 4,
+            "X-Content-Type-Options": 3,
+            "X-Frame-Options": 3,
+            "Strict-Transport-Security": 3,
+            "Referrer-Policy": 2,
+        }
+        sec_score = 0
+        sec_details = {}
+        for h, pts in security_headers.items():
+            present = h.lower() in {k.lower(): v for k, v in headers.items()}
+            if present:
+                sec_score += pts
+            sec_details[h] = {"present": present, "points": pts if present else 0}
+        checks.append({
+            "id": "security_headers",
+            "name": "Security Headers",
+            "description": "Presence of key security headers (CSP, X-Content-Type-Options, X-Frame-Options, HSTS, Referrer-Policy)",
+            "max_score": 15,
+            "score": sec_score,
+            "passed": sec_score >= 10,
+            "detail": sec_details,
+            "severity": "high" if sec_score < 10 else "none",
+        })
+        missing_sec = [h for h, d in sec_details.items() if not d["present"]]
+        if missing_sec:
+            issues.append(f"Missing security headers: {', '.join(missing_sec)}")
+            recommendations.append(f"Add the following security headers: {', '.join(missing_sec)}")
+        
+        # ---- 3. API Documentation (10分) ----
+        api_doc_paths = [
+            "/openapi.json", "/docs", "/redoc", "/swagger.json",
+            "/api/docs", "/api-docs", "/api/v1/docs",
+            "/.well-known/openapi.json",
+        ]
+        api_doc_found = False
+        api_doc_path = None
+        for path in api_doc_paths:
+            result = await _check_endpoint(client, f"{base_url}{path}", timeout=5)
+            if result["ok"] and result["status"] == 200:
+                api_doc_found = True
+                api_doc_path = path
+                break
+        api_doc_score = 10 if api_doc_found else 0
+        checks.append({
+            "id": "api_documentation",
+            "name": "API Documentation",
+            "description": "Presence of OpenAPI/Swagger documentation",
+            "max_score": 10,
+            "score": api_doc_score,
+            "passed": api_doc_found,
+            "detail": f"Found at {api_doc_path}" if api_doc_found else "No API documentation endpoint found",
+            "severity": "medium" if not api_doc_found else "none",
+        })
+        if not api_doc_found:
+            issues.append("No API documentation endpoint discovered")
+            recommendations.append("Add /openapi.json or /docs endpoint for API discoverability")
+        
+        # ---- 4. MCP Endpoint (15分) ----
+        mcp_paths = ["/mcp", "/mcp/", "/sse", "/messages", "/mcp/v1"]
+        mcp_found = False
+        mcp_path = None
+        mcp_detail = ""
+        for path in mcp_paths:
+            result = await _check_endpoint(client, f"{base_url}{path}", timeout=5)
+            if result["ok"] and result["status"] in (200, 405, 422, 400):
+                # 405/422 means endpoint exists but needs different method
+                mcp_found = True
+                mcp_path = path
+                mcp_detail = f"Endpoint {path} responded with {result['status']}"
+                break
+        # Also check if body mentions MCP or JSON-RPC
+        if not mcp_found and ("mcp" in body.lower() or "jsonrpc" in body.lower() or "json-rpc" in body.lower()):
+            mcp_found = True
+            mcp_detail = "MCP/JSON-RPC references found in response body"
+        mcp_score = 15 if mcp_found else 0
+        checks.append({
+            "id": "mcp_endpoint",
+            "name": "MCP Endpoint Accessible",
+            "description": "Model Context Protocol endpoint is reachable",
+            "max_score": 15,
+            "score": mcp_score,
+            "passed": mcp_found,
+            "detail": mcp_detail if mcp_found else "No MCP endpoint found at common paths (/mcp, /sse, /messages)",
+            "severity": "high" if not mcp_found else "none",
+        })
+        if not mcp_found:
+            issues.append("MCP endpoint not accessible")
+            recommendations.append("Ensure /mcp or /sse endpoint is publicly accessible")
+        
+        # ---- 5. Response Time (10分) ----
+        rt_score = 10 if response_time < 2.0 else (5 if response_time < 5.0 else 0)
+        checks.append({
+            "id": "response_time",
+            "name": "Response Time < 2s",
+            "description": "Server responds within acceptable latency",
+            "max_score": 10,
+            "score": rt_score,
+            "passed": response_time < 2.0,
+            "detail": f"Response time: {response_time:.3f}s",
+            "severity": "medium" if response_time >= 2.0 else "none",
+        })
+        if response_time >= 2.0:
+            issues.append(f"Slow response time: {response_time:.3f}s")
+            recommendations.append("Optimize server performance — target < 2s response time")
+        
+        # ---- 6. Privacy Policy / Terms (10分) ----
+        privacy_paths = [
+            "/privacy", "/privacy-policy", "/legal/privacy", "/policies/privacy",
+            "/terms", "/terms-of-service", "/legal/terms", "/tos",
+            "/legal", "/about/legal",
+        ]
+        privacy_found = False
+        privacy_detail = ""
+        # Check in body first
+        if "privacy" in body.lower() or "terms" in body.lower():
+            # Look for actual links
+            import re as _re
+            links = _re.findall(r'href=["\']([^"\']*(?:privacy|terms|legal)[^"\']*)["\']', body, _re.IGNORECASE)
+            if links:
+                privacy_found = True
+                privacy_detail = f"Privacy/Terms links found in page: {links[0]}"
+        # Also check common paths
+        if not privacy_found:
+            for path in privacy_paths:
+                result = await _check_endpoint(client, f"{base_url}{path}", timeout=5)
+                if result["ok"] and result["status"] == 200:
+                    privacy_found = True
+                    privacy_detail = f"Found at {path}"
+                    break
+        privacy_score = 10 if privacy_found else 0
+        checks.append({
+            "id": "privacy_policy",
+            "name": "Privacy Policy / Terms",
+            "description": "Privacy policy or terms of service page available",
+            "max_score": 10,
+            "score": privacy_score,
+            "passed": privacy_found,
+            "detail": privacy_detail if privacy_found else "No privacy policy or terms page found",
+            "severity": "high" if not privacy_found else "none",
+        })
+        if not privacy_found:
+            issues.append("No privacy policy or terms of service found")
+            recommendations.append("Add /privacy and /terms pages — required by EU AI Act and GDPR")
+        
+        # ---- 7. Server Header Exposure (扣分项 -10) ----
+        server_header = None
+        for k, v in headers.items():
+            if k.lower() == "server":
+                server_header = v
+                break
+        server_exposed = server_header is not None and len(server_header) > 0
+        server_score = -10 if server_exposed else 0
+        checks.append({
+            "id": "server_header",
+            "name": "Server Header Exposure",
+            "description": "Server header should NOT reveal technology stack",
+            "max_score": 0,
+            "score": server_score,
+            "passed": not server_exposed,
+            "detail": f"Server header: '{server_header}' — reveals technology stack" if server_exposed else "Server header not exposed",
+            "severity": "medium" if server_exposed else "none",
+        })
+        if server_exposed:
+            issues.append(f"Server header exposes technology: '{server_header}'")
+            recommendations.append("Remove or obfuscate the Server header to avoid revealing your tech stack")
+        
+        # ---- 8. CORS Configuration (5分) ----
+        cors_present = any(k.lower().startswith("access-control-allow") for k in headers)
+        cors_score = 5 if cors_present else 0
+        checks.append({
+            "id": "cors",
+            "name": "CORS Configuration",
+            "description": "Cross-Origin Resource Sharing headers present",
+            "max_score": 5,
+            "score": cors_score,
+            "passed": cors_present,
+            "detail": "CORS headers detected" if cors_present else "No CORS headers found",
+            "severity": "low" if not cors_present else "none",
+        })
+        if not cors_present:
+            issues.append("No CORS configuration detected")
+            recommendations.append("Configure CORS headers if the API is consumed by web clients")
+        
+        # ---- 9. Rate Limiting (5分) ----
+        rate_limit_headers = {
+            "x-ratelimit-limit", "x-ratelimit-remaining", "x-ratelimit-reset",
+            "retry-after", "rate-limit-limit", "rate-limit-remaining",
+        }
+        rate_headers_found = [k for k in headers if k.lower() in rate_limit_headers]
+        rate_found = len(rate_headers_found) > 0
+        rate_score = 5 if rate_found else 0
+        checks.append({
+            "id": "rate_limiting",
+            "name": "Rate Limiting",
+            "description": "Rate limiting headers or traces present",
+            "max_score": 5,
+            "score": rate_score,
+            "passed": rate_found,
+            "detail": f"Rate limit headers: {', '.join(rate_headers_found)}" if rate_found else "No rate limiting headers detected",
+            "severity": "low" if not rate_found else "none",
+        })
+        if not rate_found:
+            recommendations.append("Add rate limiting and expose limits via response headers (X-RateLimit-*)")
+        
+        # ---- 10. EU AI Act Art.50 Transparency (20分, 关键项) ----
+        art50_keywords = [
+            "art.50", "article 50", "art 50",
+            "ai act", "ai-act", "eu ai act",
+            "transparency obligation", "ai-generated", "ai generated",
+            "artificial intelligence system", "ai system",
+            "machine-generated", "automated decision",
+        ]
+        art50_found = False
+        art50_detail = ""
+        body_lower = body.lower()
+        for kw in art50_keywords:
+            if kw in body_lower:
+                art50_found = True
+                art50_detail = f"AI Act transparency keyword found: '{kw}'"
+                break
+        # Also check /legal or /about pages
+        if not art50_found:
+            for path in ["/legal", "/about", "/disclaimer", "/compliance", "/ai-act"]:
+                result = await _check_endpoint(client, f"{base_url}{path}", timeout=5)
+                if result["ok"] and result["status"] == 200:
+                    snippet_lower = result["body_snippet"].lower()
+                    for kw in art50_keywords:
+                        if kw in snippet_lower:
+                            art50_found = True
+                            art50_detail = f"Found at {path}: keyword '{kw}'"
+                            break
+                if art50_found:
+                    break
+        
+        art50_score = 20 if art50_found else 0
+        checks.append({
+            "id": "eu_ai_act_art50",
+            "name": "EU AI Act Art.50 Transparency",
+            "description": "Transparency declaration per EU AI Act Article 50 (AI-generated content disclosure)",
+            "max_score": 20,
+            "score": art50_score,
+            "passed": art50_found,
+            "detail": art50_detail if art50_found else "No EU AI Act Art.50 transparency declaration found",
+            "severity": "critical" if not art50_found else "none",
+        })
+        if not art50_found:
+            issues.append("⚠️ CRITICAL: No EU AI Act Art.50 transparency declaration found")
+            recommendations.append("Add Art.50 transparency declaration — required for AI systems operating in the EU. See https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai")
+        
+        # ---- Calculate total ----
+        total_score = sum(c["score"] for c in checks)
+        # Ensure within 0-100 range
+        total_score = max(0, min(100, total_score))
+        
+        # Grade
+        if total_score >= 90:
+            grade = "A"
+            grade_label = "Excellent"
+        elif total_score >= 75:
+            grade = "B"
+            grade_label = "Good"
+        elif total_score >= 60:
+            grade = "C"
+            grade_label = "Needs Improvement"
+        elif total_score >= 40:
+            grade = "D"
+            grade_label = "Below Average"
+        else:
+            grade = "F"
+            grade_label = "Critical Gaps"
+        
+        return {
+            "success": True,
+            "url": target_url,
+            "base_url": base_url,
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "response_time": response_time,
+            "total_score": total_score,
+            "max_score": max_score,
+            "grade": grade,
+            "grade_label": grade_label,
+            "checks": checks,
+            "issues": issues,
+            "recommendations": recommendations,
+            "disclaimer": "Automated compliance scan — not a legal audit. Consult legal counsel for formal compliance assessment.",
+            "powered_by": "BDE Score™ Compliance Quick Check",
+        }
+
+
+def _compliance_html_report(report: dict) -> str:
+    """生成合规检测的HTML报告页面"""
+    if not report.get("success"):
+        return f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compliance Check Error</title>
+<style>body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:600px;margin:60px auto;padding:20px;background:#0f172a;color:#e2e8f0;}}
+.error{{background:#7f1d1d;border:1px solid #dc2626;border-radius:12px;padding:24px;}}h1{{color:#f87171;}}</style></head>
+<body><div class="error"><h1>⚠️ Scan Failed</h1><p><strong>URL:</strong> {html.escape(report.get("url",""))}</p>
+<p><strong>Error:</strong> {html.escape(report.get("error","Unknown error"))}</p>
+<p>Please verify the URL is correct and the server is reachable.</p></div></body></html>"""
+    
+    score = report["total_score"]
+    grade = report["grade"]
+    grade_colors = {"A": "#22c55e", "B": "#84cc16", "C": "#eab308", "D": "#f97316", "F": "#ef4444"}
+    grade_color = grade_colors.get(grade, "#94a3b8")
+    
+    # Score ring SVG
+    score_ring = f"""<svg width="160" height="160" viewBox="0 0 160 160">
+      <circle cx="80" cy="80" r="70" fill="none" stroke="#1e293b" stroke-width="12"/>
+      <circle cx="80" cy="80" r="70" fill="none" stroke="{grade_color}" stroke-width="12"
+        stroke-dasharray="{score * 4.4} {440 - score * 4.4}" stroke-linecap="round"
+        transform="rotate(-90 80 80)"/>
+      <text x="80" y="72" text-anchor="middle" fill="{grade_color}" font-size="36" font-weight="bold">{score}</text>
+      <text x="80" y="96" text-anchor="middle" fill="#94a3b8" font-size="14">/ 100</text>
+    </svg>"""
+    
+    # Check items HTML
+    checks_html = ""
+    for c in report["checks"]:
+        passed = c["passed"]
+        icon = "✅" if passed else ("❌" if c.get("severity") == "critical" else "⚠️")
+        bg = "#0f2a1a" if passed else "#2a0f0f"
+        border = "#22c55e" if passed else "#ef4444"
+        detail_str = str(c["detail"])
+        if len(detail_str) > 200:
+            detail_str = detail_str[:200] + "..."
+        checks_html += f"""
+        <div style="background:{bg};border-left:4px solid {border};border-radius:8px;padding:16px;margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:18px;">{icon} <strong>{html.escape(c["name"])}</strong></span>
+            <span style="color:{grade_color};font-weight:bold;font-size:16px;">{c["score"]}/{c["max_score"]}</span>
+          </div>
+          <div style="color:#94a3b8;font-size:13px;margin-top:6px;">{html.escape(c["description"])}</div>
+          <div style="color:#cbd5e1;font-size:13px;margin-top:4px;font-family:monospace;">{html.escape(detail_str)}</div>
+        </div>"""
+    
+    # Issues & recommendations
+    issues_html = ""
+    if report["issues"]:
+        issues_html = "<h2 style='color:#f87171;margin-top:32px;'>🔴 Issues Found</h2><ul>"
+        for iss in report["issues"]:
+            issues_html += f"<li style='margin-bottom:8px;color:#fca5a5;'>{html.escape(iss)}</li>"
+        issues_html += "</ul>"
+    
+    recs_html = ""
+    if report["recommendations"]:
+        recs_html = "<h2 style='color:#60a5fa;margin-top:32px;'>💡 Recommendations</h2><ul>"
+        for rec in report["recommendations"]:
+            recs_html += f"<li style='margin-bottom:8px;color:#93c5fd;'>{html.escape(rec)}</li>"
+        recs_html += "</ul>"
+    
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compliance Check — {html.escape(report["base_url"])}</title>
+<style>
+  body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 20px; }}
+  .container {{ max-width: 720px; margin: 0 auto; }}
+  .header {{ text-align: center; padding: 40px 20px; }}
+  .badge {{ display: inline-block; padding: 4px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; background: {grade_color}22; color: {grade_color}; border: 1px solid {grade_color}44; }}
+  h2 {{ color: #f1f5f9; font-size: 20px; }}
+  .footer {{ text-align: center; padding: 40px 20px; color: #475569; font-size: 13px; border-top: 1px solid #1e293b; margin-top: 40px; }}
+  a {{ color: #60a5fa; text-decoration: none; }}
+  .cta {{ background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; padding: 16px 32px; border-radius: 12px; display: inline-block; font-weight: 600; margin-top: 24px; }}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1 style="font-size:28px;margin-bottom:8px;">🔍 Agent Compliance Quick Check</h1>
+    <p style="color:#94a3b8;margin:4px 0;">EU AI Act Readiness Scan</p>
+    <p style="color:#64748b;font-size:14px;margin:4px 0;">{html.escape(report["base_url"])} &mdash; {html.escape(report["timestamp"])}</p>
+  </div>
+  
+  <div style="text-align:center;margin:20px 0;">
+    {score_ring}
+    <div style="margin-top:12px;"><span class="badge">Grade {grade}: {html.escape(report["grade_label"])}</span></div>
+  </div>
+  
+  <h2>📋 Detailed Checks</h2>
+  {checks_html}
+  
+  {issues_html}
+  {recs_html}
+  
+  <div style="text-align:center;margin-top:40px;padding:32px;background:linear-gradient(135deg,#1e1b4b,#172554);border-radius:16px;border:1px solid #312e81;">
+    <h2 style="color:#c7d2fe;margin-top:0;">🚀 Want a Full Compliance Audit?</h2>
+    <p style="color:#a5b4fc;">BDE Score™ provides comprehensive EU AI Act compliance scoring for AI agents and MCP endpoints.</p>
+    <a href="https://github.com/hbhqq9/bde-score" class="cta">Get Full BDE Compliance Report →</a>
+  </div>
+  
+  <div class="footer">
+    <p>{html.escape(report["disclaimer"])}</p>
+    <p>Powered by <a href="https://github.com/hbhqq9/bde-score">BDE Score™</a></p>
+  </div>
+</div>
+</body>
+</html>"""
+
+
+@app.get("/compliance-check")
+async def compliance_check(
+    request: Request,
+    url: str = Query(None, description="MCP endpoint URL to check"),
+):
+    """
+    Agent Compliance Quick Check — EU AI Act readiness scan.
+
+
+    Accepts an MCP endpoint URL, runs automated compliance checks,
+    and returns a scored report (JSON or HTML).
+    
+    Rate limit: 3 checks per IP per minute.
+    """
+    # Rate limiting
+    client_ip = request.headers.get('cf-connecting-ip', '') or \
+                request.headers.get('x-forwarded-for', '').split(',')[0].strip() or \
+                (request.client.host if request.client else "unknown")
+    
+    if not compliance_rate_limiter.is_allowed(client_ip):
+        return JSONResponse(
+            status_code=429,
+            content={"error": "Rate limit exceeded. Max 3 checks per minute per IP.", "retry_after": 60},
+            headers={"Retry-After": "60"}
+        )
+    
+    # Validate URL
+    if not url:
+        return JSONResponse(
+            status_code=400,
+            content={
+                "error": "Missing required parameter: url",
+                "usage": "GET /compliance-check?url=https://your-mcp-endpoint.com",
+                "example": "GET /compliance-check?url=https://example.com",
+            }
+        )
+    
+    # Basic URL validation
+    parsed = urlparse(url)
+    if not parsed.scheme or not parsed.netloc:
+        return JSONResponse(
+            status_code=400,
+            content={"error": "Invalid URL format. Must include scheme (http:// or https://) and hostname."}
+        )
+    if parsed.scheme not in ("http", "https"):
+        return JSONResponse(
+            status_code=400,
+            content={"error": "Unsupported URL scheme. Only http and https are supported."}
+        )
+    
+    # Run compliance checks
+    try:
+        report = await _run_compliance_checks(url)
+    except Exception as e:
+        logger.exception("Compliance check failed")
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Internal error during compliance scan: {str(e)[:200]}"}
+        )
+    
+    # Content negotiation: HTML or JSON
+    accept = request.headers.get("accept", "")
+    if "text/html" in accept:
+        html_content = _compliance_html_report(report)
+        return HTMLResponse(content=html_content)
+    
+    # JSON response
+    return JSONResponse(content=report)
+@app.get("/privacy")
+async def privacy_page():
+    """Privacy Policy page"""
+    try:
+        with open("templates/privacy.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    except Exception:
+        return HTMLResponse(content="<h1>Privacy Policy</h1><p>Privacy policy page not found.</p>", status_code=500)
+
+
+@app.get("/terms")
+async def terms_page():
+    """Terms of Service page"""
+    try:
+        with open("templates/terms.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    except Exception:
+        return HTMLResponse(content="<h1>Terms of Service</h1><p>Terms page not found.</p>", status_code=500)
+
+    
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     uvicorn.run(app, host=API_HOST, port=API_PORT)
