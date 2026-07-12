@@ -1,7 +1,7 @@
 {
   "name": "BDE Score",
-  "description": "AI Agent trust evaluation and EU AI Act compliance assessment. Provides reliability scoring, compliance checking, and trust badges for MCP servers and AI agents.",
-  "version": "1.0.0",
+  "description": "AI Agent trust evaluation and EU AI Act compliance assessment. Provides reliability scoring, compliance checking, and trust badges for MCP servers and AI agents. Also offers multi-market stock BDE scoring.",
+  "version": "1.0.1",
   "capabilities": {
     "trust_evaluation": {
       "description": "Evaluate the reliability and trustworthiness of AI agents and MCP servers",
@@ -22,12 +22,19 @@
   "endpoints": {
     "api": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com",
     "mcp": "https://tex-adequate-date-facing.trycloudflare.com/mcp",
-    "compliance_check": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/compliance-check"
+    "compliance_check": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/compliance-check",
+    "x402_pay_info": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/pay/info"
   },
   "authentication": {
     "type": "api_key",
-    "free_tier": "3 compliance checks/day"
+    "free_tier": "3 queries/day",
+    "micropayment": "x402 $0.01/query USDC on Base"
   },
   "documentation": "https://github.com/hbhqq9/bde-score",
-  "contact": "support@bde-score.com"
+  "discovery": {
+    "mcp": "https://hbhqq9.github.io/bde-score/.well-known/mcp.json",
+    "a2a": "https://hbhqq9.github.io/bde-score/.well-known/agent.json",
+    "openapi": "https://hbhqq9.github.io/bde-score/openapi.json"
+  },
+  "last_verified": "2026-07-12T18:35:00Z"
 }

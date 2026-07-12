@@ -1,15 +1,15 @@
 {
   "name": "BDE Score",
-  "description": "Multi-factor quantitative stock analysis for US, HK, and CN A-share markets. Transparent 0-100 composite scores covering momentum, volatility, value, and quality factors.",
-  "version": "1.0.1",
+  "description": "Multi-factor quantitative stock analysis for US, HK, and CN A-share markets. Transparent 0-100 composite scores covering momentum, volatility, value, and quality factors. EU AI Act Art.50 compliant with x402 micropayment support.",
+  "version": "1.0.2",
   "transport": {
     "type": "streamable-http",
-    "url": "https://edt-anderson-trivia-relationships.trycloudflare.com/mcp"
+    "url": "https://tex-adequate-date-facing.trycloudflare.com/mcp"
   },
   "authentication": {
     "type": "api-key",
     "header": "X-API-Key",
-    "description": "API Key required. Free tier: 10 req/min."
+    "description": "API Key required. Free tier: 3 queries/day, 10 req/min. x402 micropayment: $0.01/query USDC on Base."
   },
   "tools": [
     {
@@ -47,16 +47,7 @@
     "homepage": "https://hbhqq9.github.io/bde-score/",
     "repository": "https://github.com/hbhqq9/bde-score",
     "category": "finance",
-    "tags": [
-      "stocks",
-      "quantitative",
-      "multi-factor",
-      "US",
-      "HK",
-      "A-shares",
-      "analysis",
-      "scoring",
-      "EU AI Act"
-    ]
+    "tags": ["stocks", "quantitative", "multi-factor", "EU-AI-Act", "x402", "blockchain", "supply-chain", "war-risk"],
+    "last_verified": "2026-07-12T18:35:00Z"
   }
 }
