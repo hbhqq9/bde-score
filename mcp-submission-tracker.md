@@ -19,7 +19,7 @@
 | 2 | punkpeye/awesome-mcp-servers (90K★) | ✅ PR #9906 OPEN (07-12 v2) | New PR, old #9829 accidentally closed |
 | 3 | yzfly/Awesome-MCP-ZH (7.4K★) | ✅ PR #384 OPEN | Pending review |
 | 4 | Cline MCP Marketplace | ✅ Issue #1997 | Pending review |
-| 5 | Glama (53K+ servers) | ❌ NOT LISTED (07-12 verified) | glama.json in repo + needs manual GitHub OAuth submission |
+| 5 | Glama (53K+ servers) | 🔄 AUTO-CRAWL PENDING (glama.json committed, ~24h) | GitHub爬虫自动收录，无需手动提交。glama.json已在repo中（v3.0破局：调研发现非手动表单） |
 | 6 | mcp.so (~19K) | ✅ Issue #3121 SUBMITTED | chatmcp/mcpso |
 | 19 | mcp.directory | ✅ SUBMITTED (07-12) | 24h review, "Server Submitted!" |
 | 20 | mcpservers.org | ✅ Issue #1 (07-12) | tmrseoteam-commits/mcpservers-org |
