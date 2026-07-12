@@ -699,3 +699,6 @@
 [Sun Jul 12 10:10:01 AM CST 2026] MCP-Tunnel stopped, restarting...
 [Sun Jul 12 10:10:04 AM CST 2026] MCP-Tunnel restarted: 
 [Sun Jul 12 10:10:04 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Sun Jul 12 10:15:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Sun Jul 12 10:20:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Sun Jul 12 10:25:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)

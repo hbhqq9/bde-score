@@ -239,7 +239,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # 🔒 CORS 白名单（仅允许已知域名嵌入）
         allowed_origins = {
             "https://hbhqq9.github.io",
-            "https://atlantic-remains-atomic-floor.trycloudflare.com",
+            "https://bathroom-ebooks-isa-accommodation.trycloudflare.com",
             "http://localhost:8890",
             "http://127.0.0.1:8890",
         }
@@ -1044,9 +1044,9 @@ async def widget():
 async def embed_snippet():
     """获取嵌入代码片段（用于分享）"""
     return {
-        "iframe": '<iframe src="https://atlantic-remains-atomic-floor.trycloudflare.com/widget" width="420" height="420" frameborder="0" style="border-radius:12px;overflow:hidden;"></iframe>',
-        "markdown": "[![BDE Score](https://atlantic-remains-atomic-floor.trycloudflare.com/widget)](https://atlantic-remains-atomic-floor.trycloudflare.com)",
-        "badge": "[![BDE Score](https://img.shields.io/badge/BDE-Score-blue)](https://atlantic-remains-atomic-floor.trycloudflare.com)",
+        "iframe": '<iframe src="https://bathroom-ebooks-isa-accommodation.trycloudflare.com/widget" width="420" height="420" frameborder="0" style="border-radius:12px;overflow:hidden;"></iframe>',
+        "markdown": "[![BDE Score](https://bathroom-ebooks-isa-accommodation.trycloudflare.com/widget)](https://bathroom-ebooks-isa-accommodation.trycloudflare.com)",
+        "badge": "[![BDE Score](https://img.shields.io/badge/BDE-Score-blue)](https://bathroom-ebooks-isa-accommodation.trycloudflare.com)",
         "description": "Embed BDE Score™ live scores on your website. Copy the iframe code above."
     }
 
@@ -1641,7 +1641,7 @@ async def serve_well_known_mcp():
         "name": "BDE Score",
         "description": "Multi-factor quantitative stock analysis for US, HK, and CN A-share markets.",
         "version": "1.0.1",
-        "transport": {"type": "streamable-http", "url": "https://retrieve-jobs-congress-made.trycloudflare.com/mcp"},
+        "transport": {"type": "streamable-http", "url": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/mcp"},
         "authentication": {"type": "api-key", "header": "X-API-Key", "description": "Free tier: 10 req/min"},
         "capabilities": {"annotations": True, "read_only": True},
         "metadata": {
@@ -1662,7 +1662,7 @@ async def serve_well_known_agent():
     agent_config = {
         "name": "BDE Score Agent",
         "description": "AI-powered multi-market stock analysis agent providing quantitative BDE scores (0-100) for US, HK, and CN A-share markets.",
-        "url": "https://atlantic-remains-atomic-floor.trycloudflare.com",
+        "url": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com",
         "version": "1.0.1",
         "capabilities": {
             "streaming": False,
