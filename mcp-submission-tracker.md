@@ -16,7 +16,7 @@
 | # | Platform | Status | URL / Reference |
 |---|----------|--------|----------------|
 | 1 | Official MCP Registry | ✅ ACTIVE v1.0.1 | https://registry.modelcontextprotocol.io |
-| 2 | punkpeye/awesome-mcp-servers (90K★) | ✅ PR #9829 OPEN (CI fix pushed 07-12) | Fixed name-check + emoji-check |
+| 2 | punkpeye/awesome-mcp-servers (90K★) | ✅ PR #9906 OPEN (07-12 v2) | New PR, old #9829 accidentally closed |
 | 3 | yzfly/Awesome-MCP-ZH (7.4K★) | ✅ PR #384 OPEN | Pending review |
 | 4 | Cline MCP Marketplace | ✅ Issue #1997 | Pending review |
 | 5 | Glama (53K+ servers) | ❌ NOT LISTED (07-12 verified) | glama.json in repo + needs manual GitHub OAuth submission |
