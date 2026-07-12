@@ -1656,6 +1656,15 @@ async def serve_well_known_mcp():
     return JSONResponse(mcp_config)
 
 
+@app.get("/.well-known/ai-plugin.json")
+async def ai_plugin_manifest():
+    """ChatGPT Plugin discovery manifest"""
+    try:
+        with open("docs/.well-known/ai-plugin.json", "r", encoding="utf-8") as f:
+            return JSONResponse(content=json.load(f))
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="ai-plugin.json not found")
+
 @app.get("/.well-known/agent.json")
 async def serve_well_known_agent():
     """A2A Agent-to-Agent发现协议"""
