@@ -1,6 +1,6 @@
 # BDE Score™ MCP Directory Submission Tracker
 
-**Last updated: 2026-07-11 14:40 UTC**
+**Last updated: 2026-07-12 09:50 UTC**
 
 ## Registry Status
 
@@ -20,7 +20,9 @@
 | 3 | yzfly/Awesome-MCP-ZH (7.4K★) | ✅ PR #384 OPEN | Pending review |
 | 4 | Cline MCP Marketplace | ✅ Issue #1997 | Pending review |
 | 5 | Glama (53K+ servers) | ⏳ glama.json submitted | Awaiting 24h index |
-| 6 | mcp.so (~19K) | ⏳ Browser submission in progress | GitHub URL submitted |
+| 6 | mcp.so (~19K) | ✅ Issue #3121 SUBMITTED | chatmcp/mcpso |
+| 19 | mcp.directory | ✅ SUBMITTED (07-12) | 24h review, "Server Submitted!" |
+| 20 | mcpservers.org | ✅ Issue #1 (07-12) | tmrseoteam-commits/mcpservers-org |
 
 ### Auto-Sync (from Official Registry)
 
