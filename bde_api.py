@@ -1864,6 +1864,7 @@ async def credit_payment_page(request: Request, tier: str = 'starter', lang: str
                 'QR_SAVE_HINT': '长按上方二维码图片可直接保存，或点击下载按钮保存PNG',
                 'SEND_USDC': '将 USDC 发送至以下地址',
                 'BTN_COPY': '复制',
+                'LONG_PRESS_COPY': '长按上方地址可直接复制',
                 'STATUS_WAITING': '等待支付中...',
                 'STATUS_DETAIL_WAITING': '请完成支付后等待系统自动确认',
                 'TX_HINT': '已发送？输入交易哈希进行验证：',
@@ -1888,6 +1889,7 @@ async def credit_payment_page(request: Request, tier: str = 'starter', lang: str
                 'QR_SAVE_HINT': 'Long-press QR image to save, or tap download button',
                 'SEND_USDC': 'Send USDC to this address',
                 'BTN_COPY': 'Copy',
+                'LONG_PRESS_COPY': 'Long-press address above to copy',
                 'STATUS_WAITING': 'Waiting for payment...',
                 'STATUS_DETAIL_WAITING': 'Complete payment and wait for auto-confirmation',
                 'TX_HINT': 'Already sent? Enter transaction hash to verify:',
@@ -1912,6 +1914,7 @@ async def credit_payment_page(request: Request, tier: str = 'starter', lang: str
                 'QR_SAVE_HINT': 'QRコード画像を長押しで保存、またはダウンロードボタンをタップ',
                 'SEND_USDC': '以下のアドレスにUSDCを送信',
                 'BTN_COPY': 'コピー',
+                'LONG_PRESS_COPY': '上のアドレスを長押しでコピー',
                 'STATUS_WAITING': '支払い待ち...',
                 'STATUS_DETAIL_WAITING': '支払い完了後、自動確認をお待ちください',
                 'TX_HINT': '送信済み？トランザクションハッシュを入力して検証：',
@@ -1929,6 +1932,11 @@ async def credit_payment_page(request: Request, tier: str = 'starter', lang: str
         lang_i18n = I18N.get(lang, I18N['zh'])
         for key, val in lang_i18n.items():
             html = html.replace('{{{{ I18N_{0} }}}}'.format(key), val)
+
+        # Language button active states
+        for lcode in ('zh', 'en', 'ja'):
+            css_class = ' active' if lcode == lang else ''
+            html = html.replace('{{{{ LANG_{0}_ACTIVE }}}}'.format(lcode.upper()), css_class)
 
         html = html.replace('{{ QR_IMG_SRC }}', qr_img)
         html = html.replace('{{ TIER_PARAM }}', tier)

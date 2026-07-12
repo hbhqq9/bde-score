@@ -33,7 +33,7 @@
         .nav-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
         .nav-bar .brand { font-size: 1rem; font-weight: 700; color: var(--accent); text-decoration: none; }
         .lang-group { display: flex; gap: 4px; }
-        .lang-btn { padding: 4px 8px; font-size: 11px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; }
+        .lang-btn { display: inline-block; padding: 4px 8px; font-size: 11px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; text-decoration: none; }
         .lang-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
         .header { text-align: center; margin-bottom: 2rem; }
@@ -101,7 +101,7 @@
         .qr-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; text-align: center; }
 
         /* Save QR Button */
-        .save-qr-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 0.75rem; padding: 8px 18px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--secondary)); color: #fff; border: none; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 2px 8px rgba(59,130,246,0.3); }
+        .save-qr-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 0.75rem; padding: 8px 18px; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--secondary)); color: #fff; border: none; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 2px 8px rgba(59,130,246,0.3); text-decoration: none; }
         .save-qr-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,130,246,0.5); }
         .save-qr-btn:active { transform: translateY(0); }
         .save-qr-btn svg { width: 16px; height: 16px; fill: currentColor; }
@@ -137,9 +137,9 @@
         <div class="nav-bar">
             <a class="brand i18n-link" href="/?lang=">BDE Score™</a>
             <div class="lang-group">
-                <button class="lang-btn" onclick="setLang('zh')">中</button>
-                <button class="lang-btn" onclick="setLang('en')">EN</button>
-                <button class="lang-btn" onclick="setLang('ja')">日</button>
+                <a class="lang-btn{{ LANG_ZH_ACTIVE }}" href="?lang=zh&tier={{ TIER_PARAM }}">中</a>
+                <a class="lang-btn{{ LANG_EN_ACTIVE }}" href="?lang=en&tier={{ TIER_PARAM }}">EN</a>
+                <a class="lang-btn{{ LANG_JA_ACTIVE }}" href="?lang=ja&tier={{ TIER_PARAM }}">日</a>
             </div>
         </div>
 
@@ -186,9 +186,11 @@
             <!-- Wallet Address -->
             <div class="address-section">
                 <div class="address-label" data-i18n="send_usdc">{{ I18N_SEND_USDC }}</div>
-                <div class="address-box">
-                    <span class="address-text" id="wallet-address">{{ WALLET_ADDRESS }}</span>
-                    <button class="copy-btn" onclick="copyAddress()" data-i18n="btn_copy">{{ I18N_BTN_COPY }}</button>
+                <div class="address-box" style="flex-wrap:wrap;gap:0.5rem;">
+                    <span class="address-text" id="wallet-address" style="user-select:all;-webkit-user-select:all;cursor:text;flex:1 1 100%;">{{ WALLET_ADDRESS }}</span>
+                </div>
+                <div style="text-align:center;margin-top:0.4rem;">
+                    <span style="font-size:0.65rem;color:var(--text-muted);" data-i18n="long_press_copy">{{ I18N_LONG_PRESS_COPY }}</span>
                 </div>
             </div>
 
@@ -201,11 +203,13 @@
 
             <!-- Manual TX Verification -->
             <div class="tx-input-section">
-                <div class="address-label" style="margin-bottom: 0.5rem;" data-i18n="tx_hint">{{ I18N_TX_HINT }}</div>
-                <div class="tx-input-group">
-                    <input type="text" class="tx-input" id="tx-input" placeholder="0x..." spellcheck="false">
-                    <button class="copy-btn" onclick="verifyTx()" data-i18n="btn_verify">{{ I18N_BTN_VERIFY }}</button>
-                </div>
+                <form action="/api/payment/verify" method="post">
+                    <div class="address-label" style="margin-bottom: 0.5rem;" data-i18n="tx_hint">{{ I18N_TX_HINT }}</div>
+                    <div class="tx-input-group">
+                        <input type="text" class="tx-input" id="tx-input" name="tx_hash" placeholder="0x..." spellcheck="false">
+                        <button class="copy-btn" type="submit" data-i18n="btn_verify">{{ I18N_BTN_VERIFY }}</button>
+                    </div>
+                </form>
             </div>
 
             <!-- API Key Display -->
