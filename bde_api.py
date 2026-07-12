@@ -40,7 +40,7 @@ from typing import Optional
 from contextlib import contextmanager
 from collections import defaultdict
 
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -3224,6 +3224,14 @@ async def _run_compliance_checks(target_url: str) -> dict:
             "recommendations": recommendations,
             "disclaimer": "Automated compliance scan — not a legal audit. Consult legal counsel for formal compliance assessment.",
             "powered_by": "BDE Score™ Compliance Quick Check",
+            "ai_system_info": {
+                "generated_by": "BDE Score AI Assessment Engine v1.0",
+                "assessment_type": "automated-reliability-scoring",
+                "methodology": "rule-based + LLM-enhanced public signal analysis",
+                "data_sources": ["public-endpoint-analysis", "protocol-detection", "security-signal-scanning"],
+                "limitations": ["based on publicly accessible signals only", "not a penetration test", "point-in-time assessment"],
+                "eu_ai_act_art50": True
+            },
         }
 
 
@@ -3343,6 +3351,7 @@ def _compliance_html_report(report: dict) -> str:
 @app.get("/compliance-check")
 async def compliance_check(
     request: Request,
+    response: Response,
     url: str = Query(None, description="MCP endpoint URL to check"),
 ):
     """
@@ -3354,6 +3363,11 @@ async def compliance_check(
     
     Rate limit: 3 checks per IP per minute.
     """
+    # EU AI Act Art.50: AI system disclosure headers
+    response.headers["X-BDE-AI-System"] = "true"
+    response.headers["X-BDE-Assessment-Method"] = "ai-automated"
+    response.headers["X-BDE-Model-Version"] = "1.0"
+    
     # Rate limiting
     client_ip = request.headers.get('cf-connecting-ip', '') or \
                 request.headers.get('x-forwarded-for', '').split(',')[0].strip() or \
@@ -3406,8 +3420,15 @@ async def compliance_check(
         html_content = _compliance_html_report(report)
         return HTMLResponse(content=html_content)
     
-    # JSON response
-    return JSONResponse(content=report)
+    # JSON response with EU AI Act Art.50 disclosure headers
+    return JSONResponse(
+        content=report,
+        headers={
+            "X-BDE-AI-System": "true",
+            "X-BDE-Assessment-Method": "ai-automated",
+            "X-BDE-Model-Version": "1.0"
+        }
+    )
 @app.get("/privacy")
 async def privacy_page():
     """Privacy Policy page"""
@@ -3429,6 +3450,29 @@ async def terms_page():
 
     
 
+
+
+# EU AI Act Article 50 Compliance Page
+@app.get("/compliance", response_class=HTMLResponse)
+async def eu_ai_act_compliance():
+    """EU AI Act Article 50 Transparency Compliance Statement"""
+    try:
+        with open("templates/compliance.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    except FileNotFoundError:
+        return HTMLResponse(content="<h1>Compliance Statement</h1><p>Page not found.</p>", status_code=404)
+
+@app.get("/compliance-check/status")
+async def compliance_check_status():
+    """Status of compliance check system"""
+    return {
+        "status": "operational",
+        "version": "1.0",
+        "ai_system": True,
+        "eu_ai_act_art50_compliant": True,
+        "rate_limit": "3 requests per minute per IP",
+        "methodology": "rule-based + LLM-enhanced public signal analysis"
+    }
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)

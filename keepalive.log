@@ -703,3 +703,11 @@
 [Sun Jul 12 10:20:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
 [Sun Jul 12 10:25:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
 [Sun Jul 12 10:30:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Sun Jul 12 10:35:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Sun Jul 12 10:40:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Sun Jul 12 10:45:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Sun Jul 12 10:50:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Sun Jul 12 10:55:01 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 1进程, CF-Tunnel: 2进程)
+[Sun Jul 12 11:00:01 AM CST 2026] ⚠️ BDE-API 已停止，正在重启...
+[Sun Jul 12 11:00:04 AM CST 2026] ❌ BDE-API 重启失败！
+[Sun Jul 12 11:00:04 AM CST 2026] 守护检查完成 (FutuOpenD: 2进程, BDE-API: 0进程, CF-Tunnel: 2进程)
