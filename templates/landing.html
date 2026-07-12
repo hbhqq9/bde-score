@@ -45,6 +45,7 @@ tailwind.config = {
       <a href="#features" class="hover:text-white transition" data-i18n="nav_features">Features</a>
       <a href="#pricing" class="hover:text-white transition" data-i18n="nav_pricing">Pricing</a>
       <a href="#compliance" class="hover:text-white transition" data-i18n="nav_compliance">Compliance</a>
+      <a href="#compliance-check" class="hover:text-white transition text-green-400">🔍 Check</a>
       <a href="https://github.com/hbhqq9/bde-score" target="_blank" class="hover:text-white transition">GitHub</a>
     </div>
     <div class="flex items-center gap-3">
@@ -247,6 +248,50 @@ tailwind.config = {
         <code class="text-blue-400 text-sm font-mono break-all">0x349Eea0E2f4d3594797851758325Da3eb49D4343</code>
       </div>
       <p class="text-slate-500 text-xs mt-4" data-i18n="pay_note">Base Network (ERC-20 USDC) · Send amount matching your chosen tier · Email receipt to confirm activation</p>
+    </div>
+  </div>
+</section>
+
+<!-- Agent Compliance Quick Check — CTA Section -->
+<section id="compliance-check" class="py-20 border-t border-white/5">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm mb-6">
+      <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+      <span>FREE TOOL</span>
+    </div>
+    
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">🔍 Agent Compliance Quick Check</h2>
+    <p class="text-slate-400 mb-8 max-w-2xl mx-auto">
+      Is your MCP endpoint ready for EU AI Act? Get a compliance score in 30 seconds — completely free.
+    </p>
+    
+    <div class="glass rounded-2xl p-8 max-w-2xl mx-auto mb-8">
+      <div class="flex flex-col md:flex-row items-center gap-4">
+        <input type="text" id="check-url-input" placeholder="https://your-mcp-endpoint.com" 
+          class="flex-1 w-full bg-slate-900/50 border border-white/10 rounded-xl px-5 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/50 font-mono text-sm" />
+        <button onclick="document.location.href='/compliance-check?url='+encodeURIComponent(document.getElementById('check-url-input').value)" 
+          class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all whitespace-nowrap">
+          Check Now →
+        </button>
+      </div>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-6 text-left max-w-2xl mx-auto">
+      <div class="text-center">
+        <div class="text-2xl mb-2">✅</div>
+        <h4 class="font-semibold text-sm mb-1">10 Checks</h4>
+        <p class="text-xs text-slate-500">HTTPS, security headers, API docs, privacy policy, rate limiting, and more</p>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl mb-2">📊</div>
+        <h4 class="font-semibold text-sm mb-1">A-F Grade</h4>
+        <p class="text-xs text-slate-500">Clear scoring with actionable improvement recommendations</p>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl mb-2">🆓</div>
+        <h4 class="font-semibold text-sm mb-1">Free</h4>
+        <p class="text-xs text-slate-500">3 checks per minute, no signup required</p>
+      </div>
     </div>
   </div>
 </section>
