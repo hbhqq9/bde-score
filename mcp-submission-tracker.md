@@ -33,7 +33,7 @@
 | # | Platform | Status | Notes |
 |---|----------|--------|-------|
 | 7 | PulseMCP (~15K) | 🔍 Auto-syncing | Pulls from Official Registry |
-| 8 | Smithery (~7K) | ❌ NOT LISTED (07-12 verified) | Needs manual publish via smithery.yaml + CLI |
+| 8 | Smithery (~7K) | 🔧 AUTH PENDING (v3.0 CLI路线) | smithery auth login进行中，OAuth需用户点击auth URL完成GitHub登录→smithery mcp publish |
 | 9 | Artifacta.io (9.8K ranked) | 🔍 Next regen ~Jul 13 | v1.0.1 repo fix should enable listing |
 | 10 | Skillful.sh (469K/55dirs) | 🔍 Aggregating | Pulls from multiple directories |
 | 11 | MCPFind/mcp-find | ✅ PR #95 OPEN (07-12) | Auto-discovered by promo engine, Vercel deploying |
