@@ -4,7 +4,7 @@
   "version": "1.0.1",
   "transport": {
     "type": "streamable-http",
-    "url": "https://humanitarian-compliance-objects-jesse.trycloudflare.com/mcp"
+    "url": "https://pupils-camel-population-willow.trycloudflare.com/mcp"
   },
   "authentication": {
     "type": "api-key",
@@ -47,6 +47,16 @@
     "homepage": "https://hbhqq9.github.io/bde-score/",
     "repository": "https://github.com/hbhqq9/bde-score",
     "category": "finance",
-    "tags": ["stocks", "quantitative", "multi-factor", "US", "HK", "A-shares", "analysis", "scoring", "EU AI Act"]
+    "tags": [
+      "stocks",
+      "quantitative",
+      "multi-factor",
+      "US",
+      "HK",
+      "A-shares",
+      "analysis",
+      "scoring",
+      "EU AI Act"
+    ]
   }
 }
