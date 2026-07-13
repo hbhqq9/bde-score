@@ -55,6 +55,6 @@ fi
 
 # 6. Agent Registry v0.2.0 (port 8892 - agent-native discovery)
 check_and_restart "Agent-Registry" "registry_server.py" \
-    "cd $BDE_DIR && nohup python3 agent-registry/registry_server.py > /tmp/registry_server.log 2>&1 &"
+    "cd $BDE_DIR && source .env.registry 2>/dev/null; nohup env REGISTRY_API_KEY=$REGISTRY_API_KEY python3 agent-registry/registry_server.py > /tmp/registry_server.log 2>&1 &"
 
 echo "[$(date)] 守护检查完成 (FutuOpenD: $(pgrep -c -f FutuOpenD)进程, BDE-API: $(pgrep -c -f bde_api.py)进程, CF-Tunnel: $(pgrep -c -f cloudflared)进程)" >> "$LOG"
