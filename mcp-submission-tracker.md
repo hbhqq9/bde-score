@@ -20,7 +20,7 @@
 | 3 | yzfly/Awesome-MCP-ZH (7.4K★) | ✅ PR #384 OPEN | Pending review |
 | 4 | Cline MCP Marketplace | ✅ Issue #1997 | Pending review |
 | 5 | Glama (54K+ servers) | 🔧 MANUAL SUBMISSION IN PROGRESS | 自动爬虫未收录(07-13确认)，浏览器agent手动提交中。PR #9947硬性前置条件。 |
-| 6 | mcp.so (~19K) | ❌ Issue #3121 404 NOT FOUND | 需重新提交确认 |
+| 6 | mcp.so (~19K) | 🔧 需表单重新提交 | https://mcp.so/submit 填入GitHub URL |
 | 19 | mcp.directory | ❌ 未收录 (07-13确认) | 网站搜索无结果，需重新提交 |
 | 20 | mcpservers.org | ❌ Issue #1 404 NOT FOUND | 需重新提交确认 |
 | 25 | ComposioHQ/awesome-claude-skills (67.5K★) | 🔄 PR #1304 OPEN | 安全审查通过(0 issues)，auto-merge workflow已触发，等待maintainer merge |
