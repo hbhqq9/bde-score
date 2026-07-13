@@ -2,6 +2,10 @@
 """
 BDE Score 账户余额监控 + 飞书群推送
 监控 Base 链上 ETH 余额变动，有变化时推送到飞书群
+
+版本: v4.0 (安全宪法升级)
+签名: [MONITOR:v4.0:wallet_balance_monitor]
+安全: 地址白名单硬编码 + 黑名单阻断 + 反钓鱼协议
 """
 
 import json
@@ -10,11 +14,19 @@ import os
 import sys
 from datetime import datetime, timezone, timedelta
 
-# === 配置 ===
-ADDRESSES = {
-    "Deployer(正式)": "0x6c667Fc5c770bf7899b1843472f43C51b5c4Fecd",
+# === 安全宪法 v4.0 — 地址白名单/黑名单（硬编码，不从外部读取）===
+ACTIVE_ADDRESSES = {
+    "Deployer(最终)": "0x6c667Fc5c770bf7899b1843472f43C51b5c4Fecd",
     "x402收款": "0x349Eea0E2f4d3594797851758325Da3eb49D4343",
 }
+
+DECOMMISSIONED_ADDRESSES = {
+    "0x903f5C71D87FCAb1FAC236F02Be94EF95Fa0Ea3B": "Deployer(旧-私钥泄露-20260711)",
+    "0xa8F9c367DF92287c2Fd4C94B71CcE0fA681be3A5": "Deployer(2号-GitHub暴露-20260711)",
+    "0x87d6C8F71d89d7E1f17EcAB138EDfaAc19d9D2fE": "收款钱包(旧-git暴露-20260710)",
+}
+
+MONITOR_SIGNATURE = "[MONITOR:v4.0:wallet_balance_monitor]"
 
 STATE_FILE = "/app/data/所有对话/主对话/BDE-Stock/scripts/.balance_state.json"
 FEISHU_CHAT_ID = "oc_e76aeb49eb5d48bc840d3a558c83bed4"  # BDE Score Agent 群
@@ -90,29 +102,58 @@ def send_feishu(message: str):
             capture_output=True, text=True, timeout=30
         )
         output = result.stdout + result.stderr
-        # Check for success
         if '"ok":true' in output.replace(' ', '').replace('"ok": true', '"ok":true') or '"ok": true' in output:
             print("  [OK] 飞书消息发送成功")
             return True
         else:
             print(f"  [WARN] 飞书发送结果: {output[:200]}", file=sys.stderr)
-            return True  # Don't fail on feishu errors, just warn
+            return True
     except Exception as e:
         print(f"  [ERROR] 飞书发送失败: {e}", file=sys.stderr)
         return False
 
 
+def check_decommissioned_activity():
+    """检查废弃地址是否有活动（安全事件检测）"""
+    alerts = []
+    for addr, reason in DECOMMISSIONED_ADDRESSES.items():
+        balance = get_balance(addr)
+        if balance < 0:
+            continue
+        tx_count = get_tx_count(addr)
+        
+        old_data = load_state().get(f"decomm_{addr}", {})
+        old_tx = old_data.get("tx_count", None)
+        
+        if old_tx is not None and tx_count != old_tx:
+            alerts.append({
+                "address": addr,
+                "reason": reason,
+                "balance": balance,
+                "old_tx": old_tx,
+                "new_tx": tx_count,
+                "type": "SECURITY_EVENT"
+            })
+        
+        # 保存状态
+        state = load_state()
+        state[f"decomm_{addr}"] = {"tx_count": tx_count, "balance": balance}
+        save_state(state)
+    
+    return alerts
+
+
 def main():
     now = datetime.now(BJT)
-    print(f"=== BDE Score 账户余额监控 ({now.strftime('%Y-%m-%d %H:%M BJT')}) ===")
+    print(f"=== BDE Score 账户余额监控 {MONITOR_SIGNATURE} ({now.strftime('%Y-%m-%d %H:%M BJT')}) ===")
 
     # 加载历史状态
     old_state = load_state()
     new_state = {}
     changes = []
 
-    # 查询每个账户
-    for name, addr in ADDRESSES.items():
+    # 查询每个活跃账户
+    for name, addr in ACTIVE_ADDRESSES.items():
         print(f"\n查询 {name} ({addr[:8]}...{addr[-4:]})...")
         balance = get_balance(addr)
         tx_count = get_tx_count(addr)
@@ -137,7 +178,7 @@ def main():
         # 检测变动
         if old_balance is not None:
             delta = balance - old_balance
-            if abs(delta) > 0.000001:  # 忽略极小精度误差
+            if abs(delta) > 0.000001:
                 direction = "📈 增加" if delta > 0 else "📉 减少"
                 changes.append({
                     "name": name,
@@ -155,12 +196,30 @@ def main():
         else:
             print(f"  [INIT] 首次记录基线")
 
-    # 保存新状态
-    save_state(new_state)
+    # 保存新状态（保留废弃地址监控数据）
+    preserved = {k: v for k, v in old_state.items() if k.startswith("decomm_") or k.startswith("_")}
+    preserved.update(new_state)
+    save_state(preserved)
 
-    # 构建飞书消息
+    # === 安全宪法 v4.0: 检查废弃地址活动 ===
+    decomm_alerts = check_decommissioned_activity()
+    if decomm_alerts:
+        print(f"\n🚨 [SECURITY_EVENT] 废弃地址检测到活动！")
+        lines = [f"🚨 安全事件：废弃地址活动检测", f"⏰ {now.strftime('%Y-%m-%d %H:%M')} BJT", f"{MONITOR_SIGNATURE}", ""]
+        for a in decomm_alerts:
+            lines.append(f"⚠️ {a['reason']}")
+            lines.append(f"  地址: {a['address']}")
+            lines.append(f"  余额: {a['balance']:.6f} ETH")
+            lines.append(f"  交易数: {a['old_tx']} → {a['new_tx']}")
+            lines.append("")
+        lines.append("🔴 以上地址私钥已泄露，任何活动均为攻击者行为")
+        lines.append("⛔ 绝不向这些地址充值")
+        security_msg = "\n".join(lines)
+        send_feishu(security_msg)
+
+    # 构建飞书消息（仅报告活跃地址，不引导充值）
     if changes:
-        lines = [f"🔔 BDE Score 账户变动报告", f"⏰ {now.strftime('%Y-%m-%d %H:%M')} BJT", ""]
+        lines = [f"🔔 BDE Score 账户变动报告", f"⏰ {now.strftime('%Y-%m-%d %H:%M')} BJT", f"{MONITOR_SIGNATURE}", ""]
         for c in changes:
             lines.append(f"{c['direction']} {c['name']}")
             lines.append(f"  {c['old']:.6f} → {c['new']:.6f} ETH")
@@ -169,6 +228,7 @@ def main():
                 lines.append(f"  交易数: {c['old_tx']} → {c['new_tx']}")
             lines.append("")
         lines.append("💰 当前总余额: {:.6f} ETH".format(sum(s["balance"] for s in new_state.values())))
+        # v4.0: 不引导充值，仅报告事实
         message = "\n".join(lines)
     else:
         # 无变动时，每6小时发一次全量报告
@@ -182,7 +242,7 @@ def main():
                 pass
 
         if hours_since >= 6 or not last_report:
-            lines = [f"💰 BDE Score 账户余额报告", f"⏰ {now.strftime('%Y-%m-%d %H:%M')} BJT", ""]
+            lines = [f"💰 BDE Score 账户余额报告", f"⏰ {now.strftime('%Y-%m-%d %H:%M')} BJT", f"{MONITOR_SIGNATURE}", ""]
             total = 0
             for addr, s in new_state.items():
                 if addr.startswith("_"):
@@ -192,8 +252,8 @@ def main():
             lines.append(f"\n💎 总余额: {total:.6f} ETH")
             lines.append("✅ 无变动" if not changes else "")
             message = "\n".join(lines)
-            new_state["_last_full_report"] = now.isoformat()
-            save_state(new_state)
+            preserved["_last_full_report"] = now.isoformat()
+            save_state(preserved)
         else:
             print(f"\n[INFO] 无变动，距上次全量报告{hours_since:.1f}h（<6h），不推送")
             return

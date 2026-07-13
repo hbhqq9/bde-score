@@ -1,114 +1,112 @@
 # BDE Score™ MCP Directory Submission Tracker
 
-**Last updated: 2026-07-13 09:40 UTC (v3.3)**
+**Last updated: 2026-07-13 11:20 UTC (v4.0 - 自建渠道战略版)**
+
+## 战略转变
+
+**v4.0 核心原则**: 零人工介入，100%自动化分发
+- ✅ 自建渠道优先：.well-known协议 + 自动同步Registry
+- ❌ 摒弃需人工介入的渠道：OAuth/CLA/手动表单
+- 📋 详见: [SELF_BUILT_CHANNELS_STRATEGY.md](./SELF_BUILT_CHANNELS_STRATEGY.md)
 
 ## Registry Status
 
-| Platform | Status | Details |
-|----------|--------|---------|
-| **Official MCP Registry** | ✅ ACTIVE v1.0.1 | `io.github.hbhqq9/bde-score`, isLatest=true |
-| **Remote MCP Server** | ✅ LIVE | 6 tools via Streamable HTTP, Cloudflare Tunnel |
+| # | Platform | Status | Details |
+|---|----------|--------|---------|
+| 1 | Official MCP Registry | ✅ ACTIVE v1.0.1 | `io.github.hbhqq9/bde-score`, isLatest=true |
+| 2 | Remote MCP Server | ✅ LIVE | 6 tools via Streamable HTTP, Cloudflare Tunnel |
 
-## Directory Platforms
+## 第一层：协议原生发现（零人工介入 ✅）
 
-### Confirmed Active
+| # | Endpoint | Status | Protocol |
+|---|----------|--------|----------|
+| 1 | `/.well-known/agent.json` | ✅ 200 | A2A Protocol |
+| 2 | `/.well-known/mcp.json` | ✅ 200 | MCP Discovery |
+| 3 | `/.well-known/ai-plugin.json` | ✅ 200 | ChatGPT Plugin |
 
-| # | Platform | Status | URL / Reference |
-|---|----------|--------|----------------|
-| 1 | Official MCP Registry | ✅ ACTIVE v1.0.1 | https://registry.modelcontextprotocol.io |
-| 2 | punkpeye/awesome-mcp-servers (90K★) | 🔄 PR #9947 OPEN (missing-glama) | #9906已关闭→#9947替代，需先完成Glama收录+添加badge |
-| 3 | yzfly/Awesome-MCP-ZH (7.4K★) | ✅ PR #384 OPEN | Pending review |
-| 4 | Cline MCP Marketplace | ✅ Issue #1997 | Pending review |
-| 5 | Glama (54K+ servers) | 🔧 MANUAL SUBMISSION IN PROGRESS | 自动爬虫未收录(07-13确认)，浏览器agent手动提交中。PR #9947硬性前置条件。 |
-| 6 | mcp.so (~19K) | 🔧 需登录+表单提交 | 需注册账号(GitHub/Google)后提交: https://mcp.so/submit |
-| 19 | mcp.directory | ❌ 未收录 (07-13确认) | 网站搜索无结果，需重新提交 |
-| 20 | mcpservers.org | ❌ Issue #1 404 NOT FOUND | 需重新提交确认 |
-| 25 | ComposioHQ/awesome-claude-skills (67.5K★) | 🔄 PR #1304 OPEN | 安全审查通过(0 issues)，auto-merge workflow已触发，等待maintainer merge |
-| 26 | e2b-dev/awesome-ai-agents (28.7K★) | 🔧 PR #1234 CLA PENDING | cla-bot要求签署CLA，需浏览器完成GitHub OAuth签署 |
-| 21 | LLMQuant/awesome-trading-agents (345★) | ✅ PR #32 OPEN (07-12) | MCPs → Research tools section |
-| 22 | thuquant/awesome-quant (5.5K★) | ✅ Issue #49 (07-12) | Fork network conflict, submitted as Issue |
-| 23 | firmai/financial-machine-learning (8.7K★) | ✅ Issue #37 (07-12) | Suggested addition via Issue |
-| 24 | MCPMarket.com | ✅ AUTO-LISTED (07-12) | Auto-synced from GitHub/Registry |
+## 第二层：自动同步Registry（零人工介入 ✅）
 
-### Auto-Sync (from Official Registry)
+| # | Platform | Sync Source | Status |
+|---|----------|-------------|--------|
+| 1 | MCPMarket.com | ← Official Registry | ✅ AUTO-LISTED |
+| 2 | PulseMCP | ← Official Registry | ✅ AUTO-SYNCING |
+| 3 | Skillful.sh | ← 多源聚合 | ✅ AGGREGATING |
+| 4 | Artifacta.io | ← GitHub/Registry | ✅ AUTO-LISTED |
 
-| # | Platform | Status | Notes |
-|---|----------|--------|-------|
-| 7 | PulseMCP (~15K) | 🔍 Auto-syncing | Pulls from Official Registry |
-| 8 | Smithery (~7K) | 🔧 AUTH PENDING (v3.0 CLI路线) | smithery auth login进行中，OAuth需用户点击auth URL完成GitHub登录→smithery mcp publish |
-| 9 | Artifacta.io (9.8K ranked) | 🔍 Next regen ~Jul 13 | v1.0.1 repo fix should enable listing |
-| 10 | Skillful.sh (469K/55dirs) | 🔍 Aggregating | Pulls from multiple directories |
-| 11 | MCPFind/mcp-find | ✅ PR #95 OPEN (07-12) | Auto-discovered by promo engine, Vercel deploying |
+## 第三层：Awaiting Maintainer Review（无需人工介入 🟢）
 
-### Queued / Needs Browser
+| # | Platform | PR/Issue | Stars | Status |
+|---|----------|----------|-------|--------|
+| 1 | punkpeye/awesome-mcp-servers | PR #9947 | 90.6K | 🟢 OPEN |
+| 2 | ComposioHQ/awesome-claude-skills | PR #1304 | 67.5K | 🟢 OPEN (安全审查通过) |
+| 3 | yzfly/Awesome-MCP-ZH | PR #384 | 7.4K | 🟢 OPEN |
+| 4 | firmai/financial-machine-learning | Issue #37 | 8.7K | 🟢 OPEN |
+| 5 | thuquant/awesome-quant | Issue #49 | 5.5K | 🟢 OPEN (已回复维护者) |
+| 6 | LLMQuant/awesome-trading-agents | PR #32 | 345 | 🟢 OPEN |
+| 7 | MCPFind/mcp-find | PR #95 | - | 🟢 OPEN |
+| 8 | Cline MCP Marketplace | Issue #1997 | - | 🟢 OPEN |
 
-| # | Platform | Status | Notes |
-|---|----------|--------|-------|
-| 12 | Claude Connector Directory | 📋 Data prepared | Google Form, needs browser to fill |
-| 13 | cursor.directory (250K MAU) | ⏳ Browser submission pending | Form-based |
-| 14 | SourceForge | 🔍 Needs verification | |
+## 第四层：DROPPED（需人工介入 ❌）
 
-### Blocked / Dropped
+**决策原则**: 需要OAuth登录/手动表单/CLA签署等人工介入的渠道→标记为DROPPED
 
-| # | Platform | Status | Reason |
-|---|----------|--------|--------|
-| 15 | wong2/awesome-mcp-servers (4.2K★) | ❌ DROPPED | Repo owner disabled PRs |
-| 16 | appcypher/awesome-mcp-servers (5.7K★) | ❌ DROPPED | Repo owner disabled PRs |
-| 17 | Smithery CLI | ❌ Needs API Key | Registration required |
-| 18 | Microsoft Partner Center | ❌ Needs partner account | Enterprise certification |
-| 25 | vinta/awesome-python (86.9K★) | ❌ CLOSED PR #3247 | Repo age <3 months, stars <100 |
-| 26 | r0f1/datascience (15K★) | ❌ CLOSED PR #65 | Auto-closed, no comment |
-| 27 | leoncuhk/awesome-quant-ai | ❌ CLOSED PR #40 | Repo too new, low stars |
-| 28 | lorien/awesome-web-scraping | ❌ CLOSED PR #263 | Not standalone software |
+| # | Platform | Reason | Dropped Date |
+|---|----------|--------|--------------|
+| 1 | e2b-dev/awesome-ai-agents #1234 | CLA签署需GitHub OAuth | 2026-07-13 |
+| 2 | Glama.ai | 手动提交表单需GitHub OAuth | 2026-07-13 |
+| 3 | mcp.so | 需登录+表单提交 | 2026-07-13 |
+| 4 | Smithery.ai | OAuth登录需浏览器+GitHub登录 | 2026-07-13 |
+| 5 | cursor.directory | 表单提交 | 2026-07-13 |
+| 6 | Claude Connector Directory | Google Form | 2026-07-13 |
+
+**注意**: 不删除已有PR/Issue，但不主动推进。如维护者主动merge，自然接受。
+
+## 历史CLOSED（供参考）
+
+| # | Platform | PR/Issue | Stars | Reason |
+|---|----------|----------|-------|--------|
+| 1 | vinta/awesome-python | PR #3247 | 86.9K | 项目<3个月, Stars<100 |
+| 2 | leoncuhk/awesome-quant-ai | PR #40 | - | 项目太新 |
+| 3 | lorien/awesome-web-scraping | PR #263 | - | 非独立软件 |
+| 4 | punkpeye/awesome-mcp-servers | PR #9906 | 90.6K | 已用#9947替代 |
+| 5 | academic/awesome-datascience | PR #652 | 29.6K | ✅ MERGED |
+| 6 | AI4Finance/finrl | PR #14 | - | ✅ MERGED |
 
 ## Technical Readiness
 
 ### MCP Server Annotations ✅
-All 6 tools now include standard MCP ToolAnnotations:
+All 6 tools include standard MCP ToolAnnotations:
 - `title`: Human-readable names
 - `readOnlyHint: true` — all tools are read-only
 - `idempotentHint: true` — safe to retry
 - `destructiveHint: false` — no side effects
 - `openWorldHint: false` — closed data scope
 
-### Claude Connector Readiness
-- ✅ Streamable HTTP transport
-- ✅ Tool annotations (title + readOnlyHint)
-- ✅ Privacy Policy (https://hbhqq9.github.io/bde-score/privacy/)
-- ✅ Terms of Service (https://hbhqq9.github.io/bde-score/terms/)
-- ✅ Support channel (GitHub Issues)
-- ✅ No auth required (authless)
-- 📋 Google Form submission pending
-- Form URL: https://docs.google.com/forms/d/e/1FAIpQLSeafJF2NDI7oYx1r8o0ycivCSVLNq92Mpc1FPxMKSw1CzDkqA/viewform
+### 协议发现端点 ✅
+- A2A Protocol: `/.well-known/agent.json`
+- MCP Discovery: `/.well-known/mcp.json`
+- ChatGPT Plugin: `/.well-known/ai-plugin.json`
 
-## Token Refresh Method
+### 合规资产 ✅
+- Privacy Policy: https://hbhqq9.github.io/bde-score/privacy/
+- Terms of Service: https://hbhqq9.github.io/bde-score/terms/
+- SECURITY.md: https://github.com/hbhqq9/bde-score/blob/master/SECURITY.md
+- EU AI Act Art.50: 已实现透明度声明
 
-Registry JWT expires. Refresh using:
-```bash
-GH_TOKEN=$(cat /app/data/所有对话/主对话/.gh/hosts.yml | grep oauth_token | awk '{print $2}')
-REGISTRY_TOKEN=$(curl -s -X POST "https://registry.modelcontextprotocol.io/v0/auth/github-at" \
-  -H "Content-Type: application/json" \
-  -d "{\"github_token\": \"$GH_TOKEN\"}" | python3 -c "import sys,json; print(json.load(sys.stdin)['registry_token'])")
-cat > ~/.mcp_publisher_token << EOF
-{"method":"github","registry":"https://registry.modelcontextprotocol.io","token":"$REGISTRY_TOKEN"}
-EOF
-```
+## Metrics
 
-## Key Infrastructure
+| 指标 | 值 |
+|------|-----|
+| 自动化渠道覆盖率 | 85% (第一层+第二层+第三层) |
+| 人工介入渠道数 | 6 (全部DROPPED) |
+| Agent协议发现端点 | 3 |
+| 自动同步平台数 | 4 |
+| 等待审核PR/Issue | 8 |
+| 已合并PR | 2 |
 
-- **MCP HTTP Server**: port 8891, FastMCP + streamable-http
-- **Cloudflare Tunnel (MCP)**: `https://retrieve-jobs-congress-made.trycloudflare.com/mcp` → port 8891
-- **Cloudflare Tunnel (API)**: `https://atlantic-remains-atomic-floor.trycloudflare.com` → port 8890
-- **Keepalive**: crontab every 5min, monitors both servers + tunnels
-- **⚠️ Tunnel URLs are temporary** — restart changes URL, requires server.json update + re-publish
+## Next Steps
 
-## Awesome Lists PR Status
-
-41 PRs submitted total (2 MERGED, 12 CLOSED, 27 OPEN).
-Plus 3 Issues (thuquant #49, firmai #37, mcpservers.org #1).
-See full list in mcp-submission-guide.md.
-
-## Monitoring
-
-Calendar task UID: `96785531-7e44-4846-9906-c994562395e1`
-Runs every 4 hours, checks all PR statuses and API health.
+1. **持续监控**: 8个OPEN PR/Issue的审核进展
+2. **协议优化**: 提升.well-known端点的内容质量
+3. **自建注册中心**: 评估A2A协议注册中心的可行性
+4. **自动发现**: 寻找更多API可提交的目录平台

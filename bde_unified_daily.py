@@ -172,7 +172,7 @@ def main():
         "data_source": source,
         "lookback_days": KLINE_DAYS,
         "stocks": {},
-        "signals": {"BUY": [], "HOLD": [], "AVOID": []},
+        "signals": {"BUY": [], "HOLD": [], "AVOID": [], "SELL": []},
         "portfolio": {}
     }
     
@@ -216,6 +216,7 @@ def main():
     print(f"  数据源: {source}")
     print(f"  🟢 买入: {output['signals']['BUY'] or '无'}")
     print(f"  🟡 持有: {output['signals']['HOLD']}")
+    print(f"  🔴 卖出: {output['signals']['SELL'] or '无'}")
     print(f"  🔴 回避: {output['signals']['AVOID']}")
     print(f"  💰 仓位: 现金 {output['portfolio']['cash']*100:.0f}%")
     
