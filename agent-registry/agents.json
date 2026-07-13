@@ -1,0 +1,42 @@
+{
+  "agents": {
+    "f473f03d098785a0": {
+      "id": "f473f03d098785a0",
+      "name": "BDE Score Financial Analysis Engine",
+      "description": "Comprehensive stock analysis with EU AI Act Art.50 compliance. 6 MCP tools: stock analysis, compliance check, risk assessment. Agent-native discovery via .well-known protocols.",
+      "primary_endpoint": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/.well-known/agent.json",
+      "category": [
+        "finance",
+        "stock-analysis",
+        "compliance",
+        "mcp",
+        "ai-agent"
+      ],
+      "protocols": {
+        "a2a": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/.well-known/agent.json",
+        "mcp": "https://tex-adequate-date-facing.trycloudflare.com/.well-known/mcp.json",
+        "openai_plugin": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/.well-known/ai-plugin.json"
+      },
+      "capabilities": [
+        "stock-analysis",
+        "compliance-check",
+        "risk-assessment",
+        "eu-ai-act-art50",
+        "mcp-tools",
+        "agent-discovery"
+      ],
+      "contact": {
+        "github": "https://github.com/hbhqq9/bde-score",
+        "registry": "https://github.com/hbhqq9/bde-score/tree/master/agent-registry"
+      },
+      "registration_time": "2026-07-13T13:50:07.555067+00:00",
+      "health_status": "healthy",
+      "last_verified": "2026-07-13T13:50:07.555070+00:00",
+      "verification_count": 1
+    }
+  },
+  "metadata": {
+    "created": "2026-07-13T13:50:07.555045+00:00",
+    "version": "0.1.0"
+  }
+}

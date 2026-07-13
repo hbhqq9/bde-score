@@ -1693,6 +1693,161 @@ async def serve_well_known_agent():
     return JSONResponse(agent_config)
 
 
+
+# ── Agent Registry (self-hosted, zero-gatekeeper) ──────────────────────────
+
+import hashlib as _hashlib
+import threading as _threading
+import urllib.request as _urllib_req
+
+_REGISTRY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'agent-registry', 'agents.json')
+_registry_lock = _threading.Lock()
+
+def _load_reg():
+    if os.path.exists(_REGISTRY_FILE):
+        with open(_REGISTRY_FILE, 'r') as f:
+            return json.load(f)
+    return {"agents": {}, "metadata": {"created": "2026-07-13T13:50:00+00:00", "version": "0.1.0"}}
+
+def _save_reg(data):
+    os.makedirs(os.path.dirname(_REGISTRY_FILE), exist_ok=True)
+    with open(_REGISTRY_FILE, 'w') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+def _verify_ep(url, timeout=5):
+    try:
+        req = _urllib_req.Request(url, method='GET')
+        resp = _urllib_req.urlopen(req, timeout=timeout)
+        return resp.status == 200
+    except Exception:
+        return False
+
+def _agent_id(name, endpoint):
+    return _hashlib.sha256(f"{name}:{endpoint}".encode()).hexdigest()[:16]
+
+@app.get("/api/v1/registry")
+async def registry_root():
+    return {"service": "BDE Score Agent Registry", "version": "0.1.0",
+            "description": "Agent-native, zero-gatekeeper discovery service",
+            "philosophy": "From being listed to building the network",
+            "endpoints": {
+                "POST /api/v1/registry/register": "Register a new agent",
+                "GET /api/v1/registry/agents": "List agents",
+                "GET /api/v1/registry/agents/{id}": "Get agent details",
+                "DELETE /api/v1/registry/agents/{id}": "Deregister",
+                "GET /api/v1/registry/agents/{id}/health": "Health check",
+                "GET /api/v1/registry/search": "Search (q=keyword)",
+                "GET /api/v1/registry/stats": "Statistics"}}
+
+@app.get("/api/v1/registry/stats")
+async def registry_stats():
+    with _registry_lock:
+        reg = _load_reg()
+    agents = list(reg['agents'].values())
+    cats = {}
+    for a in agents:
+        for c in a.get('category', []):
+            cats[c] = cats.get(c, 0) + 1
+    return {"total_agents": len(agents),
+            "healthy_agents": sum(1 for a in agents if a.get('health_status') == 'healthy'),
+            "categories": cats,
+            "registry_version": reg['metadata']['version']}
+
+@app.get("/api/v1/registry/agents")
+async def registry_list(category: str = None, capability: str = None, q: str = None):
+    with _registry_lock:
+        reg = _load_reg()
+    agents = list(reg['agents'].values())
+    if category:
+        agents = [a for a in agents if category.lower() in [c.lower() for c in a.get('category', [])]]
+    if capability:
+        agents = [a for a in agents if capability.lower() in [c.lower() for c in a.get('capabilities', [])]]
+    if q:
+        ql = q.lower()
+        agents = [a for a in agents if ql in a['name'].lower() or ql in a['description'].lower()]
+    return {"count": len(agents), "agents": agents, "registry_version": reg['metadata']['version']}
+
+@app.get("/api/v1/registry/agents/{agent_id}")
+async def registry_get(agent_id: str):
+    with _registry_lock:
+        reg = _load_reg()
+    agent = reg['agents'].get(agent_id)
+    if not agent:
+        raise HTTPException(404, f"Agent '{agent_id}' not found")
+    return agent
+
+@app.get("/api/v1/registry/agents/{agent_id}/health")
+async def registry_health(agent_id: str):
+    with _registry_lock:
+        reg = _load_reg()
+        agent = reg['agents'].get(agent_id)
+        if not agent:
+            raise HTTPException(404, f"Agent '{agent_id}' not found")
+        healthy = _verify_ep(agent['primary_endpoint'])
+        agent['health_status'] = "healthy" if healthy else "unreachable"
+        agent['last_verified'] = datetime.now(timezone.utc).isoformat()
+        agent['verification_count'] = agent.get('verification_count', 0) + 1
+        _save_reg(reg)
+    return {"agent_id": agent_id, "name": agent['name'], "endpoint": agent['primary_endpoint'],
+            "status": agent['health_status'], "last_verified": agent['last_verified']}
+
+@app.post("/api/v1/registry/register")
+async def registry_register(request: Request):
+    data = await request.json()
+    required = ['name', 'description', 'primary_endpoint', 'category']
+    missing = [f for f in required if not data.get(f)]
+    if missing:
+        raise HTTPException(400, f"Missing: {', '.join(missing)}")
+    endpoint = data['primary_endpoint']
+    if not _verify_ep(endpoint):
+        raise HTTPException(422, f"Endpoint not reachable: {endpoint}")
+    aid = _agent_id(data['name'], endpoint)
+    ts = datetime.now(timezone.utc).isoformat()
+    record = {"id": aid, "name": data['name'], "description": data['description'],
+              "primary_endpoint": endpoint,
+              "category": data['category'] if isinstance(data['category'], list) else [data['category']],
+              "protocols": data.get('protocols', {}), "capabilities": data.get('capabilities', []),
+              "contact": data.get('contact', {}), "registration_time": ts,
+              "health_status": "healthy", "last_verified": ts, "verification_count": 1}
+    with _registry_lock:
+        reg = _load_reg()
+        reg['agents'][aid] = record
+        _save_reg(reg)
+    return {"status": "registered", "agent_id": aid, "message": f"Agent '{data['name']}' registered",
+            "registered_at": ts}
+
+@app.delete("/api/v1/registry/agents/{agent_id}")
+async def registry_deregister(agent_id: str):
+    with _registry_lock:
+        reg = _load_reg()
+        if agent_id not in reg['agents']:
+            raise HTTPException(404, f"Agent '{agent_id}' not found")
+        name = reg['agents'][agent_id]['name']
+        del reg['agents'][agent_id]
+        _save_reg(reg)
+    return {"status": "deregistered", "message": f"Agent '{name}' removed"}
+
+@app.get("/api/v1/registry/search")
+async def registry_search(q: str):
+    if not q:
+        raise HTTPException(400, "Query 'q' required")
+    with _registry_lock:
+        reg = _load_reg()
+    agents = list(reg['agents'].values())
+    terms = q.lower().split()
+    scored = []
+    for agent in agents:
+        score = 0
+        searchable = f"{agent['name']} {agent['description']} {' '.join(agent.get('category', []))} {' '.join(agent.get('capabilities', []))}".lower()
+        for t in terms:
+            if t in searchable:
+                score += 3 if t in agent['name'].lower() else (2 if t in [c.lower() for c in agent.get('category', [])] else 1)
+        if score > 0:
+            scored.append((score, agent))
+    scored.sort(key=lambda x: -x[0])
+    return {"query": q, "count": len(scored), "results": [a for _, a in scored]}
+# ── End Agent Registry ─────────────────────────────────────────────────────
+
 LLMS_FULL_TXT = """# BDE Score™
 
 > AI-powered multi-market stock analysis with transparent multi-factor scoring. Covers 73 stocks across US, HK, and A-share markets. EU AI Act Art.50 compliant. Open source (MIT).

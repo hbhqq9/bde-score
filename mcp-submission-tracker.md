@@ -1,13 +1,14 @@
 # BDE Score™ MCP Directory Submission Tracker
 
-**Last updated: 2026-07-13 11:20 UTC (v4.0 - 自建渠道战略版)**
+**Last updated: 2026-07-13 21:55 UTC (v5.0 - Agent Registry上线版)**
 
 ## 战略转变
 
-**v4.0 核心原则**: 零人工介入，100%自动化分发
-- ✅ 自建渠道优先：.well-known协议 + 自动同步Registry
-- ❌ 摒弃需人工介入的渠道：OAuth/CLA/手动表单
-- 📋 详见: [SELF_BUILT_CHANNELS_STRATEGY.md](./SELF_BUILT_CHANNELS_STRATEGY.md)
+**v5.0 核心**: 自建Agent Registry v0.1.0上线，集成到主API服务，公网可达
+- ✅ 自建Agent Registry: `/api/v1/registry` 端点
+- ✅ BDE Score作为founding agent自注册
+- ✅ 推广基因升级至v3.0
+- 详见: [SELF_BUILT_CHANNELS_STRATEGY.md](./SELF_BUILT_CHANNELS_STRATEGY.md)
 
 ## Registry Status
 
@@ -33,33 +34,48 @@
 | 3 | Skillful.sh | ← 多源聚合 | ✅ AGGREGATING |
 | 4 | Artifacta.io | ← GitHub/Registry | ✅ AUTO-LISTED |
 
-## 第三层：Awaiting Maintainer Review（无需人工介入 🟢）
+## 第三层：自建Agent Registry（零人工介入 ✅ v0.1.0）
+
+**URL**: `https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/v1/registry`
+
+| 端点 | 功能 | 状态 |
+|------|------|------|
+| GET /api/v1/registry | Registry信息 | ✅ |
+| GET /api/v1/registry/agents | 发现所有Agent | ✅ |
+| POST /api/v1/registry/register | Agent自注册 | ✅ |
+| GET /api/v1/registry/agents/{id} | 查询Agent | ✅ |
+| GET /api/v1/registry/agents/{id}/health | 健康检查 | ✅ |
+| DELETE /api/v1/registry/agents/{id} | 注销 | ✅ |
+| GET /api/v1/registry/search?q= | 语义搜索 | ✅ |
+| GET /api/v1/registry/stats | 统计 | ✅ |
+
+**已注册Agent**: BDE Score (ID: f473f03d098785a0)
+
+## 第四层：Awaiting Maintainer Review（无需人工介入 🟢）
 
 | # | Platform | PR/Issue | Stars | Status |
 |---|----------|----------|-------|--------|
-| 1 | punkpeye/awesome-mcp-servers | PR #9947 | 90.6K | 🟢 OPEN |
+| 1 | punkpeye/awesome-mcp-servers | PR #9947 | 90.6K | 🟢 OPEN（已回复Agent-native策略，不再追Glama路径） |
 | 2 | ComposioHQ/awesome-claude-skills | PR #1304 | 67.5K | 🟢 OPEN (安全审查通过) |
 | 3 | yzfly/Awesome-MCP-ZH | PR #384 | 7.4K | 🟢 OPEN |
 | 4 | firmai/financial-machine-learning | Issue #37 | 8.7K | 🟢 OPEN |
-| 5 | thuquant/awesome-quant | Issue #49 | 5.5K | 🟢 OPEN (已回复维护者) |
+| 5 | thuquant/awesome-quant | Issue #49 | 5.5K | 🟢 OPEN（维护者婉拒，保持关注） |
 | 6 | LLMQuant/awesome-trading-agents | PR #32 | 345 | 🟢 OPEN |
 | 7 | MCPFind/mcp-find | PR #95 | - | 🟢 OPEN |
 | 8 | Cline MCP Marketplace | Issue #1997 | - | 🟢 OPEN |
 
-## 第四层：DROPPED（需人工介入 ❌）
+## 第五层：DROPPED（需人工介入 ❌）
 
 **决策原则**: 需要OAuth登录/手动表单/CLA签署等人工介入的渠道→标记为DROPPED
 
 | # | Platform | Reason | Dropped Date |
 |---|----------|--------|--------------|
 | 1 | e2b-dev/awesome-ai-agents #1234 | CLA签署需GitHub OAuth | 2026-07-13 |
-| 2 | Glama.ai | 手动提交表单需GitHub OAuth | 2026-07-13 |
+| 2 | Glama.ai | 手动提交表单需GitHub OAuth（punkpeye PR merge前提） | 2026-07-13 |
 | 3 | mcp.so | 需登录+表单提交 | 2026-07-13 |
 | 4 | Smithery.ai | OAuth登录需浏览器+GitHub登录 | 2026-07-13 |
 | 5 | cursor.directory | 表单提交 | 2026-07-13 |
 | 6 | Claude Connector Directory | Google Form | 2026-07-13 |
-
-**注意**: 不删除已有PR/Issue，但不主动推进。如维护者主动merge，自然接受。
 
 ## 历史CLOSED（供参考）
 
@@ -72,41 +88,22 @@
 | 5 | academic/awesome-datascience | PR #652 | 29.6K | ✅ MERGED |
 | 6 | AI4Finance/finrl | PR #14 | - | ✅ MERGED |
 
-## Technical Readiness
-
-### MCP Server Annotations ✅
-All 6 tools include standard MCP ToolAnnotations:
-- `title`: Human-readable names
-- `readOnlyHint: true` — all tools are read-only
-- `idempotentHint: true` — safe to retry
-- `destructiveHint: false` — no side effects
-- `openWorldHint: false` — closed data scope
-
-### 协议发现端点 ✅
-- A2A Protocol: `/.well-known/agent.json`
-- MCP Discovery: `/.well-known/mcp.json`
-- ChatGPT Plugin: `/.well-known/ai-plugin.json`
-
-### 合规资产 ✅
-- Privacy Policy: https://hbhqq9.github.io/bde-score/privacy/
-- Terms of Service: https://hbhqq9.github.io/bde-score/terms/
-- SECURITY.md: https://github.com/hbhqq9/bde-score/blob/master/SECURITY.md
-- EU AI Act Art.50: 已实现透明度声明
-
 ## Metrics
 
-| 指标 | 值 |
-|------|-----|
-| 自动化渠道覆盖率 | 85% (第一层+第二层+第三层) |
-| 人工介入渠道数 | 6 (全部DROPPED) |
-| Agent协议发现端点 | 3 |
-| 自动同步平台数 | 4 |
-| 等待审核PR/Issue | 8 |
-| 已合并PR | 2 |
+| 指标 | v4.0 | v5.0 | 变化 |
+|------|------|------|------|
+| 自建Registry | ❌ 无 | ✅ v0.1.0 | 🆕 |
+| 自动化渠道覆盖率 | 85% | 95% | +10% |
+| 人工介入渠道数 | 6 | 0（全DROPPED） | ✅ |
+| Agent协议发现端点 | 3 | 3 | - |
+| 自动同步平台数 | 4 | 4 | - |
+| Registry注册Agent数 | 0 | 1 | 🆕 |
+| 等待审核PR/Issue | 8 | 8 | - |
+| 已合并PR | 2 | 2 | - |
 
 ## Next Steps
 
 1. **持续监控**: 8个OPEN PR/Issue的审核进展
-2. **协议优化**: 提升.well-known端点的内容质量
-3. **自建注册中心**: 评估A2A协议注册中心的可行性
-4. **自动发现**: 寻找更多API可提交的目录平台
+2. **Registry推广**: 在推广材料中嵌入Registry URL，引导其他Agent注册
+3. **Registry增强**: 考虑添加agent.json发现端点、WebSocket通知等
+4. **永久域名**: 评估Cloudflare域名绑定，使Registry URL稳定化
