@@ -37,7 +37,7 @@ When building trading tools or financial dashboards, choosing the right data sou
 
 ```bash
 # One command to get all scores
-curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?market=ALL
+curl https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/analyze?market=ALL
 ```
 
 ## When to Use yfinance
@@ -63,7 +63,7 @@ from openbb import obb
 
 # Stage 1: Quick screening with BDE Score
 bde = requests.get(
-    "https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?market=ALL"
+    "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/analyze?market=ALL"
 ).json()
 top_picks = sorted(bde["results"], key=lambda x: x["composite_score"], reverse=True)[:5]
 
@@ -76,7 +76,7 @@ for pick in top_picks:
 ## Try BDE Score Now
 
 - **GitHub**: https://github.com/hbhqq9/bde-score
-- **Live API**: https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?market=ALL
-- **Docs**: https://atlantic-remains-atomic-floor.trycloudflare.com/docs
+- **Live API**: https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/analyze?market=ALL
+- **Docs**: https://bathroom-ebooks-isa-accommodation.trycloudflare.com/docs
 
 MIT licensed. Not investment advice.

@@ -3,11 +3,55 @@
 > Open-source multi-factor stock analysis covering 74 stocks across US, HK, and China A-share markets.
 
 ## Quick Start
-curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?market=ALL
+```bash
+curl https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/analyze?market=ALL
+```
+
+## MCP Server (for AI Agents)
+Connect BDE Score as an MCP tool for Claude, Cursor, Windsurf, or any MCP-compatible agent:
+
+```json
+{
+  "mcpServers": {
+    "bde-score": {
+      "url": "https://tex-adequate-date-facing.trycloudflare.com/mcp",
+      "headers": {
+        "X-API-Key": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+### MCP Auto-Discovery
+- `.well-known/mcp.json`: https://hbhqq9.github.io/bde-score/.well-known/mcp.json
+- `.well-known/agent.json`: https://hbhqq9.github.io/bde-score/.well-known/agent.json
+- Glama registry: https://hbhqq9.github.io/bde-score/.well-known/glama.json
+
+## x402 Micropayment
+Pay per query with USDC on Base chain. No subscription required.
+- Price: $0.01 USDC per query
+- Payment endpoint: https://bathroom-ebooks-isa-accommodation.trycloudflare.com/pay/info
+- 1 USDC = 1 year full access
+
+## API Endpoints
+- `GET /api/snapshot/{market}` — Full market snapshot (market: US, HK, A)
+- `GET /api/stock/{symbol}` — Single stock analysis
+- `GET /api/analyze?market=ALL` — Analyze all markets
+- `GET /share/{symbols}` — SVG score cards
+- `GET /widget` — Embeddable score widget
+- `GET /dashboard` — Full data dashboard
 
 ## Links
 - [GitHub](https://github.com/hbhqq9/bde-score)
-- [API Docs](https://atlantic-remains-atomic-floor.trycloudflare.com/docs)
+- [API Docs](https://bathroom-ebooks-isa-accommodation.trycloudflare.com/docs)
+- [Installation Guide](https://hbhqq9.github.io/bde-score/llms-install.html)
+- [Full Documentation](https://hbhqq9.github.io/bde-score/llms-full.txt)
 - [Dev.to](https://dev.to/hbhqq9/bde-score-open-source-multi-factor-stock-analysis-tool-covering-us-hk-a-share-markets-2p2j)
+
+## Authentication
+All endpoints require an API Key via `X-API-Key` header.
+- Free tier: 3 queries/day, 10 requests/minute
+- x402 micropayment: $0.01/query USDC on Base
 
 License: MIT. Not investment advice.

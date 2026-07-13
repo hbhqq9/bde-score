@@ -15,6 +15,14 @@
     <meta name="twitter:description" content="Free open-source stock analysis API covering US, HK, and China A-share markets. 73 stocks, zero registration, one-line API access.">
     <meta name="keywords" content="stock analysis API, multi-factor scoring, quantitative finance, US stocks, HK stocks, China A-shares, open source stock tool, BDE Score, multi-market analysis, EU AI Act compliant, financial API, stock scoring, free stock API, Python stock analysis, algorithmic trading tool">
     <meta name="author" content="BDE Score Team">
+    <!-- MCP Server Discovery -->
+    <meta name="mcp-server" content="bde-score">
+    <meta name="mcp-server-url" content="https://tex-adequate-date-facing.trycloudflare.com/mcp">
+    <meta name="mcp-transport" content="streamable-http">
+    <meta name="mcp-discovery" content="https://hbhqq9.github.io/bde-score/.well-known/mcp.json">
+    <!-- llms.txt -->
+    <link rel="llms.txt" href="https://hbhqq9.github.io/bde-score/llms.txt">
+    <link rel="llms-full.txt" href="https://hbhqq9.github.io/bde-score/llms-full.txt">
     <link rel="canonical" href="https://hbhqq9.github.io/bde-score/">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -58,7 +66,7 @@
             <div><span class="prompt">$</span> <span class="cmd">curl .../api/analyze?symbol=AAPL</span></div>
             <div class="result">{ "symbol": "AAPL", "composite_score": 72, "signal": "HOLD", ... }</div>
         </div>
-        <a class="try-now" href="https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?market=ALL">🚀 Try Live API</a>
+        <a class="try-now" href="https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/analyze?market=ALL">🚀 Try Live API</a>
         <br><br>
         <a href="https://github.com/hbhqq9/bde-score" style="color:#90a4ae">⭐ Star on GitHub</a>
     </div>
@@ -107,7 +115,7 @@
 
     <div class="badge-section">
         <h2 style="color:#4fc3f7;margin-bottom:15px">Live Badge</h2>
-        <img src="https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge" alt="BDE Score Badge">
+        <img src="https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge" alt="BDE Score Badge">
     </div>
 
     <div class="ecosystem">
@@ -145,17 +153,36 @@
         "name": "BDE Score",
         "applicationCategory": "FinanceApplication",
         "operatingSystem": "Web",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "description": "Open-source multi-factor stock analysis API covering US, HK, and China A-share markets. 73 stocks, transparent scoring, zero registration required.",
+        "version": "1.0.2",
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Free",
+                "price": "0",
+                "priceCurrency": "USD",
+                "description": "Dashboard + 3 API queries/day"
+            },
+            {
+                "@type": "Offer",
+                "name": "Premium",
+                "price": "29.00",
+                "priceCurrency": "USD",
+                "billingDuration": "Month",
+                "description": "Unlimited API + 365-day history"
+            }
+        ],
+        "description": "Open-source multi-factor stock analysis API covering US, HK, and China A-share markets. 74 stocks, transparent 5-factor scoring (momentum, mean reversion, volume, volatility, trend), MCP server support, EU AI Act compliant.",
         "url": "https://hbhqq9.github.io/bde-score/",
+        "downloadUrl": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/analyze?market=ALL",
         "codeRepository": "https://github.com/hbhqq9/bde-score",
         "license": "https://opensource.org/licenses/MIT",
         "programmingLanguage": "Python",
-        "featureList": "Multi-market stock analysis, BDE scoring, REST API, GitHub Action, factor breakdown, historical data"
+        "featureList": "Multi-market stock analysis, BDE scoring, REST API, MCP server, GitHub Action, shields.io badges, widget embed, factor breakdown, x402 micropayment, EU AI Act Art.50 compliance",
+        "author": {
+            "@type": "Person",
+            "name": "hbhqq9",
+            "url": "https://github.com/hbhqq9"
+        }
     }
     </script>
 
@@ -186,7 +213,7 @@
                 "name": "How do I analyze stocks with BDE Score API?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Use curl to get scores: curl https://atlantic-remains-atomic-floor.trycloudflare.com/api/snapshot?market=ALL for all markets, or ?market=US for US stocks only. Python, JavaScript, and any HTTP client work."
+                    "text": "Use curl to get scores: curl https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/snapshot?market=ALL for all markets, or ?market=US for US stocks only. Python, JavaScript, and any HTTP client work."
                 }
             },
             {

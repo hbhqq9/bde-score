@@ -16,20 +16,20 @@ Want to show live stock market analysis on your GitHub profile or project README
 Shows top scores across all 3 markets (US/HK/A-shares):
 
 ```markdown
-![BDE Score Market Overview](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge)
+![BDE Score Market Overview](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge)
 ```
 
 Preview:
 
-![BDE Score](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge)
+![BDE Score](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge)
 
 ### Individual Stock Badge
 Show analysis for a specific stock:
 
 ```markdown
-![AAPL Score](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge?symbol=AAPL)
-![Tencent Score](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge?symbol=00700)
-![Moutai Score](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge?symbol=SH600519)
+![AAPL Score](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge?symbol=AAPL)
+![Tencent Score](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge?symbol=00700)
+![Moutai Score](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge?symbol=SH600519)
 ```
 
 ## Step 2: Add to Your README
@@ -39,7 +39,7 @@ Paste the badge markdown into your `README.md`:
 ```markdown
 # My Trading Project
 
-[![BDE Score](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge)](https://github.com/hbhqq9/bde-score)
+[![BDE Score](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge)](https://github.com/hbhqq9/bde-score)
 
 ## Stock Analysis
 Powered by BDE Score™ - covers 74 stocks across US, HK, and A-share markets.
@@ -73,7 +73,7 @@ Full list: https://github.com/hbhqq9/bde-score#supported-stocks
 ## Links
 
 - GitHub: https://github.com/hbhqq9/bde-score
-- API Docs: https://atlantic-remains-atomic-floor.trycloudflare.com/docs
+- API Docs: https://bathroom-ebooks-isa-accommodation.trycloudflare.com/docs
 - shields.io: https://shields.io/
 
 Not investment advice.

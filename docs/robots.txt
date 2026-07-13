@@ -2,5 +2,8 @@ User-agent: *
 Allow: /
 Allow: /.well-known/
 Allow: /openapi.json
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /sitemap.xml
 
 Sitemap: https://hbhqq9.github.io/bde-score/sitemap.xml

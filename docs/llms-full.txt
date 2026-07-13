@@ -1,6 +1,6 @@
 # BDE Score™
 
-> AI-powered multi-market stock analysis with transparent multi-factor scoring. Covers 73 stocks across US, HK, and A-share markets. EU AI Act Art.50 compliant. Open source (MIT).
+> AI-powered multi-market stock analysis with transparent multi-factor scoring. Covers 74 stocks across US, HK, and A-share markets. EU AI Act Art.50 compliant. Open source (MIT).
 
 ## What is BDE Score™
 
@@ -12,6 +12,31 @@ BDE Score™ is a quantitative stock scoring system that evaluates stocks across
 - **Trend**: Moving average alignment and trend strength
 
 Each stock receives a composite score (0-100) with signal classification: Bullish (>70), Neutral (40-70), Bearish (<40).
+
+## MCP Server Integration
+
+### Remote MCP Server
+Connect BDE Score directly to Claude, Cursor, or any MCP-compatible agent:
+```json
+{
+  "mcpServers": {
+    "bde-score": {
+      "url": "https://tex-adequate-date-facing.trycloudflare.com/mcp",
+      "headers": {
+        "X-API-Key": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+### MCP Tools Available
+- `get_bde_score` — Get composite BDE analysis for all stocks in a market
+- `get_stock_analysis` — Detailed multi-factor analysis for a specific symbol
+- `get_multi_market_comparison` — Compare same company across US/HK/CN markets
+- `get_stock_screener` — Screen stocks by minimum BDE score threshold
+- `get_sector_analysis` — Sector-level BDE analysis and rankings
+- `get_esg_analysis` — ESG analysis derived from quantitative factors
 
 ## Coverage
 
@@ -26,30 +51,36 @@ Each stock receives a composite score (0-100) with signal classification: Bullis
 3. **EU AI Act compliant**: Full audit trails, explainable methodology, machine-readable compliance metadata (Art.50 ready for August 2, 2026)
 4. **Open source**: MIT licensed, fully auditable codebase
 5. **Embeddable**: Widget system allows any website to embed live scores
+6. **MCP Native**: First-class MCP server support with auto-discovery
 
 ## API Endpoints
 
 - `GET /api/snapshot/{market}` — Full market snapshot (market: US, HK, A)
 - `GET /api/stock/{symbol}` — Single stock analysis
+- `GET /api/analyze?market=ALL` — Analyze all markets
 - `GET /share/{symbols}` — SVG score cards (e.g., /share/AAPL, /share/US?top=5)
 - `GET /widget` — Embeddable score widget (iframe)
 - `GET /` — Landing page with pricing
 - `GET /dashboard` — Full data dashboard
+
+Base URL: https://bathroom-ebooks-isa-accommodation.trycloudflare.com
 
 ## Pricing
 
 - **Free**: Dashboard access + 3 API queries/day
 - **Premium** ($29/mo): Unlimited API + 365-day history
 - **Institutional** ($199/mo): Custom universe + compliance reports + SLA
+- **x402 Micropayment**: $0.01 USDC/query on Base chain — no subscription needed
 
 ## Links
 
-- Live Demo: https://github.com/hbhqq9/bde-score
-- Dashboard: https://github.com/hbhqq9/bde-score/dashboard
 - GitHub: https://github.com/hbhqq9/bde-score
 - GitHub Pages: https://hbhqq9.github.io/bde-score
-- API Docs: https://github.com/hbhqq9/bde-score/docs
-- Widget: https://github.com/hbhqq9/bde-score/widget
+- API Docs: https://bathroom-ebooks-isa-accommodation.trycloudflare.com/docs
+- MCP Discovery: https://hbhqq9.github.io/bde-score/.well-known/mcp.json
+- Glama Registry: https://hbhqq9.github.io/bde-score/.well-known/glama.json
+- Agent Card: https://hbhqq9.github.io/bde-score/.well-known/agent.json
+- OpenAPI Spec: https://hbhqq9.github.io/bde-score/openapi.json
 
 ## Compliance Note
 

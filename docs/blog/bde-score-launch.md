@@ -29,16 +29,16 @@ We believe stock analysis should be transparent and accessible. Bloomberg charge
 
 ```bash
 # All markets at once
-curl "https://atlantic-remains-atomic-floor.trycloudflare.com/api/snapshot?market=ALL"
+curl "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/snapshot?market=ALL"
 
 # Specific stock
-curl "https://atlantic-remains-atomic-floor.trycloudflare.com/api/analyze?market=US&symbol=AAPL"
+curl "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/analyze?market=US&symbol=AAPL"
 ```
 
 ## Embed in Your Project
 
 ```markdown
-![BDE Score](https://img.shields.io/endpoint?url=https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge?symbol=AAPL)
+![BDE Score](https://img.shields.io/endpoint?url=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge?symbol=AAPL)
 ```
 
 ## GitHub Action
@@ -62,6 +62,6 @@ Together they form the Compliance Triangle for AI-native enterprises.
 ## Links
 
 - GitHub: https://github.com/hbhqq9/bde-score
-- Live API: https://atlantic-remains-atomic-floor.trycloudflare.com/api/health
+- Live API: https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/health
 
 *Not financial advice. Technical service for educational and research purposes.*

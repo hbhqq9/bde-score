@@ -1,0 +1,11 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": ["hbhqq9"],
+  "name": "BDE Score",
+  "description": "Multi-factor quantitative stock analysis MCP server for US, HK, and CN A-share markets. Transparent 0-100 composite scores with x402 micropayment support.",
+  "homepage": "https://hbhqq9.github.io/bde-score/",
+  "transport": {
+    "type": "streamable-http",
+    "url": "https://tex-adequate-date-facing.trycloudflare.com/mcp"
+  }
+}

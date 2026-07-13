@@ -4,12 +4,12 @@
 
 ### Market Overview Badge
 ```markdown
-![BDE Score](https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge?market=ALL)
+![BDE Score](https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge?market=ALL)
 ```
 
 ### Individual Stock Badge
 ```markdown
-![AAPL Score](https://atlantic-remains-atomic-floor.trycloudflare.com/api/badge?symbol=AAPL)
+![AAPL Score](https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/badge?symbol=AAPL)
 ```
 
 ### How It Works
