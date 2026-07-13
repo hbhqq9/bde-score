@@ -1715,7 +1715,21 @@ def _save_reg(data):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 def _verify_ep(url, timeout=5):
+    """Verify endpoint reachability with SSRF protection (security constitution v4.1)"""
     try:
+        from urllib.parse import urlparse
+        parsed = urlparse(url)
+        
+        # SSRF protection: block internal/cloud metadata addresses
+        hostname = parsed.hostname or ''
+        blocked = ['127.0.0.1', 'localhost', '169.254.169.254', '10.', '172.16.', '192.168.', '0.0.0.0']
+        if any(hostname.startswith(p) or hostname == p for p in blocked):
+            return False
+        
+        # Only allow http/https schemes
+        if parsed.scheme not in ['http', 'https']:
+            return False
+        
         req = _urllib_req.Request(url, method='GET')
         resp = _urllib_req.urlopen(req, timeout=timeout)
         return resp.status == 200
@@ -1808,9 +1822,25 @@ async def registry_register(request: Request):
     missing = [f for f in required if not data.get(f)]
     if missing:
         raise HTTPException(400, f"Missing: {', '.join(missing)}")
-    endpoint = data['primary_endpoint']
+    # Input length limits (security constitution v4.1 - prevent abuse)
+    MAX_NAME = 100; MAX_DESC = 500; MAX_ENDPOINT = 500; MAX_CATS = 10; MAX_AGENTS = 200
+    if len(str(data.get('name', ''))) > MAX_NAME:
+        raise HTTPException(400, f"Name exceeds {MAX_NAME} chars")
+    if len(str(data.get('description', ''))) > MAX_DESC:
+        raise HTTPException(400, f"Description exceeds {MAX_DESC} chars")
+    endpoint = str(data['primary_endpoint'])
+    if len(endpoint) > MAX_ENDPOINT:
+        raise HTTPException(400, f"Endpoint URL exceeds {MAX_ENDPOINT} chars")
+    cats = data['category'] if isinstance(data['category'], list) else [data['category']]
+    if len(cats) > MAX_CATS:
+        raise HTTPException(400, f"Too many categories (max {MAX_CATS})")
+    # Capacity check
+    with _registry_lock:
+        reg_check = _load_reg()
+        if len(reg_check['agents']) >= MAX_AGENTS:
+            raise HTTPException(503, "Registry at capacity")
     if not _verify_ep(endpoint):
-        raise HTTPException(422, f"Endpoint not reachable: {endpoint}")
+        raise HTTPException(422, "Endpoint verification failed")
     aid = _agent_id(data['name'], endpoint)
     ts = datetime.now(timezone.utc).isoformat()
     record = {"id": aid, "name": data['name'], "description": data['description'],
