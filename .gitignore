@@ -55,3 +55,4 @@ secrets.json
 .gitleaks.toml
 *_audit.log
 *.audit.json
+.env.registry
