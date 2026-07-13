@@ -1,6 +1,6 @@
 # BDE Score™ MCP Directory Submission Tracker
 
-**Last updated: 2026-07-12 10:10 UTC (v3.2)**
+**Last updated: 2026-07-13 09:40 UTC (v3.3)**
 
 ## Registry Status
 
@@ -16,13 +16,15 @@
 | # | Platform | Status | URL / Reference |
 |---|----------|--------|----------------|
 | 1 | Official MCP Registry | ✅ ACTIVE v1.0.1 | https://registry.modelcontextprotocol.io |
-| 2 | punkpeye/awesome-mcp-servers (90K★) | ✅ PR #9906 OPEN (07-12 v2) | New PR, old #9829 accidentally closed |
+| 2 | punkpeye/awesome-mcp-servers (90K★) | 🔄 PR #9947 OPEN (missing-glama) | #9906已关闭→#9947替代，需先完成Glama收录+添加badge |
 | 3 | yzfly/Awesome-MCP-ZH (7.4K★) | ✅ PR #384 OPEN | Pending review |
 | 4 | Cline MCP Marketplace | ✅ Issue #1997 | Pending review |
-| 5 | Glama (53K+ servers) | 🔄 AUTO-CRAWL PENDING (glama.json committed, ~24h) | GitHub爬虫自动收录，无需手动提交。glama.json已在repo中（v3.0破局：调研发现非手动表单） |
-| 6 | mcp.so (~19K) | ✅ Issue #3121 SUBMITTED | chatmcp/mcpso |
-| 19 | mcp.directory | ✅ SUBMITTED (07-12) | 24h review, "Server Submitted!" |
-| 20 | mcpservers.org | ✅ Issue #1 (07-12) | tmrseoteam-commits/mcpservers-org |
+| 5 | Glama (54K+ servers) | 🔧 MANUAL SUBMISSION IN PROGRESS | 自动爬虫未收录(07-13确认)，浏览器agent手动提交中。PR #9947硬性前置条件。 |
+| 6 | mcp.so (~19K) | ❌ Issue #3121 404 NOT FOUND | 需重新提交确认 |
+| 19 | mcp.directory | ❌ 未收录 (07-13确认) | 网站搜索无结果，需重新提交 |
+| 20 | mcpservers.org | ❌ Issue #1 404 NOT FOUND | 需重新提交确认 |
+| 25 | ComposioHQ/awesome-claude-skills (67.5K★) | 🔄 PR #1304 OPEN | 安全审查通过(0 issues)，auto-merge workflow已触发，等待maintainer merge |
+| 26 | e2b-dev/awesome-ai-agents (28.7K★) | 🔧 PR #1234 CLA PENDING | cla-bot要求签署CLA，需浏览器完成GitHub OAuth签署 |
 | 21 | LLMQuant/awesome-trading-agents (345★) | ✅ PR #32 OPEN (07-12) | MCPs → Research tools section |
 | 22 | thuquant/awesome-quant (5.5K★) | ✅ Issue #49 (07-12) | Fork network conflict, submitted as Issue |
 | 23 | firmai/financial-machine-learning (8.7K★) | ✅ Issue #37 (07-12) | Suggested addition via Issue |
