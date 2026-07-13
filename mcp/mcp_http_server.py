@@ -112,25 +112,51 @@ class SecurityMiddleware(BaseHTTPMiddleware):
         }
     
     async def dispatch(self, request: Request, call_next):
+        # Client IP for logging (always computed)
+        client_ip = get_client_ip(request)
+        
         # Only protect /mcp endpoint
         if request.url.path == "/mcp":
-            # 1. API Key authentication
-            api_key = request.headers.get("X-API-Key", "")
-            if not api_key:
-                return JSONResponse(
-                    {"error": "Authentication required. Provide X-API-Key header."},
-                    status_code=401,
-                    headers={"WWW-Authenticate": "ApiKey", **self._security_headers()}
-                )
-            if not secrets.compare_digest(api_key, MCP_API_KEY):
-                return JSONResponse(
-                    {"error": "Invalid API key."},
-                    status_code=403,
-                    headers=self._security_headers()
-                )
+            # 0. Introspection methods are PUBLIC (no auth required)
+            # This is the standard MCP security pattern:
+            # - Discovery (tools/list, resources/list, etc.) = open
+            # - Execution (tools/call) = authenticated
+            # This allows Glama and other directories to verify the server
+            introspection_methods = {
+                "initialize", "tools/list", "resources/list", 
+                "prompts/list", "notifications/initialized"
+            }
             
-            # 2. Rate limiting
-            client_ip = get_client_ip(request)
+            # Try to read method from JSON body
+            method_name = None
+            try:
+                body = await request.body()
+                if body:
+                    json_data = json.loads(body)
+                    method_name = json_data.get("method", "")
+            except (json.JSONDecodeError, Exception):
+                pass  # Not JSON, will require auth below
+            
+            # If this is an introspection method, skip auth
+            is_introspection = method_name in introspection_methods
+            
+            if not is_introspection:
+                # 1. API Key authentication (required for tool execution)
+                api_key = request.headers.get("X-API-Key", "")
+                if not api_key:
+                    return JSONResponse(
+                        {"error": "Authentication required. Provide X-API-Key header. Introspection (tools/list) is public."},
+                        status_code=401,
+                        headers={"WWW-Authenticate": "ApiKey", **self._security_headers()}
+                    )
+                if not secrets.compare_digest(api_key, MCP_API_KEY):
+                    return JSONResponse(
+                        {"error": "Invalid API key."},
+                        status_code=403,
+                        headers=self._security_headers()
+                    )
+            
+            # 2. Rate limiting (applies to all requests including introspection)
             if not check_rate_limit(client_ip):
                 return JSONResponse(
                     {"error": f"Rate limit exceeded. Max {MAX_REQUESTS} requests per {WINDOW_SECONDS}s."},
