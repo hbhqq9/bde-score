@@ -1725,6 +1725,16 @@ def _verify_ep(url, timeout=5):
 def _agent_id(name, endpoint):
     return _hashlib.sha256(f"{name}:{endpoint}".encode()).hexdigest()[:16]
 
+@app.get("/registry", response_class=HTMLResponse)
+async def registry_ui():
+    """Beautiful HTML frontend for Agent Registry"""
+    html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'agent-registry', 'registry.html')
+    try:
+        with open(html_path, 'r', encoding='utf-8') as f:
+            return HTMLResponse(content=f.read())
+    except FileNotFoundError:
+        return HTMLResponse(content="<h1>Registry UI not found</h1>", status_code=404)
+
 @app.get("/api/v1/registry")
 async def registry_root():
     return {"service": "BDE Score Agent Registry", "version": "0.1.0",
