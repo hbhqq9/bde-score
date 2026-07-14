@@ -20,8 +20,23 @@ import hashlib
 import secrets
 import logging
 import httpx
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from collections import defaultdict
+
+# AGL Receipt Schema v2.0 — drift-aware governance receipts
+_agl_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _agl_root not in sys.path:
+    sys.path.insert(0, _agl_root)
+
+from agl.receipt_schema_v2 import (
+    create_receipt,
+    create_bde_receipt,
+    PolicyVersion,
+    ValidityWindow,
+    BDE_DISCLOSURE_TEMPLATE,
+    BDE_IDENTITY_TEMPLATE,
+)
+from agl.receipt_store import InMemoryReceiptStore
 
 # Security: Audit logger (铁律V)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
@@ -224,27 +239,92 @@ async def call_bde_api(endpoint: str, params: dict = None) -> dict:
 
 
 # ============================================================================
-# EU AI Act Art.50 — AI System Disclosure
+# AGL Receipt Schema v2.0 — Drift-Aware Governance Receipts
 # ============================================================================
+# Replaces the static ART50_DISCLOSURE with a full append-only receipt system.
+# Every MCP tool call generates an immutable receipt with drift-aware fields.
+# Reference: enterprise-ai-os-architecture Issue #1 (hegu-1 feedback).
 
-ART50_DISCLOSURE = {
-    "ai_system_info": {
-        "generated_by": "BDE Score AI Assessment Engine v1.0.2",
-        "assessment_type": "automated-multi-factor-scoring",
-        "methodology": "rule-based + LLM-enhanced analysis",
-        "ai_system": True,
-        "eu_ai_act_art50": "compliant",
-        "compliance_page": "https://hbhqq9.github.io/bde-score/compliance.html",
-        "disclaimer": "AI-generated analysis. Not investment advice."
+# Initialize the in-memory receipt store (append-only, thread-safe)
+_receipt_store = InMemoryReceiptStore()
+
+# BDE-specific policy version (drift-aware field 7)
+_BDE_POLICY_VERSION = PolicyVersion(
+    rule_set_id="eu-ai-act-art50-2026-01",
+    schema_version="2.0.0",
+    compliance_framework="EU AI Act Art.50",
+    effective_from="2026-01-01T00:00:00+00:00",
+)
+
+def wrap_with_receipt(tool_name: str, tool_params: dict, result_json: str) -> str:
+    """
+    Wrap MCP tool output with AGL Receipt Schema v2.0.
+
+    Generates a full drift-aware receipt, appends it to the store,
+    and embeds the receipt metadata in the response.
+
+    This replaces the old wrap_with_art50() which only added a static
+    disclosure block. The new version:
+      1. Creates an immutable receipt for every tool invocation
+      2. Appends to the append-only store (audit trail)
+      3. Embeds receipt_id + ai_system_info in the response
+    """
+    try:
+        data = json.loads(result_json)
+        if not isinstance(data, dict):
+            data = {"result": data}
+    except (json.JSONDecodeError, TypeError):
+        data = {"raw_output": result_json}
+
+    # Create the full v2.0 receipt
+    now = datetime.now(timezone.utc)
+    receipt = create_bde_receipt(
+        tool_name=tool_name,
+        tool_params=tool_params,
+        result_summary={
+            "output_keys": list(data.keys()) if isinstance(data, dict) else [],
+            "timestamp": now.isoformat(),
+        },
+    )
+
+    # Override policy_version with BDE-specific version
+    receipt.policy_version = _BDE_POLICY_VERSION
+
+    # Set validity window (24h for market data, context includes tool info)
+    receipt.validity_window = ValidityWindow(
+        valid_from=now.isoformat(),
+        valid_until=(now + timedelta(hours=24)).isoformat(),
+        context={
+            "tool": tool_name,
+            "scope": "single-request",
+            **{k: v for k, v in tool_params.items() if isinstance(v, (str, int, float, bool))},
+        },
+    )
+
+    # Append to the immutable store
+    receipt_id = _receipt_store.append(receipt)
+
+    # Embed receipt metadata + disclosure in response
+    data["ai_system_info"] = {
+        **BDE_DISCLOSURE_TEMPLATE,
+        "receipt_id": receipt_id,
+        "receipt_schema_version": "2.0.0",
+        "policy_version": _BDE_POLICY_VERSION.to_dict(),
     }
-}
 
+    return json.dumps(data, ensure_ascii=False, default=str)
+
+
+# Backward-compatible alias for existing tool functions
 def wrap_with_art50(result_json: str) -> str:
-    """Wrap MCP tool output with Art.50 AI disclosure."""
+    """
+    Backward-compatible wrapper.
+    For new code, prefer wrap_with_receipt() which generates full receipts.
+    """
     try:
         data = json.loads(result_json)
         if isinstance(data, dict) and "ai_system_info" not in data:
-            data["ai_system_info"] = ART50_DISCLOSURE["ai_system_info"]
+            data["ai_system_info"] = BDE_DISCLOSURE_TEMPLATE
             return json.dumps(data, ensure_ascii=False, default=str)
     except (json.JSONDecodeError, TypeError):
         pass
@@ -274,7 +354,7 @@ async def get_bde_score(market: str = "ALL") -> str:
     result = await call_bde_api("/api/snapshot", {"market": market.upper()})
     if "error" in result:
         return json.dumps({"error": result["error"]})
-    return wrap_with_art50(json.dumps(result, ensure_ascii=False, default=str))
+    return wrap_with_receipt("get_bde_score", {"market": market}, json.dumps(result, ensure_ascii=False, default=str))
 
 
 @mcp.tool(
@@ -297,7 +377,7 @@ async def get_stock_analysis(symbol: str, market: str = "US") -> str:
     result = await call_bde_api("/api/analyze", {"symbol": symbol.upper(), "market": market.upper()})
     if "error" in result:
         return json.dumps({"error": result["error"]})
-    return wrap_with_art50(json.dumps(result, ensure_ascii=False, default=str))
+    return wrap_with_receipt("get_stock_analysis", {"symbol": symbol, "market": market}, json.dumps(result, ensure_ascii=False, default=str))
 
 
 @mcp.tool(
@@ -321,7 +401,7 @@ async def get_multi_market_comparison(symbol: str) -> str:
         result = await call_bde_api("/api/snapshot", {"market": market})
         if "error" not in result:
             results[market] = result
-    return wrap_with_art50(json.dumps(results, ensure_ascii=False, default=str))
+    return wrap_with_receipt("get_multi_market_comparison", {"symbol": symbol}, json.dumps(results, ensure_ascii=False, default=str))
 
 
 @mcp.tool(
@@ -353,12 +433,13 @@ async def get_stock_screener(market: str = "ALL", min_score: int = 70) -> str:
             filtered.append(stock)
     
     filtered.sort(key=lambda x: x.get("bde_score", 0), reverse=True)
-    return wrap_with_art50(json.dumps({
+    screener_result = {
         "count": len(filtered),
         "min_score": min_score,
         "market": market.upper(),
         "stocks": filtered[:50]  # Limit to top 50
-    }, ensure_ascii=False, default=str))
+    }
+    return wrap_with_receipt("get_stock_screener", {"market": market, "min_score": min_score}, json.dumps(screener_result, ensure_ascii=False, default=str))
 
 
 @mcp.tool(
