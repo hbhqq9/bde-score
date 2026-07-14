@@ -10,7 +10,7 @@
   },
   "capabilities": {
     "streaming": false,
-    "pushNotifications": false,
+    "pushNotifications": true,
     "statefulness": false
   },
   "securitySchemes": {
@@ -26,13 +26,22 @@
       "id": "get_bde_score",
       "name": "BDE Score Analysis",
       "description": "Get BDE Score composite analysis for all stocks in a market (US/HK/CN). Returns 0-100 scores covering momentum, volatility, value, and quality factors.",
-      "tags": ["stock", "analysis", "quantitative", "multi-market"]
+      "tags": [
+        "stock",
+        "analysis",
+        "quantitative",
+        "multi-market"
+      ]
     },
     {
       "id": "get_stock_analysis",
       "name": "Individual Stock Analysis",
       "description": "Detailed single stock BDE analysis with factor breakdown.",
-      "tags": ["stock", "analysis", "factor"]
+      "tags": [
+        "stock",
+        "analysis",
+        "factor"
+      ]
     }
   ],
   "additionalProperties": {
@@ -48,5 +57,8 @@
       "security_txt": "https://hbhqq9.github.io/bde-score/.well-known/security.txt",
       "ai_trust": "https://hbhqq9.github.io/bde-score/.well-known/ai-trust.txt"
     }
-  }
+  },
+  "pushProtocol": "W3C WebSub",
+  "pushHub": "http://localhost:8893/hub/subscribe",
+  "pushStatus": "local-only"
 }

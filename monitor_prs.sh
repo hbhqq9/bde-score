@@ -1,19 +1,21 @@
 #!/bin/bash
-# BDE Score Awesome Lists PR Monitor
-# Checks status of all 10 submitted PRs
+# BDE Score Awesome Lists PR Monitor v2
+# Updated: 2026-07-14 - reflects current PR state after resubmissions
 
 declare -A PRS
 PRS=(
   ["awesome-python"]="vinta/awesome-python:3247"
   ["awesome-ml"]="josephmisiti/awesome-machine-learning:1379"
   ["awesome-ds"]="academic/awesome-datascience:652"
-  ["awesome-quant"]="wilsonfreitas/awesome-quant:466"
-  ["awesome-sys-trade"]="paperswithbacktest/awesome-systematic-trading:66"
-  ["awesome-ai-fin"]="georgezouq/awesome-ai-in-finance:184"
-  ["awesome-sys-trade2"]="wangzhe3224/awesome-systematic-trading:126"
-  ["awesome-quant-ml"]="grananqvist/Awesome-Quant-Machine-Learning-Trading:33"
-  ["awesome-deep-trade"]="cbailes/awesome-deep-trading:19"
-  ["awesome-stock"]="shi-rudo/awesome-stock-trading:53"
+  ["awesome-quant"]="wilsonfreitas/awesome-quant:474"
+  ["awesome-sys-trade"]="wangzhe3224/awesome-systematic-trading:128"
+  ["awesome-ai-agents"]="e2b-dev/awesome-ai-agents:1234"
+  ["awesome-claude-skills"]="ComposioHQ/awesome-claude-skills:1304"
+  ["awesome-mcp-servers"]="punkpeye/awesome-mcp-servers:9947"
+  ["awesome-mcp-zh"]="yzfly/Awesome-MCP-ZH:384"
+  ["awesome-quant-ai"]="leoncuhk/awesome-quant-ai:41"
+  ["awesome-finance-skills"]="RKiding/Awesome-finance-skills:22"
+  ["awesome-finance-mcp"]="BlockRunAI/awesome-finance-mcp:29"
 )
 
 echo "=== BDE Score PR Status Report ==="

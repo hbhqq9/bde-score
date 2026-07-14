@@ -1,0 +1,28 @@
+{
+  "protocol": "W3C WebSub",
+  "spec": "https://www.w3.org/TR/websub/",
+  "hub_local": "http://localhost:8893/hub/subscribe",
+  "hub_public": "pending (Cloudflare quick tunnel limit: 3 concurrent)",
+  "publisher_local": "http://localhost:8893/hub/publish",
+  "discovery_local": "http://localhost:8893/hub/discovery",
+  "topics": [
+    "bde:score:update",
+    "bde:stock:new",
+    "bde:compliance:update",
+    "bde:system:status",
+    "bde:registry:new_agent"
+  ],
+  "authentication": {
+    "publish": "Bearer token required",
+    "subscribe": "open (rate-limited)"
+  },
+  "features": {
+    "ssrf_protection": true,
+    "rate_limiting": true,
+    "auto_cleanup_expired": true,
+    "hmac_signature": "optional",
+    "max_subscribers_per_topic": 100,
+    "subscription_ttl_days": 7
+  },
+  "status": "local-only (public tunnel pending rate limit reset)"
+}

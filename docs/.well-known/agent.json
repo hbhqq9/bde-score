@@ -5,18 +5,45 @@
   "capabilities": {
     "trust_evaluation": {
       "description": "Evaluate the reliability and trustworthiness of AI agents and MCP servers",
-      "input": {"type": "url", "description": "MCP endpoint URL to evaluate"},
-      "output": {"type": "score", "range": [0, 100], "grade": "A-F"}
+      "input": {
+        "type": "url",
+        "description": "MCP endpoint URL to evaluate"
+      },
+      "output": {
+        "type": "score",
+        "range": [
+          0,
+          100
+        ],
+        "grade": "A-F"
+      }
     },
     "compliance_check": {
       "description": "Automated EU AI Act Article 50 compliance assessment",
-      "input": {"type": "url", "description": "MCP endpoint URL to check"},
-      "output": {"type": "report", "checks": 10, "max_score": 100}
+      "input": {
+        "type": "url",
+        "description": "MCP endpoint URL to check"
+      },
+      "output": {
+        "type": "report",
+        "checks": 10,
+        "max_score": 100
+      }
     },
     "stock_analysis": {
       "description": "Multi-market stock analysis with BDE scoring system",
-      "markets": ["US", "HK", "A-share"],
-      "factors": ["momentum", "mean_reversion", "volume", "volatility", "trend"]
+      "markets": [
+        "US",
+        "HK",
+        "A-share"
+      ],
+      "factors": [
+        "momentum",
+        "mean_reversion",
+        "volume",
+        "volatility",
+        "trend"
+      ]
     }
   },
   "endpoints": {
@@ -36,5 +63,13 @@
     "a2a": "https://hbhqq9.github.io/bde-score/.well-known/agent.json",
     "openapi": "https://hbhqq9.github.io/bde-score/openapi.json"
   },
-  "last_verified": "2026-07-12T18:35:00Z"
+  "last_verified": "2026-07-12T18:35:00Z",
+  "links": [
+    {
+      "rel": "websub-hub",
+      "href": "http://localhost:8893/hub/subscribe",
+      "type": "application/json",
+      "note": "local-only, public endpoint pending"
+    }
+  ]
 }
