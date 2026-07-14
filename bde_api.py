@@ -255,6 +255,12 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-API-Key"
         # 🔒 HSTS（强制HTTPS，1年有效期，含子域名）
         response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+        # 🔒 EU AI Act Art.50(1) — AI系统身份披露
+        if request.url.path.startswith('/api/') and request.url.path not in ('/api/health',):
+            response.headers["X-BDE-AI-System"] = "true"
+            response.headers["X-BDE-Assessment-Method"] = "ai-automated"
+            response.headers["X-BDE-Model-Version"] = "1.0.2"
+            response.headers["X-BDE-Compliance"] = "EU-AI-Act-Art50"
         # 🔒 Inject disclaimer into all JSON analysis responses
         if (request.url.path.startswith('/api/')
                 and 'application/json' in response.headers.get('content-type', '')
@@ -269,6 +275,22 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                 body = json.loads(raw_body)
                 if isinstance(body, dict) and 'disclaimer' not in body:
                     body['disclaimer'] = '⚠️ Technical analysis only. Not investment advice. Past performance does not guarantee future results.'
+                # 🔒 EU AI Act Art.50(1)(2) — AI系统信息嵌入
+                if isinstance(body, dict) and 'ai_system_info' not in body:
+                    body['ai_system_info'] = {
+                        'generated_by': 'BDE Score AI Assessment Engine v1.0.2',
+                        'assessment_type': 'automated-multi-factor-scoring',
+                        'methodology': 'rule-based + LLM-enhanced analysis',
+                        'data_sources': ['public-market-data', 'technical-indicators', 'fundamental-signals'],
+                        'ai_system': True,
+                        'eu_ai_act_art50': 'compliant',
+                        'compliance_page': 'https://hbhqq9.github.io/bde-score/compliance.html',
+                        'limitations': ['publicly accessible data only', 'not investment advice', 'not a penetration test']
+                    }
+                # 🔒 Art.50(2) 内容指纹日志 — sha256记录所有AI生成输出
+                import hashlib as _hashlib
+                _content_hash = _hashlib.sha256(json.dumps(body, sort_keys=True, default=str).encode()).hexdigest()[:16]
+                logger.info(f"[Art.50] content_fingerprint={_content_hash} path={request.url.path} method={request.method}")
                 # 🔗 Discovery: Cross-project ecosystem promotion
                 if isinstance(body, dict) and 'discover' not in body:
                     body['discover'] = {

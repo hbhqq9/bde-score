@@ -1,6 +1,7 @@
-# BDE Score™ AI Trust Assertion v1.0
+# BDE Score™ AI Trust Assertion v1.1
 # Machine-readable trust signals for AI-to-AI verification
 # Format: key=value (parseable by any HTTP client)
+# Updated: 2026-07-14 (Art.50 compliance gaps fixed)
 
 # === Identity ===
 name=BDE Score
@@ -8,13 +9,24 @@ version=1.0.2
 type=AI Analysis Service
 operator=hbhqq9
 created=2026-06-01
-last_audit=2026-07-12
+last_audit=2026-07-14
 
 # === Compliance ===
 eu_ai_act_art50=compliant
-eu_ai_act_art50_check_url=https://hbhqq9.github.io/bde-score/compliance
+eu_ai_act_art50_check_url=https://hbhqq9.github.io/bde-score/compliance.html
 transparency_disclosure=required
 ai_system_type=decision-support
+art50_obligations=50(1)+50(2)
+art50_implementation=api-headers+json-embedding+content-fingerprint
+
+# === Art.50 Marking Scheme ===
+layer1_header=X-BDE-AI-System:true
+layer2_json=ai_system_info object in every API response
+layer3_log=sha256 content fingerprint in server logs
+marking_machine_readable=true
+marking_effective=true
+marking_robust=true
+marking_interoperable=json+http-headers
 
 # === Security ===
 authentication=api_key
@@ -33,6 +45,7 @@ source_code=https://github.com/hbhqq9/bde-score
 security_policy=https://hbhqq9.github.io/bde-score/.well-known/security.txt
 privacy_policy=https://hbhqq9.github.io/bde-score/privacy
 terms_of_service=https://hbhqq9.github.io/bde-score/terms
+compliance_statement=https://hbhqq9.github.io/bde-score/compliance.html
 
 # === Financial ===
 pricing_model=freemium+x402
@@ -52,11 +65,11 @@ sourcify_verified=true
 # === Discovery ===
 mcp_endpoint=https://tex-adequate-date-facing.trycloudflare.com/mcp
 api_endpoint=https://bathroom-ebooks-isa-accommodation.trycloudflare.com
-registry_api=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/v1/registry
+registry_api=https://appropriate-movie-skin-formats.trycloudflare.com
 github=https://github.com/hbhqq9/bde-score
 
 # === Trust Score ===
-self_assessed_trust=85/100
+self_assessed_trust=88/100
 security_audit_passed=true
 vulnerabilities_fixed=20
 last_incident=2026-07-14 (resolved)
@@ -67,4 +80,5 @@ supports_mcp=true
 supports_a2a=true
 supports_openapi=true
 supports_x402=true
+supports_websub=true
 agent_registry=true

@@ -224,6 +224,33 @@ async def call_bde_api(endpoint: str, params: dict = None) -> dict:
 
 
 # ============================================================================
+# EU AI Act Art.50 — AI System Disclosure
+# ============================================================================
+
+ART50_DISCLOSURE = {
+    "ai_system_info": {
+        "generated_by": "BDE Score AI Assessment Engine v1.0.2",
+        "assessment_type": "automated-multi-factor-scoring",
+        "methodology": "rule-based + LLM-enhanced analysis",
+        "ai_system": True,
+        "eu_ai_act_art50": "compliant",
+        "compliance_page": "https://hbhqq9.github.io/bde-score/compliance.html",
+        "disclaimer": "AI-generated analysis. Not investment advice."
+    }
+}
+
+def wrap_with_art50(result_json: str) -> str:
+    """Wrap MCP tool output with Art.50 AI disclosure."""
+    try:
+        data = json.loads(result_json)
+        if isinstance(data, dict) and "ai_system_info" not in data:
+            data["ai_system_info"] = ART50_DISCLOSURE["ai_system_info"]
+            return json.dumps(data, ensure_ascii=False, default=str)
+    except (json.JSONDecodeError, TypeError):
+        pass
+    return result_json
+
+# ============================================================================
 # Tools (all readOnly)
 # ============================================================================
 
@@ -247,7 +274,7 @@ async def get_bde_score(market: str = "ALL") -> str:
     result = await call_bde_api("/api/snapshot", {"market": market.upper()})
     if "error" in result:
         return json.dumps({"error": result["error"]})
-    return json.dumps(result, ensure_ascii=False, default=str)
+    return wrap_with_art50(json.dumps(result, ensure_ascii=False, default=str))
 
 
 @mcp.tool(
@@ -270,7 +297,7 @@ async def get_stock_analysis(symbol: str, market: str = "US") -> str:
     result = await call_bde_api("/api/analyze", {"symbol": symbol.upper(), "market": market.upper()})
     if "error" in result:
         return json.dumps({"error": result["error"]})
-    return json.dumps(result, ensure_ascii=False, default=str)
+    return wrap_with_art50(json.dumps(result, ensure_ascii=False, default=str))
 
 
 @mcp.tool(
@@ -294,7 +321,7 @@ async def get_multi_market_comparison(symbol: str) -> str:
         result = await call_bde_api("/api/snapshot", {"market": market})
         if "error" not in result:
             results[market] = result
-    return json.dumps(results, ensure_ascii=False, default=str)
+    return wrap_with_art50(json.dumps(results, ensure_ascii=False, default=str))
 
 
 @mcp.tool(
@@ -326,12 +353,12 @@ async def get_stock_screener(market: str = "ALL", min_score: int = 70) -> str:
             filtered.append(stock)
     
     filtered.sort(key=lambda x: x.get("bde_score", 0), reverse=True)
-    return json.dumps({
+    return wrap_with_art50(json.dumps({
         "count": len(filtered),
         "min_score": min_score,
         "market": market.upper(),
         "stocks": filtered[:50]  # Limit to top 50
-    }, ensure_ascii=False, default=str)
+    }, ensure_ascii=False, default=str))
 
 
 @mcp.tool(
