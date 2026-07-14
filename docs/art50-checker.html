@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU AI Act Art.50 Compliance Checker — BDE Score™</title>
+    <meta name="description" content="Free EU AI Act Article 50 compliance self-check tool. 10 questions to assess your AI system's transparency readiness before the August 2, 2026 enforcement deadline.">
+    <meta property="og:title" content="EU AI Act Art.50 Compliance Checker — Free Self-Assessment Tool">
+    <meta property="og:description" content="78% of organizations are NOT ready. Check yours in 2 minutes. Free, no signup.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hbhqq9.github.io/bde-score/art50-checker.html">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;color:#e0e0e0;line-height:1.6}
+        .container{max-width:720px;margin:0 auto;padding:20px}
+
+        /* Header */
+        .header{text-align:center;padding:40px 20px 20px;background:linear-gradient(135deg,#0d1b2a 0%,#1b263b 50%,#0d1b2a 100%)}
+        .header h1{font-size:1.8em;margin-bottom:8px;background:linear-gradient(90deg,#4fc3f7,#ab47bc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header p{color:#90a4ae;font-size:0.95em;max-width:500px;margin:0 auto}
+
+        /* Countdown */
+        .countdown-bar{text-align:center;padding:18px 20px;background:linear-gradient(90deg,#b71c1c,#e53935,#b71c1c);margin:0}
+        .countdown-bar .days{font-size:2.4em;font-weight:800;color:#fff;letter-spacing:2px}
+        .countdown-bar .label{font-size:0.85em;color:#ffcdd2;margin-top:2px}
+
+        /* Progress */
+        .progress-wrap{padding:15px 0;position:sticky;top:0;background:#0a0a0a;z-index:10}
+        .progress-track{height:6px;background:#1a1a2e;border-radius:3px;overflow:hidden}
+        .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#4fc3f7,#ab47bc);border-radius:3px;transition:width 0.4s ease}
+        .progress-text{font-size:0.8em;color:#90a4ae;margin-top:6px;text-align:right}
+
+        /* Question Card */
+        .q-card{background:#1a1a2e;border:1px solid #2a2a3e;border-radius:14px;padding:28px 24px;margin-bottom:16px;transition:border-color 0.3s}
+        .q-card.answered-yes{border-color:#2e7d32}
+        .q-card.answered-no{border-color:#c62828}
+        .q-num{font-size:0.75em;color:#ab47bc;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px}
+        .q-text{font-size:1.05em;font-weight:600;margin-bottom:6px;color:#e0e0e0}
+        .q-ref{font-size:0.78em;color:#78909c;margin-bottom:18px;font-style:italic}
+        .btn-row{display:flex;gap:12px}
+        .btn{flex:1;padding:12px 0;border:2px solid #2a2a3e;border-radius:8px;background:transparent;color:#e0e0e0;font-size:0.95em;font-weight:600;cursor:pointer;transition:all 0.2s}
+        .btn:hover{border-color:#4fc3f7;color:#4fc3f7}
+        .btn.selected-yes{border-color:#4caf50;background:#1b3a1b;color:#81c784}
+        .btn.selected-no{border-color:#e53935;background:#3a1b1b;color:#ef9a9a}
+
+        /* Results */
+        #results{display:none;text-align:center;padding:30px 0}
+        .score-ring{width:160px;height:160px;margin:0 auto 20px;position:relative}
+        .score-ring svg{transform:rotate(-90deg)}
+        .score-ring .value{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2.2em;font-weight:800}
+        .verdict{font-size:1.4em;font-weight:700;margin-bottom:6px}
+        .verdict-sub{color:#90a4ae;margin-bottom:24px;font-size:0.95em}
+        .missing-list{text-align:left;background:#1a1a2e;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid #2a2a3e}
+        .missing-list h3{color:#ef9a9a;margin-bottom:12px;font-size:1em}
+        .missing-item{padding:8px 0;border-bottom:1px solid #2a2a3e;font-size:0.9em;color:#e0e0e0}
+        .missing-item:last-child{border-bottom:none}
+        .missing-item::before{content:"✗ ";color:#e53935;font-weight:700}
+        .action-list{text-align:left;background:#1a1a2e;border-radius:12px;padding:20px;margin-bottom:24px;border:1px solid #2a2a3e}
+        .action-list h3{color:#81c784;margin-bottom:12px;font-size:1em}
+        .action-item{padding:6px 0;font-size:0.9em;color:#b0bec5}
+        .action-item::before{content:"→ ";color:#4fc3f7}
+
+        /* CTA */
+        .cta-section{background:linear-gradient(135deg,#1a1a2e,#1b263b);border-radius:14px;padding:28px 24px;margin:20px 0;text-align:center;border:1px solid #2a2a3e}
+        .cta-section h3{color:#4fc3f7;margin-bottom:8px;font-size:1.1em}
+        .cta-section p{color:#90a4ae;font-size:0.9em;margin-bottom:18px}
+        .cta-btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+        .cta-btn{padding:12px 24px;border-radius:8px;font-weight:600;font-size:0.9em;text-decoration:none;display:inline-block;transition:transform 0.2s}
+        .cta-btn:hover{transform:translateY(-2px)}
+        .cta-primary{background:linear-gradient(90deg,#4fc3f7,#ab47bc);color:#0a0a0a}
+        .cta-secondary{border:2px solid #4fc3f7;color:#4fc3f7}
+        .cta-tertiary{border:2px solid #78909c;color:#90a4ae}
+
+        /* Retry */
+        .retry-btn{background:transparent;border:2px solid #2a2a3e;color:#90a4ae;padding:10px 28px;border-radius:8px;cursor:pointer;font-size:0.9em;margin-top:10px;transition:border-color 0.2s}
+        .retry-btn:hover{border-color:#4fc3f7;color:#4fc3f7}
+
+        /* Footer */
+        footer{text-align:center;padding:30px 20px;color:#555;font-size:0.8em;border-top:1px solid #1a1a2e;margin-top:40px}
+        footer a{color:#4fc3f7;text-decoration:none}
+        footer a:hover{text-decoration:underline}
+
+        /* Responsive */
+        @media(max-width:500px){
+            .header h1{font-size:1.4em}
+            .countdown-bar .days{font-size:1.8em}
+            .q-card{padding:20px 16px}
+            .btn{padding:10px 0;font-size:0.85em}
+            .cta-btns{flex-direction:column}
+            .cta-btn{width:100%}
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>EU AI Act Art.50 Compliance Checker</h1>
+    <p>10 questions to assess your AI system's transparency readiness. Takes 2 minutes. Free.</p>
+</div>
+
+<div class="countdown-bar">
+    <div class="days" id="countdown-days">--</div>
+    <div class="label">days until Art.50 enforcement (August 2, 2026)</div>
+</div>
+
+<div class="container">
+
+    <div class="progress-wrap" id="progress-wrap" style="display:none">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-text" id="progress-text">0 / 10</div>
+    </div>
+
+    <div id="quiz"></div>
+
+    <div id="results">
+        <div class="score-ring">
+            <svg width="160" height="160">
+                <circle cx="80" cy="80" r="70" stroke="#1a1a2e" stroke-width="10" fill="none"/>
+                <circle cx="80" cy="80" r="70" stroke-width="10" fill="none" stroke-linecap="round"
+                        id="score-circle" stroke-dasharray="440" stroke-dashoffset="440"/>
+            </svg>
+            <div class="value" id="score-value">0</div>
+        </div>
+        <div class="verdict" id="verdict"></div>
+        <div class="verdict-sub" id="verdict-sub"></div>
+
+        <div class="missing-list" id="missing-list" style="display:none">
+            <h3>⚠ Missing Compliance Items</h3>
+            <div id="missing-items"></div>
+        </div>
+
+        <div class="action-list" id="action-list" style="display:none">
+            <h3>✅ Recommended Actions</h3>
+            <div id="action-items"></div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Need Help Getting Compliant?</h3>
+            <p>Download our free whitepaper or explore BDE Score's built-in Art.50 compliance tools.</p>
+            <div class="cta-btns">
+                <a class="cta-btn cta-primary" href="https://github.com/hbhqq9/bde-score/blob/main/EU_AI_Act_Art50_Compliance_Whitepaper.md" target="_blank">📄 Compliance Whitepaper</a>
+                <a class="cta-btn cta-secondary" href="https://hbhqq9.github.io/bde-score/compliance.html" target="_blank">🛡️ BDE Score Compliance</a>
+                <a class="cta-btn cta-tertiary" href="https://github.com/hbhqq9/bde-score" target="_blank">⭐ GitHub</a>
+            </div>
+        </div>
+
+        <button class="retry-btn" onclick="resetQuiz()">↻ Retake Assessment</button>
+    </div>
+</div>
+
+<footer>
+    <p>BDE Score™ · EU AI Act Art.50 Compliance Checker</p>
+    <p style="margin-top:6px"><a href="https://github.com/hbhqq9/bde-score">GitHub</a> · <a href="https://hbhqq9.github.io/bde-score/">BDE Score</a> · <a href="https://hbhqq9.github.io/bde-score/compliance.html">Compliance</a></p>
+    <p style="margin-top:6px;color:#444">This tool is for informational purposes only and does not constitute legal advice.</p>
+</footer>
+
+<script>
+const questions = [
+    {
+        id: 1,
+        text: "Does your system use AI to generate or manipulate text, audio, image, or video content?",
+        ref: "Art.50(1) — Obligation to disclose AI-generated content",
+        action: "Implement content detection & labeling pipeline for all AI-generated outputs."
+    },
+    {
+        id: 2,
+        text: "When users interact with your AI system, are they clearly informed that they are interacting with an AI system?",
+        ref: "Art.50(1) — User notification requirement",
+        action: "Add explicit, prominent AI-interaction disclosure to all user-facing touchpoints."
+    },
+    {
+        id: 3,
+        text: "Is AI-generated content marked with a machine-readable label indicating its artificial origin?",
+        ref: "Art.50(2) — Machine-readable marking obligation",
+        action: "Embed machine-readable watermarks/metadata (e.g., C2PA, IPTC) in all AI outputs."
+    },
+    {
+        id: 4,
+        text: "Have you assessed whether the 'obviously AI-generated' exception in Art.50(4) applies to your use case?",
+        ref: "Art.50(4) — Exception for content that is obviously AI-generated",
+        action: "Document a formal assessment of Art.50(4) applicability with legal review."
+    },
+    {
+        id: 5,
+        text: "Is the AI disclosure information provided in a structured, searchable, and accessible format?",
+        ref: "Art.50(1) — Accessible disclosure requirement",
+        action: "Publish AI transparency info in a dedicated, searchable compliance page or registry."
+    },
+    {
+        id: 6,
+        text: "Do AI content markings remain effective and detectable throughout the entire lifecycle of the content?",
+        ref: "Art.50(2) — Persistence of markings across the content lifecycle",
+        action: "Validate that watermarks survive common transformations (compression, cropping, format conversion)."
+    },
+    {
+        id: 7,
+        text: "Are AI markings resistant to removal — i.e., users cannot easily strip them?",
+        ref: "Art.50(2) — Markings shall be difficult to remove",
+        action: "Use tamper-resistant marking technologies; test removal resistance regularly."
+    },
+    {
+        id: 8,
+        text: "Do your AI markings use standardized, interoperable formats recognized across the industry?",
+        ref: "Art.50(2) — Interoperable & detectable formats via technical standards",
+        action: "Adopt standards like C2PA/Coalition for Content Provenance; avoid proprietary-only formats."
+    },
+    {
+        id: 9,
+        text: "Do you maintain documented records of your Art.50 compliance decisions and rationale?",
+        ref: "Art.50 — General accountability & documentation obligation",
+        action: "Create and maintain a compliance decision log with dates, rationale, and responsible parties."
+    },
+    {
+        id: 10,
+        text: "Do you conduct regular audits of your AI systems' compliance status with Art.50?",
+        ref: "Art.50 — Ongoing compliance monitoring",
+        action: "Establish a quarterly audit schedule; assign compliance ownership to a team or individual."
+    }
+];
+
+let answers = {};
+
+function renderQuiz() {
+    const quiz = document.getElementById('quiz');
+    quiz.innerHTML = '';
+    questions.forEach(q => {
+        const card = document.createElement('div');
+        card.className = 'q-card';
+        card.id = 'card-' + q.id;
+        card.innerHTML = `
+            <div class="q-num">Question ${q.id} of 10</div>
+            <div class="q-text">${q.text}</div>
+            <div class="q-ref">${q.ref}</div>
+            <div class="btn-row">
+                <button class="btn" onclick="answer(${q.id},true,this)">✓ Yes, we do</button>
+                <button class="btn" onclick="answer(${q.id},false,this)">✗ No / Unsure</button>
+            </div>
+        `;
+        quiz.appendChild(card);
+    });
+}
+
+function answer(id, val, btn) {
+    answers[id] = val;
+    const card = document.getElementById('card-' + id);
+    card.className = 'q-card ' + (val ? 'answered-yes' : 'answered-no');
+    const btns = card.querySelectorAll('.btn');
+    btns[0].className = 'btn' + (val ? ' selected-yes' : '');
+    btns[1].className = 'btn' + (!val ? ' selected-no' : '');
+
+    const count = Object.keys(answers).length;
+    document.getElementById('progress-fill').style.width = (count / 10 * 100) + '%';
+    document.getElementById('progress-text').textContent = count + ' / 10';
+    document.getElementById('progress-wrap').style.display = 'block';
+
+    if (count === 10) {
+        setTimeout(showResults, 400);
+    }
+}
+
+function showResults() {
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('progress-wrap').style.display = 'none';
+    const res = document.getElementById('results');
+    res.style.display = 'block';
+
+    const yesCount = Object.values(answers).filter(v => v).length;
+    const score = yesCount * 10;
+
+    // Animate score ring
+    const circle = document.getElementById('score-circle');
+    const circumference = 2 * Math.PI * 70;
+    const offset = circumference - (score / 100) * circumference;
+    let color;
+    if (score >= 80) color = '#4caf50';
+    else if (score >= 50) color = '#ff9800';
+    else color = '#e53935';
+    circle.style.stroke = color;
+    setTimeout(() => { circle.style.strokeDashoffset = offset; circle.style.transition = 'stroke-dashoffset 1s ease'; }, 100);
+
+    const valEl = document.getElementById('score-value');
+    valEl.style.color = color;
+    let cur = 0;
+    const step = () => { cur += 2; if (cur > score) cur = score; valEl.textContent = cur; if (cur < score) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+
+    // Verdict
+    const verdict = document.getElementById('verdict');
+    const sub = document.getElementById('verdict-sub');
+    if (score >= 80) {
+        verdict.innerHTML = '🟢 Compliant';
+        sub.textContent = 'Your AI systems appear to meet most Art.50 transparency requirements. Continue monitoring for updates.';
+    } else if (score >= 50) {
+        verdict.innerHTML = '🟡 Partially Compliant';
+        sub.textContent = 'Significant gaps remain. You have limited time to address them before enforcement.';
+    } else {
+        verdict.innerHTML = '🔴 Non-Compliant';
+        sub.textContent = 'Your systems are at high risk of regulatory action. Immediate remediation is required.';
+    }
+
+    // Missing items
+    const missingItems = document.getElementById('missing-items');
+    const actionItems = document.getElementById('action-items');
+    missingItems.innerHTML = '';
+    actionItems.innerHTML = '';
+    let missingCount = 0;
+
+    questions.forEach(q => {
+        if (!answers[q.id]) {
+            missingCount++;
+            const div = document.createElement('div');
+            div.className = 'missing-item';
+            div.textContent = q.text;
+            missingItems.appendChild(div);
+
+            const act = document.createElement('div');
+            act.className = 'action-item';
+            act.textContent = q.action;
+            actionItems.appendChild(act);
+        }
+    });
+
+    document.getElementById('missing-list').style.display = missingCount > 0 ? 'block' : 'none';
+    document.getElementById('action-list').style.display = missingCount > 0 ? 'block' : 'none';
+
+    res.scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetQuiz() {
+    answers = {};
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+    document.getElementById('progress-wrap').style.display = 'none';
+    const circle = document.getElementById('score-circle');
+    circle.style.transition = 'none';
+    circle.style.strokeDashoffset = 440;
+    renderQuiz();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Countdown
+function updateCountdown() {
+    const target = new Date('2026-08-02T00:00:00+02:00');
+    const now = new Date();
+    const diff = target - now;
+    const el = document.getElementById('countdown-days');
+    if (diff <= 0) {
+        el.textContent = 'ENFORCED';
+        el.style.fontSize = '1.8em';
+        return;
+    }
+    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    el.textContent = days + ' Days';
+}
+
+updateCountdown();
+setInterval(updateCountdown, 60000);
+renderQuiz();
+</script>
+
+</body>
+</html>
