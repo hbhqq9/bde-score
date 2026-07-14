@@ -1,8 +1,8 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
   "name": "io.github.hbhqq9/bde-score",
-  "description": "Stock analysis MCP with BDE scoring for US, HK, CN markets.",
-  "version": "1.0.1",
+  "description": "EU AI Act Art.50 compliant BDE scoring for stocks (US/HK/CN). Rule-based + LLM-enhanced multi-factor analysis. Free, open-source.",
+  "version": "1.0.2",
   "repository": {
     "url": "https://github.com/hbhqq9/bde-score",
     "source": "github",
@@ -12,7 +12,7 @@
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://retrieve-jobs-congress-made.trycloudflare.com/mcp"
+      "url": "https://tex-adequate-date-facing.trycloudflare.com/mcp"
     }
   ],
   "tools": [
