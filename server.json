@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
   "name": "io.github.hbhqq9/bde-score",
-  "description": "EU AI Act Art.50 compliant BDE scoring for stocks (US/HK/CN). Rule-based + LLM-enhanced multi-factor analysis. Free, open-source.",
+  "description": "EU AI Act Art.50 compliant BDE stock scoring (US/HK/CN). Free, open-source.",
   "version": "1.0.2",
   "repository": {
     "url": "https://github.com/hbhqq9/bde-score",
