@@ -1,0 +1,49 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/ed25519-2020/v1"
+  ],
+  "id": "did:web:hbhqq9.github.io:bde-score",
+  "verificationMethod": [{
+    "id": "did:web:hbhqq9.github.io:bde-score#key-1",
+    "type": "Ed25519VerificationKey2020",
+    "controller": "did:web:hbhqq9.github.io:bde-score",
+    "publicKeyMultibase": "z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpb8EG36pmlRD"
+  }],
+  "authentication": [
+    "did:web:hbhqq9.github.io:bde-score#key-1"
+  ],
+  "assertionMethod": [
+    "did:web:hbhqq9.github.io:bde-score#key-1"
+  ],
+  "service": [{
+    "id": "did:web:hbhqq9.github.io:bde-score#mcp",
+    "type": "MCPService",
+    "serviceEndpoint": "https://tex-adequate-date-facing.trycloudflare.com/mcp",
+    "description": "BDE Score MCP Server - Multi-market stock analysis"
+  },{
+    "id": "did:web:hbhqq9.github.io:bde-score#api",
+    "type": "RESTAPI",
+    "serviceEndpoint": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com",
+    "description": "BDE Score REST API"
+  },{
+    "id": "did:web:hbhqq9.github.io:bde-score#registry",
+    "type": "AgentRegistry",
+    "serviceEndpoint": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/v1/registry",
+    "description": "BDE Agent Registry - Decentralized agent discovery"
+  },{
+    "id": "did:web:hbhqq9.github.io:bde-score#compliance",
+    "type": "ComplianceService",
+    "serviceEndpoint": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/compliance-check",
+    "description": "EU AI Act Art.50 compliance checker"
+  }],
+  "alsoKnownAs": [{
+    "type": "GitHubRepository",
+    "url": "https://github.com/hbhqq9/bde-score"
+  },{
+    "type": "MCPRegistry",
+    "url": "https://registry.modelcontextprotocol.io/v0.1/servers/io.github.hbhqq9/bde-score"
+  }],
+  "created": "2026-07-14T08:48:00Z",
+  "updated": "2026-07-14T08:48:00Z"
+}

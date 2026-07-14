@@ -1,0 +1,52 @@
+{
+  "name": "BDE Score",
+  "description": "Multi-factor quantitative stock analysis for US/HK/CN markets. EU AI Act Art.50 compliant with transparent 0-100 scoring, x402 micropayment support, and agent trust evaluation.",
+  "url": "https://tex-adequate-date-facing.trycloudflare.com/mcp",
+  "version": "1.0.2",
+  "documentationUrl": "https://hbhqq9.github.io/bde-score/",
+  "provider": {
+    "organization": "BDE Score",
+    "url": "https://github.com/hbhqq9/bde-score"
+  },
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "statefulness": false
+  },
+  "securitySchemes": {
+    "apiKey": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "X-API-Key"
+    }
+  },
+  "defaultSecurityScheme": "apiKey",
+  "skills": [
+    {
+      "id": "get_bde_score",
+      "name": "BDE Score Analysis",
+      "description": "Get BDE Score composite analysis for all stocks in a market (US/HK/CN). Returns 0-100 scores covering momentum, volatility, value, and quality factors.",
+      "tags": ["stock", "analysis", "quantitative", "multi-market"]
+    },
+    {
+      "id": "get_stock_analysis",
+      "name": "Individual Stock Analysis",
+      "description": "Detailed single stock BDE analysis with factor breakdown.",
+      "tags": ["stock", "analysis", "factor"]
+    }
+  ],
+  "additionalProperties": {
+    "eu_ai_act_compliant": true,
+    "micropayment": {
+      "protocol": "x402",
+      "price_per_query": "$0.01 USDC",
+      "chain": "Base Mainnet",
+      "free_tier": "3 queries/day"
+    },
+    "trust": {
+      "did": "did:web:hbhqq9.github.io:bde-score",
+      "security_txt": "https://hbhqq9.github.io/bde-score/.well-known/security.txt",
+      "ai_trust": "https://hbhqq9.github.io/bde-score/.well-known/ai-trust.txt"
+    }
+  }
+}

@@ -1,9 +1,12 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /pay/
+
+# Discovery endpoints
 Allow: /.well-known/
-Allow: /openapi.json
-Allow: /llms.txt
-Allow: /llms-full.txt
-Allow: /sitemap.xml
+
+# RFC 9116: Security policy
+Security: https://hbhqq9.github.io/bde-score/.well-known/security.txt
 
 Sitemap: https://hbhqq9.github.io/bde-score/sitemap.xml

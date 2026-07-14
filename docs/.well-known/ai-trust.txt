@@ -1,0 +1,70 @@
+# BDE Score™ AI Trust Assertion v1.0
+# Machine-readable trust signals for AI-to-AI verification
+# Format: key=value (parseable by any HTTP client)
+
+# === Identity ===
+name=BDE Score
+version=1.0.2
+type=AI Analysis Service
+operator=hbhqq9
+created=2026-06-01
+last_audit=2026-07-12
+
+# === Compliance ===
+eu_ai_act_art50=compliant
+eu_ai_act_art50_check_url=https://hbhqq9.github.io/bde-score/compliance
+transparency_disclosure=required
+ai_system_type=decision-support
+
+# === Security ===
+authentication=api_key
+rate_limit=10req/min/ip
+ssrf_protection=enabled
+input_validation=enabled
+error_handling=sanitized
+security_headers=full
+openapi_exposed=false
+tls=cloudflare_managed
+registry_auth=bearer_token
+
+# === Transparency ===
+methodology=open_source
+source_code=https://github.com/hbhqq9/bde-score
+security_policy=https://hbhqq9.github.io/bde-score/.well-known/security.txt
+privacy_policy=https://hbhqq9.github.io/bde-score/privacy
+terms_of_service=https://hbhqq9.github.io/bde-score/terms
+
+# === Financial ===
+pricing_model=freemium+x402
+free_tier=3_queries_per_day
+micropayment=$0.01_per_query
+payment_chain=base_mainnet
+payment_currency=USDC
+cost_per_event=$0.000752
+profit_margin=>92%
+
+# === On-chain Proof ===
+compliance_engine=0x0d52e20A8F3c9d91E8f650c2FC193DB983B5B6c7
+transparency_logger=0xcC56...19C7
+chain=base_mainnet
+sourcify_verified=true
+
+# === Discovery ===
+mcp_endpoint=https://tex-adequate-date-facing.trycloudflare.com/mcp
+api_endpoint=https://bathroom-ebooks-isa-accommodation.trycloudflare.com
+registry_api=https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/v1/registry
+github=https://github.com/hbhqq9/bde-score
+
+# === Trust Score ===
+self_assessed_trust=85/100
+security_audit_passed=true
+vulnerabilities_fixed=20
+last_incident=2026-07-14 (resolved)
+uptime_since=2026-07-12
+
+# === Agent Discovery ===
+supports_mcp=true
+supports_a2a=true
+supports_openapi=true
+supports_x402=true
+agent_registry=true

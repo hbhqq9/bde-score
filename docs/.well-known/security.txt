@@ -1,0 +1,17 @@
+# BDE Score™ Security Policy
+# RFC 9116 compliant - https://securitytxt.org/
+
+Contact: mailto:nnhbh@foxmail.com
+Expires: 2027-07-14T00:00:00.000Z
+Encryption: https://github.com/hbhqq9/bde-score/blob/master/SECURITY.md
+Preferred-Languages: en, zh
+Canonical: https://hbhqq9.github.io/bde-score/.well-known/security.txt
+Policy: https://hbhqq9.github.io/bde-score/.well-known/ai-trust.txt
+
+# Security Architecture:
+# - API Key authentication (X-API-Key header)
+# - Rate limiting (10 req/min/IP general, 5/min payment)
+# - SSRF protection on Agent Registry
+# - Input validation + capacity limits
+# - EU AI Act Art.50 compliant
+# - On-chain transparency (Base Mainnet)
