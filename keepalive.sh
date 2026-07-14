@@ -28,8 +28,8 @@ check_and_restart "FutuOpenD" "FutuOpenD" \
     "cd $FUTU_DIR && export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$FUTU_DIR && nohup ./FutuOpenD > /tmp/futuopd.log 2>&1 &"
 
 # 2. BDE API
-check_and_restart "BDE-API" "bde_api.py" \
-    "cd $BDE_DIR && nohup python3 bde_api.py > /tmp/bde_api.log 2>&1 &"
+check_and_restart "BDE-API" "bde_api:app" \
+    "cd $BDE_DIR && nohup python3 -m uvicorn bde_api:app --host 127.0.0.1 --port 8890 --log-level warning > /tmp/bde_api.log 2>&1 &"
 
 # 3. Cloudflare Tunnel (公网入口 - 关键!)
 check_and_restart "Cloudflare-Tunnel" "cloudflared" \
@@ -57,4 +57,4 @@ fi
 check_and_restart "Agent-Registry" "registry_server.py" \
     "cd $BDE_DIR && source .env.registry 2>/dev/null; nohup env REGISTRY_API_KEY=$REGISTRY_API_KEY python3 agent-registry/registry_server.py > /tmp/registry_server.log 2>&1 &"
 
-echo "[$(date)] 守护检查完成 (FutuOpenD: $(pgrep -c -f FutuOpenD)进程, BDE-API: $(pgrep -c -f bde_api.py)进程, CF-Tunnel: $(pgrep -c -f cloudflared)进程)" >> "$LOG"
+echo "[$(date)] 守护检查完成 (FutuOpenD: $(pgrep -c -f FutuOpenD)进程, BDE-API: $(pgrep -c -f bde_api:app)进程, CF-Tunnel: $(pgrep -c -f cloudflared)进程)" >> "$LOG"
