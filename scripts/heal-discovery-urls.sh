@@ -10,8 +10,20 @@ echo "[$TIMESTAMP] Checking tunnel health..."
 API_URL=""
 MCP_URL=""
 
-# 探测已知URL
-for url in "https://bathroom-ebooks-isa-accommodation.trycloudflare.com"; do
+# 探测已知URL（含历史URL + 自动从cloudflared日志发现新URL）
+KNOWN_API_URLS=(
+    "https://refresh-bringing-goat-buildings.trycloudflare.com"
+    "https://producers-zum-brochures-elvis.trycloudflare.com"
+    "https://bathroom-ebooks-isa-accommodation.trycloudflare.com"
+)
+
+# 先从cloudflared日志自动发现新URL
+AUTO_API_URL=$(grep -oP 'https://[a-z0-9-]+\.trycloudflare\.com' /tmp/tunnel_api.log 2>/dev/null | tail -1)
+if [ -n "$AUTO_API_URL" ]; then
+    KNOWN_API_URLS=("$AUTO_API_URL" "${KNOWN_API_URLS[@]}")
+fi
+
+for url in "${KNOWN_API_URLS[@]}"; do
     STATUS=$(curl -s --max-time 5 -o /dev/null -w "%{http_code}" "$url/api/health" 2>/dev/null)
     if [ "$STATUS" = "200" ]; then
         API_URL="$url"
@@ -20,7 +32,17 @@ for url in "https://bathroom-ebooks-isa-accommodation.trycloudflare.com"; do
     fi
 done
 
-for url in "https://tex-adequate-date-facing.trycloudflare.com"; do
+KNOWN_MCP_URLS=(
+    "https://tex-adequate-date-facing.trycloudflare.com"
+)
+
+# 从MCP cloudflared日志自动发现
+AUTO_MCP_URL=$(grep -oP 'https://[a-z0-9-]+\.trycloudflare\.com' /var/log/cloudflared-mcp.log 2>/dev/null | tail -1)
+if [ -n "$AUTO_MCP_URL" ]; then
+    KNOWN_MCP_URLS=("$AUTO_MCP_URL" "${KNOWN_MCP_URLS[@]}")
+fi
+
+for url in "${KNOWN_MCP_URLS[@]}"; do
     STATUS=$(curl -s --max-time 5 -o /dev/null -w "%{http_code}" "$url/mcp" 2>/dev/null)
     if [ "$STATUS" = "401" ]; then
         MCP_URL="$url"

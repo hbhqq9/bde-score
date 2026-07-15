@@ -47,7 +47,16 @@
     "homepage": "https://hbhqq9.github.io/bde-score/",
     "repository": "https://github.com/hbhqq9/bde-score",
     "category": "finance",
-    "tags": ["stocks", "quantitative", "multi-factor", "EU-AI-Act", "x402", "blockchain", "supply-chain", "war-risk"],
-    "last_verified": "2026-07-12T18:35:00Z"
+    "tags": [
+      "stocks",
+      "quantitative",
+      "multi-factor",
+      "EU-AI-Act",
+      "x402",
+      "blockchain",
+      "supply-chain",
+      "war-risk"
+    ],
+    "last_verified": "2026-07-15T04:40:38Z"
   }
 }
