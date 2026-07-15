@@ -87,7 +87,7 @@
       </div>
       <!-- Auth Status -->
       <div id="authSection" class="flex items-center gap-2 text-sm">
-        <a href="/login" id="loginLink" class="text-slate-400 hover:text-white transition">Sign In</a>
+        <a href="/login" id="loginLink" class="i18n-link" class="text-slate-400 hover:text-white transition">Sign In</a>
       </div>
       <button id="refreshBtn" onclick="loadData(true)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-medium transition-colors flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
@@ -124,7 +124,7 @@
         <p class="text-xs text-slate-400" data-i18n="freemium_desc">每只股票仅需10积分 · 解锁后可查看完整5因子评分</p>
       </div>
     </div>
-    <a href="/pricing" class="pricing-link px-3 py-1.5 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 text-xs font-medium text-blue-300 transition-colors whitespace-nowrap" data-i18n="get_api_key">获取API Key</a>
+    <a href="/pricing" class="i18n-link px-3 py-1.5 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 text-xs font-medium text-blue-300 transition-colors whitespace-nowrap" data-i18n="get_api_key">获取API Key</a>
   </div>
 
   <!-- Loading -->
@@ -227,7 +227,7 @@
           <p class="text-xs text-slate-400" data-i18n="credits_desc">新用户注册送1000积分 · 每次分析仅消耗10积分</p>
         </div>
       </div>
-      <a href="/pricing" class="pricing-link px-3 py-1.5 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 text-xs font-medium text-blue-300 transition-colors" data-i18n="view_pricing">查看定价</a>
+      <a href="/pricing" class="i18n-link px-3 py-1.5 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 text-xs font-medium text-blue-300 transition-colors" data-i18n="view_pricing">查看定价</a>
     </div>
 
     <!-- Disclaimer -->
@@ -247,11 +247,34 @@
       <p class="text-sm text-slate-400 mt-2" data-i18n="need_api_key_desc">绑定API Key后即可解锁详细因子分析，新用户赠送1000积分</p>
     </div>
     <div class="flex gap-2">
-      <a href="/pricing" class="pricing-link flex-1 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-medium text-center transition-colors" data-i18n="get_api_key">获取API Key</a>
+      <a href="/pricing" class="i18n-link flex-1 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-medium text-center transition-colors" data-i18n="get_api_key">获取API Key</a>
       <button onclick="closeNoKeyModal()" class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-sm font-medium transition-colors" data-i18n="close">关闭</button>
     </div>
   </div>
 </div>
+
+<script src="/static/js/i18n.js"></script>
+<script>
+// Bridge: merge dashboard translations into shared i18n system
+window.dashI18n = JSON.parse(JSON.stringify(i18n));
+for (var _l in i18n) {
+  if (i18nTranslations[_l]) {
+    for (var _k in i18n[_l]) {
+      i18nTranslations[_l][_k] = i18n[_l][_k];
+    }
+  }
+}
+// Override setLang to sync dashboard state + trigger re-render
+var _origSetLang = window.setLang;
+window.setLang = function(lang) {
+  if (typeof i18n === 'object' && i18n[lang]) currentLang = lang;
+  _origSetLang(lang);
+  if (typeof dashSetLang === 'function') dashSetLang(lang);
+};
+window._i18nCallback = function() {
+  if (typeof dashSetLang === 'function') dashSetLang(currentLang);
+};
+</script>
 
 <script>
 // ============================================================

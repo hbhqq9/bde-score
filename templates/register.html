@@ -11,15 +11,22 @@
   .gradient-border { position: relative; }
   .gradient-border::before { content:''; position:absolute; inset:-1px; border-radius:inherit; padding:1px; background:linear-gradient(135deg,rgba(59,130,246,0.3),rgba(168,85,247,0.3),rgba(34,197,94,0.3)); -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
 </style>
+<script src="/static/js/i18n.js"></script>
+<style>.lang-btn{cursor:pointer;transition:all 0.2s}.lang-btn.active{background:rgba(59,130,246,0.3);color:#60a5fa}</style>
 </head>
 <body class="min-h-screen flex items-center justify-center px-4">
+<div class="fixed top-4 right-4 flex gap-1 border border-slate-700 rounded-lg p-0.5 text-xs bg-slate-900/80 backdrop-blur z-50">
+  <span class="lang-btn px-2 py-1 rounded cursor-pointer" data-lang="zh">中文</span>
+  <span class="lang-btn px-2 py-1 rounded cursor-pointer" data-lang="en">EN</span>
+  <span class="lang-btn px-2 py-1 rounded cursor-pointer" data-lang="ja">日本語</span>
+</div>
 <div class="w-full max-w-md">
   <!-- Logo -->
   <div class="text-center mb-8">
     <a href="/" class="inline-block">
       <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 bg-clip-text text-transparent">BDE Score™</h1>
     </a>
-    <p class="text-slate-500 text-sm mt-2">Create your account</p>
+    <p class="text-slate-500 text-sm mt-2" data-i18n="register_subtitle">Create your account</p>
   </div>
 
   <!-- Form Card -->
@@ -27,19 +34,19 @@
     <form id="registerForm" class="space-y-5">
       <!-- Email -->
       <div>
-        <label class="block text-sm text-slate-400 mb-1.5">Email</label>
+        <label class="block text-sm text-slate-400 mb-1.5" data-i18n="email_label">Email</label>
         <input type="email" id="email" required placeholder="your@email.com"
           class="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/50 transition">
       </div>
       <!-- Password -->
       <div>
-        <label class="block text-sm text-slate-400 mb-1.5">Password</label>
+        <label class="block text-sm text-slate-400 mb-1.5" data-i18n="password_label">Password</label>
         <input type="password" id="password" required minlength="6" placeholder="At least 6 characters"
           class="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/50 transition">
       </div>
       <!-- Confirm Password -->
       <div>
-        <label class="block text-sm text-slate-400 mb-1.5">Confirm Password</label>
+        <label class="block text-sm text-slate-400 mb-1.5" data-i18n="confirm_label">Confirm Password</label>
         <input type="password" id="confirmPassword" required minlength="6" placeholder="Re-enter password"
           class="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/50 transition">
       </div>
@@ -48,7 +55,7 @@
       <!-- Submit -->
       <button type="submit" id="submitBtn"
         class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-xl transition">
-        Create Account
+        <span data-i18n="register_btn">Create Account</span>
       </button>
     </form>
 
@@ -61,19 +68,19 @@
 
     <!-- Links -->
     <p class="text-center text-sm text-slate-400">
-      Already have an account?
-      <a href="/login" class="text-blue-400 hover:text-blue-300 transition">Sign in</a>
+      <span data-i18n="have_account">Already have an account?</span>
+      <a href="/login" class="i18n-link text-blue-400 hover:text-blue-300 transition" data-i18n="nav_signin">Sign in</a>
     </p>
   </div>
 
   <!-- Footer -->
   <div class="text-center mt-6 text-xs text-slate-600">
     <p>By registering, you agree to our
-      <a href="/terms" class="text-slate-500 hover:text-slate-400">Terms</a> and
-      <a href="/privacy" class="text-slate-500 hover:text-slate-400">Privacy Policy</a>
+      <a href="/terms" class="i18n-link" class="text-slate-500 hover:text-slate-400">Terms</a> and
+      <a href="/privacy" class="i18n-link" class="text-slate-500 hover:text-slate-400">Privacy Policy</a>
     </p>
     <p class="mt-2">
-      <a href="/" class="text-slate-500 hover:text-slate-400">← Back to home</a>
+      <a href="/" class="i18n-link text-slate-500 hover:text-slate-400">← Back to home</a>
     </p>
   </div>
 </div>
