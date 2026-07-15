@@ -3608,6 +3608,59 @@ async def compliance_check(
     
     # Validate URL
     if not url:
+        # If browser request (Accept: text/html), show interactive form
+        accept = request.headers.get('accept', '')
+        if 'text/html' in accept:
+            form_html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDE Score™ — Agent Compliance Check</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.container{max-width:560px;width:100%}
+h1{font-size:24px;margin-bottom:8px;color:#f1f5f9}
+.subtitle{color:#94a3b8;margin-bottom:32px;font-size:14px;line-height:1.6}
+.badge-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.badge{font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600}
+.badge-eu{background:#1e3a5f;color:#93c5fd}
+.badge-cn{background:#3b1f1f;color:#fca5a5}
+.badge-mcp{background:#1a3a2a;color:#86efac}
+.form-group{margin-bottom:20px}
+label{display:block;font-size:13px;color:#94a3b8;margin-bottom:6px;font-weight:500}
+input[type=url]{width:100%;padding:14px 16px;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#f1f5f9;font-size:15px;outline:none;transition:border-color .2s}
+input[type=url]:focus{border-color:#3b82f6}
+input[type=url]::placeholder{color:#475569}
+button{width:100%;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s}
+button:hover{background:#1d4ed8}
+.note{margin-top:16px;font-size:12px;color:#64748b;line-height:1.6}
+a{color:#60a5fa;text-decoration:none}
+a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="badge-row">
+<span class="badge badge-eu">EU AI Act Art.50</span>
+<span class="badge badge-cn">中国智能体治理</span>
+<span class="badge badge-mcp">MCP Extension</span>
+</div>
+<h1>Agent Compliance Check</h1>
+<p class="subtitle">输入你的 Agent / MCP 端点 URL，自动检测 EU AI Act Art.50 和中国《智能体治理实施意见》合规状态。<br>免费 · 无需注册 · 结果可分享</p>
+<form action="/compliance-check" method="get">
+<div class="form-group">
+<label for="url">MCP / Agent Endpoint URL</label>
+<input type="url" id="url" name="url" placeholder="https://your-agent.example.com/mcp" required autocomplete="off" spellcheck="false">
+</div>
+<button type="submit">🔍 Start Compliance Scan</button>
+</form>
+<p class="note">API 调用: <code>GET /compliance-check?url=YOUR_URL</code> · 频率限制: 3次/分钟 · <a href="/compliance-check/status">系统状态</a></p>
+</div>
+</body>
+</html>"""
+            return HTMLResponse(content=form_html)
         return JSONResponse(
             status_code=400,
             content={

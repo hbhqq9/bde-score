@@ -37,3 +37,6 @@ build/
 
 # Environment files (all variants)
 .env*
+.github/workflows/publish-mcp.yml
+*_fork
+*.db-shm
