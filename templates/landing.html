@@ -49,12 +49,16 @@ tailwind.config = {
       <a href="https://github.com/hbhqq9/bde-score" target="_blank" class="hover:text-white transition">GitHub</a>
     </div>
     <div class="flex items-center gap-3">
+      <div class="hidden md:flex items-center gap-3 text-sm">
+        <a href="/login" class="text-slate-400 hover:text-white transition">Sign In</a>
+        <a href="/register" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition" data-i18n="nav_cta">Get Started</a>
+      </div>
       <div class="flex gap-1 border border-slate-700 rounded-lg p-0.5 text-xs">
         <span class="lang-btn px-2 py-1 rounded" data-lang="zh">中文</span>
         <span class="lang-btn px-2 py-1 rounded" data-lang="en">EN</span>
         <span class="lang-btn px-2 py-1 rounded" data-lang="ja">日本語</span>
       </div>
-      <a href="#pricing" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition" data-i18n="nav_cta">Get Started</a>
+      <a href="/register" class="md:hidden bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition">Sign Up</a>
     </div>
   </div>
 </nav>
@@ -174,7 +178,7 @@ tailwind.config = {
           <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">✓</span><span data-i18n="tier_free_f3">3 queries/day limit</span></li>
           <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">✓</span><span data-i18n="tier_free_f4">All 3 markets</span></li>
         </ul>
-        <a href="/dashboard" class="dashboard-link block text-center glass text-white font-medium px-4 py-3 rounded-xl hover:bg-white/5 transition"   data-i18n="tier_free_btn">Try Free</a>
+        <a href="/register" class="dashboard-link block text-center glass text-white font-medium px-4 py-3 rounded-xl hover:bg-white/5 transition"   data-i18n="tier_free_btn">Try Free</a>
       </div>
       
       <!-- Starter -->
@@ -589,6 +593,32 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 </script>
+
+<!-- Auth-aware links -->
+<script>
+(async function() {
+  try {
+    const res = await fetch('/api/auth/me');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.authenticated) {
+        // Update dashboard links to stay as /dashboard
+        // Update nav to show user info
+        document.querySelectorAll('.dashboard-link').forEach(el => {
+          el.textContent = 'Dashboard →';
+        });
+        // Update nav CTA
+        const cta = document.querySelector('[data-i18n="nav_cta"]');
+        if (cta) { cta.textContent = 'Dashboard →'; cta.href = '/dashboard'; }
+        // Update Sign In link to show email
+        const signInLink = document.querySelector('a[href="/login"]');
+        if (signInLink) { signInLink.textContent = data.email; signInLink.href = '/dashboard'; }
+      }
+    }
+  } catch(e) {}
+})();
+</script>
+
 
 </body>
 </html>

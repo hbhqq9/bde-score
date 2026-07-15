@@ -55,7 +55,7 @@ from x402_middleware import (
     X402_COST_PER_EVENT, X402_PROFIT_MARGIN,
     X402_NETWORK,
 )
-
+import auth_manager  # 用户认证系统
 
 # 🔒 安全JSON序列化（处理NaN/Inf）
 def safe_json_default(obj):
@@ -3574,6 +3574,122 @@ def _compliance_html_report(report: dict) -> str:
 </body>
 </html>"""
 
+
+# ============================================================
+# 🔐 用户认证路由
+# ============================================================
+
+def _get_session_user(request: Request) -> Optional[dict]:
+    """从cookie中提取并验证session"""
+    token = request.cookies.get("bde_session")
+    if not token:
+        return None
+    user = auth_manager.validate_session(token)
+    return user
+
+@app.get("/register", response_class=HTMLResponse)
+async def register_page(request: Request):
+    """注册页面"""
+    # 已登录则跳转dashboard
+    user = _get_session_user(request)
+    if user:
+        from starlette.responses import RedirectResponse
+        return RedirectResponse("/dashboard", status_code=302)
+    template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates', 'register.html')
+    with open(template_path, 'r', encoding='utf-8') as f:
+        return f.read()
+
+@app.post("/api/auth/register")
+async def api_register(request: Request):
+    """注册API"""
+    try:
+        body = await request.json()
+    except:
+        return JSONResponse(status_code=400, content={"success": False, "message": "Invalid JSON"})
+    email = body.get("email", "").strip()
+    password = body.get("password", "")
+    result = auth_manager.register_user(email, password)
+    if result["success"]:
+        # 自动登录
+        login_result = auth_manager.login_user(email, password)
+        if login_result["success"]:
+            token = auth_manager.create_session(
+                login_result["user_id"], login_result["email"],
+                request.client.host if request.client else "",
+                request.headers.get("user-agent", "")
+            )
+            resp = JSONResponse(content={"success": True, "message": "Registration successful", "email": login_result["email"]})
+            resp.set_cookie(
+                key="bde_session", value=token,
+                httponly=True, samesite="lax", max_age=SESSION_TTL_HOURS * 3600,
+                secure=False  # Tunnel是HTTP
+            )
+            return resp
+    return JSONResponse(status_code=400, content=result)
+
+@app.get("/login", response_class=HTMLResponse)
+async def login_page(request: Request):
+    """登录页面"""
+    user = _get_session_user(request)
+    if user:
+        from starlette.responses import RedirectResponse
+        return RedirectResponse("/dashboard", status_code=302)
+    template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates', 'login.html')
+    with open(template_path, 'r', encoding='utf-8') as f:
+        return f.read()
+
+@app.post("/api/auth/login")
+async def api_login(request: Request):
+    """登录API"""
+    try:
+        body = await request.json()
+    except:
+        return JSONResponse(status_code=400, content={"success": False, "message": "Invalid JSON"})
+    email = body.get("email", "").strip()
+    password = body.get("password", "")
+    result = auth_manager.login_user(email, password)
+    if result["success"]:
+        token = auth_manager.create_session(
+            result["user_id"], result["email"],
+            request.client.host if request.client else "",
+            request.headers.get("user-agent", "")
+        )
+        resp = JSONResponse(content={
+            "success": True, "message": "Login successful",
+            "email": result["email"], "tier": result.get("tier", "free"),
+            "credits_remaining": result.get("credits_total", 1000) - result.get("credits_used", 0)
+        })
+        resp.set_cookie(
+            key="bde_session", value=token,
+            httponly=True, samesite="lax", max_age=SESSION_TTL_HOURS * 3600,
+            secure=False
+        )
+        return resp
+    return JSONResponse(status_code=401, content=result)
+
+@app.post("/api/auth/logout")
+async def api_logout(request: Request):
+    """登出API"""
+    token = request.cookies.get("bde_session")
+    if token:
+        auth_manager.destroy_session(token)
+    resp = JSONResponse(content={"success": True, "message": "Logged out"})
+    resp.delete_cookie("bde_session")
+    return resp
+
+@app.get("/api/auth/me")
+async def api_auth_me(request: Request):
+    """当前用户信息"""
+    user = _get_session_user(request)
+    if not user:
+        return JSONResponse(status_code=401, content={"authenticated": False})
+    info = auth_manager.get_user_info(user["user_id"])
+    if not info:
+        return JSONResponse(status_code=401, content={"authenticated": False})
+    info["authenticated"] = True
+    return info
+
+SESSION_TTL_HOURS = 72
 
 @app.get("/compliance-check")
 async def compliance_check(

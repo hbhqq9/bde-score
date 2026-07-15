@@ -40,3 +40,7 @@ build/
 .github/workflows/publish-mcp.yml
 *_fork
 *.db-shm
+__pycache__/
+*.db-shm
+*.db-wal
+*.pyc
