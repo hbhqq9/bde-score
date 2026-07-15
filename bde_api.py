@@ -3724,6 +3724,28 @@ async def compliance_check(
             headers={"Retry-After": "60"}
         )
     
+    # 🔐 Auth + eval limit check (when performing actual check with URL)
+    accept_hdr = request.headers.get('accept', '')
+    is_html = 'text/html' in accept_hdr
+    user = _get_session_user(request)  # Check auth early
+    if url:
+        if not user:
+            if is_html:
+                from starlette.responses import RedirectResponse
+                return RedirectResponse("/login?redirect=/compliance-check", status_code=302)
+            return JSONResponse(status_code=401, content={"error": "Authentication required. Please register/login."})
+        # Check eval limit
+        limit_check = auth_manager.check_eval_limit(user["user_id"], "compliance")
+        if not limit_check.get("allowed"):
+            if is_html:
+                from starlette.responses import RedirectResponse
+                return RedirectResponse("/pricing?reason=compliance_limit", status_code=302)
+            return JSONResponse(status_code=402, content={
+                "error": limit_check.get("reason", "Limit reached"),
+                "used": limit_check.get("used"), "limit": limit_check.get("limit"),
+                "upgrade_url": "/pricing"
+            })
+
     # Validate URL
     if not url:
         # If browser request (Accept: text/html), show interactive form
@@ -3811,6 +3833,11 @@ a:hover{text-decoration:underline}
             content={"error": f"Internal error during compliance scan: {str(e)[:200]}"}
         )
     
+    # 📊 Record evaluation for logged-in user
+    if user:
+        score = report.get("overall_score", report.get("score", 0))
+        auth_manager.record_evaluation(user["user_id"], "compliance", url, f"score={score}")
+
     # Content negotiation: HTML or JSON
     accept = request.headers.get("accept", "")
     if "text/html" in accept:
