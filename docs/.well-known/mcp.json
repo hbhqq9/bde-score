@@ -4,7 +4,7 @@
   "version": "1.0.2",
   "transport": {
     "type": "streamable-http",
-    "url": "https://tex-adequate-date-facing.trycloudflare.com/mcp"
+    "url": "https://generators-computation-picked-emily.trycloudflare.com/mcp"
   },
   "authentication": {
     "type": "api-key",
@@ -57,6 +57,6 @@
       "supply-chain",
       "war-risk"
     ],
-    "last_verified": "2026-07-15T04:40:38Z"
+    "last_verified": "2026-07-15T05:01:56Z"
   }
 }

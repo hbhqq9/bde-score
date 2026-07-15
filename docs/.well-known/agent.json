@@ -47,10 +47,10 @@
     }
   },
   "endpoints": {
-    "api": "https://refresh-bringing-goat-buildings.trycloudflare.com",
-    "mcp": "https://tex-adequate-date-facing.trycloudflare.com/mcp",
-    "compliance_check": "https://refresh-bringing-goat-buildings.trycloudflare.com/compliance-check",
-    "x402_pay_info": "https://refresh-bringing-goat-buildings.trycloudflare.com/pay/info"
+    "api": "https://study-comprehensive-jvc-mia.trycloudflare.com",
+    "mcp": "https://generators-computation-picked-emily.trycloudflare.com/mcp",
+    "compliance_check": "https://study-comprehensive-jvc-mia.trycloudflare.com/compliance-check",
+    "x402_pay_info": "https://study-comprehensive-jvc-mia.trycloudflare.com/pay/info"
   },
   "authentication": {
     "type": "api_key",
@@ -63,7 +63,7 @@
     "a2a": "https://hbhqq9.github.io/bde-score/.well-known/agent.json",
     "openapi": "https://hbhqq9.github.io/bde-score/openapi.json"
   },
-  "last_verified": "2026-07-15T04:40:38Z",
+  "last_verified": "2026-07-15T05:01:56Z",
   "links": [
     {
       "rel": "websub-hub",
