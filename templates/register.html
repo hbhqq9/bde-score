@@ -35,19 +35,19 @@
       <!-- Email -->
       <div>
         <label class="block text-sm text-slate-400 mb-1.5" data-i18n="email_label">Email</label>
-        <input type="email" id="email" required placeholder="your@email.com"
+        <input type="email" id="email" required data-i18n-placeholder="placeholder_email" placeholder="your@email.com"
           class="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/50 transition">
       </div>
       <!-- Password -->
       <div>
         <label class="block text-sm text-slate-400 mb-1.5" data-i18n="password_label">Password</label>
-        <input type="password" id="password" required minlength="6" placeholder="At least 6 characters"
+        <input type="password" id="password" required minlength="6" data-i18n-placeholder="placeholder_password" placeholder="At least 6 characters"
           class="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/50 transition">
       </div>
       <!-- Confirm Password -->
       <div>
         <label class="block text-sm text-slate-400 mb-1.5" data-i18n="confirm_label">Confirm Password</label>
-        <input type="password" id="confirmPassword" required minlength="6" placeholder="Re-enter password"
+        <input type="password" id="confirmPassword" required minlength="6" data-i18n-placeholder="placeholder_confirm" placeholder="Re-enter password"
           class="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500/50 transition">
       </div>
       <!-- Error message -->
@@ -75,17 +75,34 @@
 
   <!-- Footer -->
   <div class="text-center mt-6 text-xs text-slate-600">
-    <p>By registering, you agree to our
-      <a href="/terms" class="i18n-link" class="text-slate-500 hover:text-slate-400">Terms</a> and
-      <a href="/privacy" class="i18n-link" class="text-slate-500 hover:text-slate-400">Privacy Policy</a>
+    <p><span data-i18n="register_footer1">By registering, you agree to our</span>
+      <a href="/terms" class="i18n-link text-slate-500 hover:text-slate-400" data-i18n="register_terms">Terms</a> <span data-i18n="register_and">and</span>
+      <a href="/privacy" class="i18n-link text-slate-500 hover:text-slate-400" data-i18n="register_privacy">Privacy Policy</a>
     </p>
     <p class="mt-2">
-      <a href="/" class="i18n-link text-slate-500 hover:text-slate-400">← Back to home</a>
+      <a href="/" class="i18n-link text-slate-500 hover:text-slate-400" data-i18n="back_to_home">← Back to home</a>
     </p>
   </div>
 </div>
 
 <script>
+// Helper function for inline translations
+function t(key) {
+  const lang = getLang();
+  return (i18nTranslations[lang] && i18nTranslations[lang][key]) || key;
+}
+// Override setLang to also update placeholders
+const _origSetLangReg = window.setLang;
+window.setLang = function(lang) {
+  _origSetLangReg(lang);
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const k = el.getAttribute('data-i18n-placeholder');
+    const tr = i18nTranslations[lang];
+    if (tr && tr[k]) el.placeholder = tr[k];
+  });
+};
+
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('email').value.trim();
@@ -97,13 +114,13 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
   errEl.classList.add('hidden');
 
   if (password !== confirm) {
-    errEl.textContent = 'Passwords do not match';
+    errEl.textContent = t('passwords_no_match');
     errEl.classList.remove('hidden');
     return;
   }
 
   btn.disabled = true;
-  btn.textContent = 'Creating account...';
+  btn.textContent = t('creating_account');
 
   try {
     const res = await fetch('/api/auth/register', {
@@ -115,16 +132,16 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     if (data.success) {
       window.location.href = '/dashboard';
     } else {
-      errEl.textContent = data.message || 'Registration failed';
+      errEl.textContent = data.message || t('registration_failed');
       errEl.classList.remove('hidden');
       btn.disabled = false;
-      btn.textContent = 'Create Account';
+      btn.textContent = t('register_btn');
     }
   } catch (err) {
-    errEl.textContent = 'Network error. Please try again.';
+    errEl.textContent = t('network_error');
     errEl.classList.remove('hidden');
     btn.disabled = false;
-    btn.textContent = 'Create Account';
+    btn.textContent = t('register_btn');
   }
 });
 </script>

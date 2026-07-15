@@ -159,11 +159,11 @@
         <p id="avgScore" class="text-xl font-bold mono">—</p>
       </div>
       <div class="glass rounded-xl p-4">
-        <p class="text-xs text-slate-400 mb-1">BUY / HOLD</p>
+        <p class="text-xs text-slate-400 mb-1" data-i18n="buy_hold_label">BUY / HOLD</p>
         <p class="text-xl font-bold"><span id="buyCount" class="signal-buy mono">—</span> <span class="text-slate-600">/</span> <span id="holdCount" class="signal-hold mono">—</span></p>
       </div>
       <div class="glass rounded-xl p-4">
-        <p class="text-xs text-slate-400 mb-1" data-i18n="sell_signals">SELL 信号</p>
+        <p class="text-xs text-slate-400 mb-1" data-i18n="sell_signal_label">SELL 信号</p>
         <p id="avoidCount" class="text-xl font-bold signal-avoid mono">—</p>
       </div>
     </div>
@@ -335,6 +335,22 @@ const i18n = {
     bind_success: '绑定成功',
     bind_failed: '绑定失败，请检查Key',
     key_bound: '已绑定',
+    buy_hold_label: '买入 / 持有',
+    sell_signal_label: '卖出信号',
+    signal_buy: '买入',
+    signal_hold: '持有',
+    signal_sell: '卖出',
+    signal_avoid: '规避',
+    signal_closed: '已关闭',
+    signal_neutral: '中性',
+    market_display_us: '美股',
+    market_display_hk: '港股',
+    market_display_a: 'A股',
+    market_display_all: '全市场',
+    sentiment_bullish: '看涨',
+    sentiment_bearish: '看跌',
+    sentiment_neutral: '中性',
+    sentiment_mixed: '分化',
   },
   en: {
     subtitle: 'AI Multi-Factor · Multi-Market Engine',
@@ -390,6 +406,22 @@ const i18n = {
     bind_success: 'Bound successfully',
     bind_failed: 'Bind failed, check your key',
     key_bound: 'Bound',
+    buy_hold_label: 'BUY / HOLD',
+    sell_signal_label: 'SELL Signals',
+    signal_buy: 'BUY',
+    signal_hold: 'HOLD',
+    signal_sell: 'SELL',
+    signal_avoid: 'AVOID',
+    signal_closed: 'CLOSED',
+    signal_neutral: 'NEUTRAL',
+    market_display_us: 'US Stock',
+    market_display_hk: 'HK Stock',
+    market_display_a: 'CN A-Share',
+    market_display_all: 'All Markets',
+    sentiment_bullish: 'Bullish',
+    sentiment_bearish: 'Bearish',
+    sentiment_neutral: 'Neutral',
+    sentiment_mixed: 'Mixed',
   },
   ja: {
     subtitle: 'AIマルチファクター・マルチマーケットエンジン',
@@ -445,6 +477,22 @@ const i18n = {
     bind_success: 'バインド成功',
     bind_failed: 'バインド失敗、キーを確認してください',
     key_bound: 'バインド済み',
+    buy_hold_label: '買い / ホールド',
+    sell_signal_label: '売りシグナル',
+    signal_buy: '買い',
+    signal_hold: 'ホールド',
+    signal_sell: '売り',
+    signal_avoid: '回避',
+    signal_closed: '終了',
+    signal_neutral: 'ニュートラル',
+    market_display_us: '米国株',
+    market_display_hk: '香港株',
+    market_display_a: 'A株',
+    market_display_all: '全市場',
+    sentiment_bullish: '強気',
+    sentiment_bearish: '弱気',
+    sentiment_neutral: '中立',
+    sentiment_mixed: '混合',
   }
 };
 
@@ -726,8 +774,10 @@ function scoreColor(score) {
 function renderDashboard(data) {
   const prefix = pricePrefix[currentMarketCode] || '';
   
-  document.getElementById('currentMarket').textContent = data.market || currentMarketCode;
-  document.getElementById('sentiment').textContent = data.market_summary.market_sentiment;
+  const marketDisplayKey = 'market_display_' + currentMarketCode.toLowerCase();
+  document.getElementById('currentMarket').textContent = t(marketDisplayKey) || data.market || currentMarketCode;
+  const sentimentKey = 'sentiment_' + (data.market_summary.market_sentiment || '').toLowerCase();
+  document.getElementById('sentiment').textContent = t(sentimentKey) !== sentimentKey ? t(sentimentKey) : data.market_summary.market_sentiment;
   document.getElementById('avgScore').textContent = data.market_summary.avg_score;
   document.getElementById('buyCount').textContent = data.market_summary.buy_signals;
   document.getElementById('holdCount').textContent = data.market_summary.hold_signals;
@@ -777,9 +827,10 @@ function renderTable(results) {
     }).join('');
     
     // Signal cell
-    let signalHtml = `<span class="px-2 py-1 rounded-md text-xs font-medium ${signalBg(r.signal)}">${r.signal}</span>`;
+    const signalText = t('signal_' + r.signal.toLowerCase()) || r.signal;
+    let signalHtml = `<span class="px-2 py-1 rounded-md text-xs font-medium ${signalBg(r.signal)}">${signalText}</span>`;
     if (isLocked) {
-      signalHtml = `<span class="relative inline-flex items-center gap-1"><span class="px-2 py-1 rounded-md text-xs font-medium ${signalBg(r.signal)}">${r.signal}</span><span class="text-xs" title="${t('unlock_hint')}">🔒</span></span>`;
+      signalHtml = `<span class="relative inline-flex items-center gap-1"><span class="px-2 py-1 rounded-md text-xs font-medium ${signalBg(r.signal)}">${signalText}</span><span class="text-xs" title="${t('unlock_hint')}">🔒</span></span>`;
     }
     
     const rowClass = isLocked ? 'locked-row' : '';
