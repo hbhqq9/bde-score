@@ -2410,7 +2410,7 @@ async def pricing_page():
         return HTMLResponse(content=f.read())
 
 
-@app.get("/terms", response_class=HTMLResponse)
+# [I18N] Disabled inline terms route - using template version
 async def terms_of_service():
     """Terms of Service"""
     html = f"""<!DOCTYPE html>
@@ -2519,7 +2519,8 @@ async def terms_of_service():
     return HTMLResponse(content=html)
 
 
-@app.get("/privacy", response_class=HTMLResponse)
+# [I18N] Disabled inline privacy route - using template version
+# [I18N] Disabled inline privacy route - using template version
 async def privacy_policy():
     """Privacy Policy &mdash; GDPR Compliant"""
     html = f"""<!DOCTYPE html>
