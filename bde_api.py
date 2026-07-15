@@ -264,7 +264,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # 🔒 Inject disclaimer into all JSON analysis responses
         if (request.url.path.startswith('/api/')
                 and 'application/json' in response.headers.get('content-type', '')
-                and request.url.path not in ('/api/health', '/api/keys/list', '/api/payment/config', '/api/payment/chain-status')):
+                and request.url.path not in ('/api/health', '/api/keys/list', '/api/payment/config', '/api/payment/chain-status')
+                and not request.url.path.startswith('/api/auth/')):
             try:
                 # Read the streamed body
                 body_chunks = []
