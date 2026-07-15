@@ -2200,6 +2200,7 @@ async def payment_page(request: Request):
             html = f.read()
         # 注入配置
         wallet = os.environ.get('BDE_WALLET_ADDRESS', '0x349Eea0E2f4d3594797851758325Da3eb49D4343')
+        usdc_contract = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'  # Base USDC
         html = html.replace('{{ WALLET_ADDRESS }}', wallet)
         html = html.replace('{{ USDC_CONTRACT }}', usdc_contract)
         html = html.replace('{{ PREMIUM_PRICE_USD }}', str(PAYMENT_PRICE_USD))
