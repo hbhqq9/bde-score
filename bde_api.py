@@ -175,6 +175,9 @@ app = FastAPI(
     openapi_url=None if os.environ.get("BDE_ENV", "production") == "production" else "/openapi.json",  # 🔒 P2: 生产环境禁用OpenAPI spec
 )
 
+# Mount static files for i18n and other static assets
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 # 🔒 P2: SQLite WAL mode helper - 提升并发性能，防止写入冲突
 def _get_db(db_path=DB_PATH):
