@@ -538,6 +538,12 @@ if __name__ == "__main__":
     # Get the underlying Starlette app from FastMCP
     app = mcp.streamable_http_app()
     
+    # Mount .well-known for Glama discovery
+    from starlette.staticfiles import StaticFiles
+    _well_known_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'docs', '.well-known')
+    if os.path.isdir(_well_known_dir):
+        app.mount('/.well-known', StaticFiles(directory=_well_known_dir), name='well-known')
+    
     # Add security middleware
     app.add_middleware(SecurityMiddleware)
     

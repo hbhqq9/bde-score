@@ -1,11 +1,13 @@
 {
-  "$schema": "https://glama.ai/mcp/schemas/server.json",
-  "maintainers": ["hbhqq9"],
+  "$schema": "https://glama.ai/mcp/schemas/connector.json",
+  "maintainers": [{ "email": "nnhbh@foxmail.com" }],
   "name": "BDE Score",
-  "description": "Multi-factor quantitative stock analysis MCP server for US, HK, and CN A-share markets. Transparent 0-100 composite scores with x402 micropayment support.",
+  "description": "Multi-factor quantitative stock analysis MCP server for US, HK, and CN A-share markets. Transparent 0-100 composite scores with EU AI Act Art.50 compliance.",
   "homepage": "https://hbhqq9.github.io/bde-score/",
+  "repository": "https://github.com/hbhqq9/bde-score",
   "transport": {
     "type": "streamable-http",
     "url": "https://freight-disabilities-agrees-rebates.trycloudflare.com/mcp"
-  }
+  },
+  "category": ["Finance", "AI Safety", "Data Analysis"]
 }

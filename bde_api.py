@@ -177,6 +177,8 @@ app = FastAPI(
 
 # Mount static files for i18n and other static assets
 app.mount("/static", StaticFiles(directory="static"), name="static")
+# Mount .well-known for agent discovery (Glama, A2A, etc.)
+app.mount("/.well-known", StaticFiles(directory="docs/.well-known"), name="well-known")
 
 
 # 🔒 P2: SQLite WAL mode helper - 提升并发性能，防止写入冲突
