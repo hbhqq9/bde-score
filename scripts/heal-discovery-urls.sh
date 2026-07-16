@@ -13,6 +13,7 @@ MCP_URL=""
 
 # === 1. 探测 API Tunnel ===
 KNOWN_API_URLS=(
+    "https://italic-telecharger-degrees-appendix.trycloudflare.com"
     "https://thinks-discussions-proof-dec.trycloudflare.com"
     "https://bathroom-ebooks-isa-accommodation.trycloudflare.com"
     "https://size-jackson-jesse-celebrity.trycloudflare.com"
@@ -36,6 +37,7 @@ done
 
 # === 2. 探测 MCP Tunnel ===
 KNOWN_MCP_URLS=(
+    "https://freight-disabilities-agrees-rebates.trycloudflare.com"
     "https://generators-computation-picked-emily.trycloudflare.com"
     "https://tex-adequate-date-facing.trycloudflare.com"
 )
@@ -104,6 +106,7 @@ PYEOF
 # === 5. 更新 live 文件（只替换已知过时的URL pattern） ===
 # 过时API URL列表
 STALE_API_HOSTS=(
+    "thinks-discussions-proof-dec.trycloudflare.com"
     "bathroom-ebooks-isa-accommodation.trycloudflare.com"
     "size-jackson-jesse-celebrity.trycloudflare.com"
     "study-comprehensive-jvc-mia.trycloudflare.com"
@@ -115,6 +118,7 @@ STALE_API_HOSTS=(
     "retrieve-jobs-congress-made.trycloudflare.com"
 )
 STALE_MCP_HOSTS=(
+    "generators-computation-picked-emily.trycloudflare.com"
     "tex-adequate-date-facing.trycloudflare.com"
 )
 
