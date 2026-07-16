@@ -47,9 +47,9 @@
   "description": "Comprehensive stock analysis with EU AI Act Art.50 compliance",
   "category": ["finance", "stock-analysis", "compliance"],
   "protocols": {
-    "a2a": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/.well-known/agent.json",
-    "mcp": "https://tex-adequate-date-facing.trycloudflare.com/.well-known/mcp.json",
-    "openai_plugin": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/.well-known/ai-plugin.json"
+    "a2a": "https://thinks-discussions-proof-dec.trycloudflare.com/.well-known/agent.json",
+    "mcp": "https://generators-computation-picked-emily.trycloudflare.com/.well-known/mcp.json",
+    "openai_plugin": "https://thinks-discussions-proof-dec.trycloudflare.com/.well-known/ai-plugin.json"
   },
   "capabilities": ["stock-analysis", "compliance-check", "risk-assessment"],
   "registration_time": "2026-07-13T21:00:00Z",

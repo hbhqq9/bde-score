@@ -19,22 +19,22 @@
   "service": [{
     "id": "did:web:hbhqq9.github.io:bde-score#mcp",
     "type": "MCPService",
-    "serviceEndpoint": "https://tex-adequate-date-facing.trycloudflare.com/mcp",
+    "serviceEndpoint": "https://generators-computation-picked-emily.trycloudflare.com/mcp",
     "description": "BDE Score MCP Server - Multi-market stock analysis"
   },{
     "id": "did:web:hbhqq9.github.io:bde-score#api",
     "type": "RESTAPI",
-    "serviceEndpoint": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com",
+    "serviceEndpoint": "https://thinks-discussions-proof-dec.trycloudflare.com",
     "description": "BDE Score REST API"
   },{
     "id": "did:web:hbhqq9.github.io:bde-score#registry",
     "type": "AgentRegistry",
-    "serviceEndpoint": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/api/v1/registry",
+    "serviceEndpoint": "https://thinks-discussions-proof-dec.trycloudflare.com/api/v1/registry",
     "description": "BDE Agent Registry - Decentralized agent discovery"
   },{
     "id": "did:web:hbhqq9.github.io:bde-score#compliance",
     "type": "ComplianceService",
-    "serviceEndpoint": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/compliance-check",
+    "serviceEndpoint": "https://thinks-discussions-proof-dec.trycloudflare.com/compliance-check",
     "description": "EU AI Act Art.50 compliance checker"
   }],
   "alsoKnownAs": [{

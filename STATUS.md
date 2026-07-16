@@ -6,7 +6,7 @@
 ### API Server
 - **Port**: 8890 (localhost)
 - **Status**: ✅ Running (PID: 31798)
-- **Tunnel**: https://bathroom-ebooks-isa-accommodation.trycloudflare.com
+- **Tunnel**: https://thinks-discussions-proof-dec.trycloudflare.com
 - **Health**: 200 OK
 
 ### MCP Server

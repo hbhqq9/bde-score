@@ -9,10 +9,10 @@
   },
   "api": {
     "type": "openapi",
-    "url": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/openapi.json",
+    "url": "https://thinks-discussions-proof-dec.trycloudflare.com/openapi.json",
     "is_user_authenticated": false
   },
-  "logo_url": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/static/logo.png",
+  "logo_url": "https://thinks-discussions-proof-dec.trycloudflare.com/static/logo.png",
   "contact_email": "support@bde-score.com",
-  "legal_info_url": "https://bathroom-ebooks-isa-accommodation.trycloudflare.com/privacy"
+  "legal_info_url": "https://thinks-discussions-proof-dec.trycloudflare.com/privacy"
 }

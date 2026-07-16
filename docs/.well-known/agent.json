@@ -47,10 +47,10 @@
     }
   },
   "endpoints": {
-    "api": "https://size-jackson-jesse-celebrity.trycloudflare.com",
+    "api": "https://thinks-discussions-proof-dec.trycloudflare.com",
     "mcp": "https://generators-computation-picked-emily.trycloudflare.com/mcp",
-    "compliance_check": "https://size-jackson-jesse-celebrity.trycloudflare.com/compliance-check",
-    "x402_pay_info": "https://size-jackson-jesse-celebrity.trycloudflare.com/pay/info"
+    "compliance_check": "https://thinks-discussions-proof-dec.trycloudflare.com/compliance-check",
+    "x402_pay_info": "https://thinks-discussions-proof-dec.trycloudflare.com/pay/info"
   },
   "authentication": {
     "type": "api_key",
