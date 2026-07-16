@@ -1,6 +1,6 @@
 #!/bin/bash
-# BDE Score 自愈型发现栈 URL 修复脚本 v3.0
-# v3.0: 全自动从日志发现3个Tunnel URL + 动态替换所有过时URL
+# BDE Score 自愈型发现栈 URL 修复脚本 v3.1
+# v3.1: 修复日志路径匹配（keepalive重建tunnel后日志文件名变化），支持多路径fallback
 # 不再依赖硬编码的已知URL列表，而是从日志文件自动发现
 set -e
 REPO_DIR="/app/data/所有对话/主对话/BDE-Stock"
