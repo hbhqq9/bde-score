@@ -1,4 +1,14 @@
 """
+BDE Score™ - AI-Powered Multi-Market Stock Analysis MCP Server
+Copyright (C) 2026 BDE Score™ (https://github.com/hbhqq9/bde-score)
+
+Licensed under AGPL-3.0 with commercial option.
+If you run a modified version on a network server, you must make
+the complete source code available. See LICENSE for details.
+Commercial licensing available: nnhbh@foxmail.com
+"""
+
+"""
 BDE-Stock IBKR Adapter - Interactive Brokers 适配器
 使用 ib_insync 库通过 Socket 连接 IB Gateway / TWS
 """

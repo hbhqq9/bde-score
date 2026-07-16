@@ -5,7 +5,7 @@
 [![Live](https://img.shields.io/badge/Live-Try%20Now-blue?style=for-the-badge)](https://rebel-north-intermediate-roof.trycloudflare.com)
 [![API](https://img.shields.io/badge/API-RESTful-green?style=for-the-badge)](#api)
 [![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-Art.50%20Compliant-orange?style=for-the-badge)](#compliance)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-AGPL--3.0-blue?style=for-the-badge)](LICENSE) [![Commercial](https://img.shields.io/badge/Commercial-License-green?style=for-the-badge)](#license)
 
 ---
 
@@ -102,7 +102,11 @@ BDE Score™ is **compliance-first by design**. When Art.50 takes effect on **Au
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details.
+**Dual License — AGPL-3.0 / Commercial**
+
+- **Open Source**: This project is licensed under the [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0). If you use this software on a network server, you **must** make your complete source code available to users.
+- **Commercial License**: If your use case requires proprietary deployment without source code disclosure (SaaS, enterprise, embedded products), contact **nnhbh@foxmail.com** for a commercial license.
+- **EU AI Act Compliance**: BDE Score™ includes native Article 50 transparency markers — the only open-source MCP server with built-in regulatory compliance.
 
 ---
 

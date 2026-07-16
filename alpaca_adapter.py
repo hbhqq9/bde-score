@@ -1,4 +1,14 @@
 """
+BDE Score™ - AI-Powered Multi-Market Stock Analysis MCP Server
+Copyright (C) 2026 BDE Score™ (https://github.com/hbhqq9/bde-score)
+
+Licensed under AGPL-3.0 with commercial option.
+If you run a modified version on a network server, you must make
+the complete source code available. See LICENSE for details.
+Commercial licensing available: nnhbh@foxmail.com
+"""
+
+"""
 BDE-Stock Alpaca Adapter - Alpaca 适配器
 将原 alpaca_client.py 功能封装到统一 BrokerAdapter 接口中
 保留代码备用，暂不可用（账户已停用）
