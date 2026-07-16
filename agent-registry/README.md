@@ -47,9 +47,9 @@
   "description": "Comprehensive stock analysis with EU AI Act Art.50 compliance",
   "category": ["finance", "stock-analysis", "compliance"],
   "protocols": {
-    "a2a": "https://italic-telecharger-degrees-appendix.trycloudflare.com.trycloudflare.com/.well-known/agent.json",
-    "mcp": "https://freight-disabilities-agrees-rebates.trycloudflare.com/.well-known/mcp.json",
-    "openai_plugin": "https://italic-telecharger-degrees-appendix.trycloudflare.com.trycloudflare.com/.well-known/ai-plugin.json"
+    "a2a": "https://italic-telecharger-degrees-appendix.trycloudflare.com/.well-known/agent.json",
+    "mcp": "https://italic-telecharger-degrees-appendix.trycloudflare.com/.well-known/mcp.json",
+    "openai_plugin": "https://italic-telecharger-degrees-appendix.trycloudflare.com/.well-known/ai-plugin.json"
   },
   "capabilities": ["stock-analysis", "compliance-check", "risk-assessment"],
   "registration_time": "2026-07-13T21:00:00Z",

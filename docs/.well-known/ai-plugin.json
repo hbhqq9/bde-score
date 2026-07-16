@@ -9,10 +9,10 @@
   },
   "api": {
     "type": "openapi",
-    "url": "https://italic-telecharger-degrees-appendix.trycloudflare.com.trycloudflare.com/openapi.json",
+    "url": "https://italic-telecharger-degrees-appendix.trycloudflare.com/openapi.json",
     "is_user_authenticated": false
   },
-  "logo_url": "https://italic-telecharger-degrees-appendix.trycloudflare.com.trycloudflare.com/static/logo.png",
+  "logo_url": "https://italic-telecharger-degrees-appendix.trycloudflare.com/static/logo.png",
   "contact_email": "support@bde-score.com",
-  "legal_info_url": "https://italic-telecharger-degrees-appendix.trycloudflare.com.trycloudflare.com/privacy"
+  "legal_info_url": "https://italic-telecharger-degrees-appendix.trycloudflare.com/privacy"
 }

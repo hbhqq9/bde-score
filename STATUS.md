@@ -6,7 +6,7 @@
 ### API Server
 - **Port**: 8890 (localhost)
 - **Status**: ✅ Running (PID: 31798)
-- **Tunnel**: https://italic-telecharger-degrees-appendix.trycloudflare.com.trycloudflare.com
+- **Tunnel**: https://italic-telecharger-degrees-appendix.trycloudflare.com
 - **Health**: 200 OK
 
 ### MCP Server

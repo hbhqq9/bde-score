@@ -4,7 +4,7 @@
       "id": "f473f03d098785a0",
       "name": "BDE Score Financial Analysis Engine",
       "description": "Comprehensive stock analysis with EU AI Act Art.50 compliance. 6 MCP tools: stock analysis, compliance check, risk assessment. Agent-native discovery via .well-known protocols.",
-      "primary_endpoint": "https://italic-telecharger-degrees-appendix.trycloudflare.com.trycloudflare.com/.well-known/agent.json",
+      "primary_endpoint": "https://italic-telecharger-degrees-appendix.trycloudflare.com/.well-known/agent.json",
       "category": [
         "finance",
         "stock-analysis",
@@ -13,9 +13,9 @@
         "ai-agent"
       ],
       "protocols": {
-        "a2a": "https://italic-telecharger-degrees-appendix.trycloudflare.com.trycloudflare.com/.well-known/agent.json",
-        "mcp": "https://freight-disabilities-agrees-rebates.trycloudflare.com/.well-known/mcp.json",
-        "openai_plugin": "https://italic-telecharger-degrees-appendix.trycloudflare.com.trycloudflare.com/.well-known/ai-plugin.json"
+        "a2a": "https://italic-telecharger-degrees-appendix.trycloudflare.com/.well-known/agent.json",
+        "mcp": "https://italic-telecharger-degrees-appendix.trycloudflare.com/.well-known/mcp.json",
+        "openai_plugin": "https://italic-telecharger-degrees-appendix.trycloudflare.com/.well-known/ai-plugin.json"
       },
       "capabilities": [
         "stock-analysis",

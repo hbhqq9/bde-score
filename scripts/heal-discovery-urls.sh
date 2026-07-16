@@ -177,36 +177,28 @@ for f in "${LIVE_FILES[@]}"; do
     [ -f "$f" ] || continue
     changed=false
     
+    # Step 1: 先替换所有已知旧host为API host
     while IFS= read -r old_host; do
         [ -z "$old_host" ] && continue
-        old_host="${old_host// /}"  # trim whitespace
+        old_host="${old_host// /}"
         [ "$old_host" = "$API_HOST" ] && continue
         [ "$old_host" = "$MCP_HOST" ] && continue
         [ "$old_host" = "$REG_HOST" ] && continue
-        
-        # 检查文件中是否有这个旧host
         if grep -q "$old_host" "$f" 2>/dev/null; then
-            # 判断上下文：如果在/mcp路径附近，替换为MCP host
-            # 如果在registry相关上下文，替换为Registry host
-            # 默认替换为API host
-            if grep -q "${old_host}.*mcp\|mcp.*${old_host}" "$f" 2>/dev/null; then
-                sed -i "s|${old_host}|${MCP_HOST}|g" "$f"
-            else
-                sed -i "s|${old_host}|${API_HOST}|g" "$f"
-            fi
+            sed -i "s|${old_host}|${API_HOST}|g" "$f"
             changed=true
         fi
     done <<< "$ALL_KNOWN_HOSTS"
     
-    # Registry URL replacement (specific to registry context)
-    if [ -n "$REG_URL" ]; then
-        # 查找frequently-plays-pit-friendship等旧registry host
-        for old_reg in "frequently-plays-pit-friendship"; do
-            if grep -q "$old_reg" "$f" 2>/dev/null; then
-                sed -i "s|${old_reg}|${REG_HOST}|g" "$f"
-                changed=true
-            fi
-        done
+    # Step 2: 将 /mcp 上下文中的API host替换为MCP host
+    sed -i "s|${API_HOST}/mcp|${MCP_HOST}/mcp|g" "$f"
+    
+    # Step 3: Registry URL (仅在ACCESS_URLS.md和STATUS.md中添加)
+    if [ -n "$REG_URL" ] && [[ "$f" == *"ACCESS_URLS"* || "$f" == *"STATUS"* ]]; then
+        grep -q "$REG_HOST" "$f" 2>/dev/null || {
+            # Registry URL not yet in file, skip auto-insert (manual management)
+            :
+        }
     fi
     
     $changed && echo "  📝 Updated: $f"
