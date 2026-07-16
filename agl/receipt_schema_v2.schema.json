@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hbhqq9.github.io/bde-score/agl/receipt_schema_v2.schema.json",
+  "title": "AGL Receipt Schema v2.0",
+  "description": "Drift-aware receipt schema for Enterprise AI OS Layer ⑦ governance. 6 base fields + 3 drift-aware fields.",
+  "type": "object",
+  "required": [
+    "receipt_id",
+    "timestamp",
+    "disclosure",
+    "identity",
+    "policy_decision",
+    "execution",
+    "outcome",
+    "on_chain",
+    "policy_version",
+    "validity_window",
+    "status",
+    "content_hash"
+  ],
+  "properties": {
+    "receipt_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID v7 (time-sortable) unique identifier for this receipt"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 creation timestamp"
+    },
+    "disclosure": {
+      "type": "object",
+      "description": "Field 1: Policy-facing transparency event",
+      "required": ["generated_by", "assessment_type", "ai_system"],
+      "properties": {
+        "generated_by": {
+          "type": "string",
+          "description": "Name and version of the AI system"
+        },
+        "assessment_type": {
+          "type": "string",
+          "description": "Type of automated assessment performed"
+        },
+        "methodology": {
+          "type": "string",
+          "description": "Brief description of the methodology"
+        },
+        "ai_system": {
+          "type": "boolean",
+          "description": "Always true — declares this is AI-generated content"
+        },
+        "eu_ai_act_art50": {
+          "type": "string",
+          "enum": ["compliant", "non-compliant", "pending-review"],
+          "description": "EU AI Act Art.50 compliance status"
+        },
+        "compliance_page": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to the compliance documentation"
+        },
+        "disclaimer": {
+          "type": "string",
+          "description": "Legal disclaimer text"
+        }
+      },
+      "additionalProperties": true
+    },
+    "identity": {
+      "type": "object",
+      "description": "Field 2: Agent/runtime principal that made the decision",
+      "required": ["agent_name", "agent_version"],
+      "properties": {
+        "agent_name": {
+          "type": "string",
+          "description": "Name of the agent or system component"
+        },
+        "agent_version": {
+          "type": "string",
+          "description": "Version of the agent"
+        },
+        "runtime": {
+          "type": "string",
+          "description": "Runtime environment (e.g., python-fastmcp)"
+        },
+        "principal": {
+          "type": "string",
+          "description": "Security principal / identity context"
+        }
+      },
+      "additionalProperties": true
+    },
+    "policy_decision": {
+      "type": "object",
+      "description": "Field 3: Governance decision receipt — what rule was applied",
+      "required": ["rule", "decision"],
+      "properties": {
+        "rule": {
+          "type": "string",
+          "description": "Identifier of the governance rule applied"
+        },
+        "decision": {
+          "type": "string",
+          "description": "The governance decision made"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low"],
+          "description": "Confidence level of the decision"
+        }
+      },
+      "additionalProperties": true
+    },
+    "execution": {
+      "type": "object",
+      "description": "Field 4: Action/tool receipt — what was executed",
+      "required": ["tool"],
+      "properties": {
+        "tool": {
+          "type": "string",
+          "description": "Name of the tool or action executed"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Parameters passed to the tool"
+        },
+        "read_only": {
+          "type": "boolean",
+          "description": "Whether the execution was read-only"
+        }
+      },
+      "additionalProperties": true
+    },
+    "outcome": {
+      "type": "object",
+      "description": "Field 5: Result/evidence state",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["completed", "failed", "partial", "invalidated"],
+          "description": "Execution outcome status"
+        },
+        "summary": {
+          "type": "object",
+          "description": "Summary of the result"
+        }
+      },
+      "additionalProperties": true
+    },
+    "on_chain": {
+      "type": "object",
+      "description": "Field 6: Tamper-evidence anchor",
+      "required": ["anchor_type", "content_hash"],
+      "properties": {
+        "anchor_type": {
+          "type": "string",
+          "description": "Type of anchoring (e.g., sha256-local, blockchain)"
+        },
+        "content_hash": {
+          "type": "string",
+          "description": "SHA-256 hash of the receipt content"
+        },
+        "chain_position": {
+          "type": ["integer", "null"],
+          "description": "Position in the hash chain (null if not chained)"
+        },
+        "previous_hash": {
+          "type": ["string", "null"],
+          "description": "Hash of the previous receipt in chain"
+        }
+      },
+      "additionalProperties": true
+    },
+    "policy_version": {
+      "type": "object",
+      "description": "Field 7 (DRIFT-AWARE): Exact compliance/rule set at decision time",
+      "required": ["rule_set_id", "schema_version", "compliance_framework", "effective_from"],
+      "properties": {
+        "rule_set_id": {
+          "type": "string",
+          "description": "Identifier of the rule set (e.g., eu-ai-act-art50-2026-01)"
+        },
+        "schema_version": {
+          "type": "string",
+          "description": "Version of the receipt schema used"
+        },
+        "compliance_framework": {
+          "type": "string",
+          "description": "Name of the compliance framework"
+        },
+        "effective_from": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this rule set became effective"
+        }
+      },
+      "additionalProperties": false
+    },
+    "validity_window": {
+      "type": "object",
+      "description": "Field 8 (DRIFT-AWARE): Temporal scope of decision validity",
+      "required": ["valid_from", "context"],
+      "properties": {
+        "valid_from": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start of validity period"
+        },
+        "valid_until": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "End of validity period (null = indefinite)"
+        },
+        "context": {
+          "type": "object",
+          "description": "Contextual parameters (e.g., market, symbol, scope)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "supersedes_or_invalidates": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Field 9 (DRIFT-AWARE): Links to a prior receipt this event supersedes",
+          "required": ["receipt_id", "reason"],
+          "properties": {
+            "receipt_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "UUID of the superseded/invalidated receipt"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Human-readable reason for invalidation"
+            },
+            "superseded_by": {
+              "type": ["string", "null"],
+              "format": "uuid",
+              "description": "UUID of the replacement receipt (if any)"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "null",
+          "description": "No supersession — this is an original receipt"
+        }
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "superseded", "invalidated"],
+      "description": "Current lifecycle status of the receipt"
+    },
+    "content_hash": {
+      "type": "string",
+      "description": "SHA-256 hash of the canonical JSON representation for integrity verification"
+    }
+  },
+  "additionalProperties": false
+}
