@@ -1,81 +1,108 @@
 #!/bin/bash
-# BDE Score 自愈型发现栈 URL 修复脚本 v2.1
-# v2.1: 只更新live文件，不碰历史文档；不逐一测试旧URL
+# BDE Score 自愈型发现栈 URL 修复脚本 v3.0
+# v3.0: 全自动从日志发现3个Tunnel URL + 动态替换所有过时URL
+# 不再依赖硬编码的已知URL列表，而是从日志文件自动发现
 set -e
 REPO_DIR="/app/data/所有对话/主对话/BDE-Stock"
 cd "$REPO_DIR"
 
 TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-echo "[$TIMESTAMP] Checking tunnel health..."
+echo "[$TIMESTAMP] 🔧 auto-heal v3.0: discovering tunnel URLs from logs..."
 
-API_URL=""
-MCP_URL=""
+# === 1. 从日志自动发现当前URL ===
+discover_url() {
+    local log_file="$1"
+    local health_path="$2"
+    local expected_status="$3"
+    
+    # 从日志提取所有trycloudflare URL（去重）
+    local urls=$(grep -oP 'https://[a-z0-9-]+\.trycloudflare\.com' "$log_file" 2>/dev/null | sort -u | tac)
+    
+    for url in $urls; do
+        local status=$(curl -s --max-time 5 -o /dev/null -w "%{http_code}" "$url${health_path}" 2>/dev/null)
+        if [ "$status" = "$expected_status" ]; then
+            echo "$url"
+            return 0
+        fi
+    done
+    return 1
+}
 
-# === 1. 探测 API Tunnel ===
-KNOWN_API_URLS=(
-    "https://italic-telecharger-degrees-appendix.trycloudflare.com"
-    "https://thinks-discussions-proof-dec.trycloudflare.com"
-    "https://bathroom-ebooks-isa-accommodation.trycloudflare.com"
-    "https://size-jackson-jesse-celebrity.trycloudflare.com"
-    "https://study-comprehensive-jvc-mia.trycloudflare.com"
-)
-
-AUTO_API_URL=$(grep -oP 'https://[a-z0-9-]+\.trycloudflare\.com' /tmp/tunnel_api.log 2>/dev/null | tail -1)
-if [ -n "$AUTO_API_URL" ]; then
-    KNOWN_API_URLS=("$AUTO_API_URL" "${KNOWN_API_URLS[@]}")
+echo "  Discovering API URL from /tmp/tunnel_api.log..."
+API_URL=$(discover_url "/tmp/tunnel_api.log" "/" "200") || API_URL=""
+if [ -n "$API_URL" ]; then
+    API_HOST="${API_URL#https://}"
+    echo "  ✅ API: $API_URL"
+else
+    echo "  ❌ API tunnel not found in logs"
 fi
 
-for url in "${KNOWN_API_URLS[@]}"; do
-    STATUS=$(curl -s --max-time 5 -o /dev/null -w "%{http_code}" "$url/api/health" 2>/dev/null)
-    if [ "$STATUS" = "200" ]; then
-        API_URL="$url"
-        API_HOST="${url#https://}"
-        echo "  API: $url ✅"
-        break
-    fi
-done
-
-# === 2. 探测 MCP Tunnel ===
-KNOWN_MCP_URLS=(
-    "https://freight-disabilities-agrees-rebates.trycloudflare.com"
-    "https://generators-computation-picked-emily.trycloudflare.com"
-    "https://tex-adequate-date-facing.trycloudflare.com"
-)
-
-AUTO_MCP_URL=$(grep -oP 'https://[a-z0-9-]+\.trycloudflare\.com' /var/log/cloudflared-mcp.log 2>/dev/null | tail -1)
-if [ -n "$AUTO_MCP_URL" ]; then
-    KNOWN_MCP_URLS=("$AUTO_MCP_URL" "${KNOWN_MCP_URLS[@]}")
+echo "  Discovering MCP URL from /tmp/tunnel_mcp.log..."
+MCP_URL=$(discover_url "/tmp/tunnel_mcp.log" "/mcp" "401") || MCP_URL=""
+if [ -n "$MCP_URL" ]; then
+    MCP_HOST="${MCP_URL#https://}"
+    echo "  ✅ MCP: $MCP_URL"
+else
+    echo "  ❌ MCP tunnel not found in logs"
 fi
 
-for url in "${KNOWN_MCP_URLS[@]}"; do
-    STATUS=$(curl -s --max-time 5 -o /dev/null -w "%{http_code}" "$url/mcp" 2>/dev/null)
-    if [ "$STATUS" = "401" ]; then
-        MCP_URL="$url"
-        MCP_HOST="${url#https://}"
-        echo "  MCP: $url ✅"
-        break
-    fi
-done
+echo "  Discovering Registry URL from /tmp/tunnel_registry.log..."
+REG_URL=$(discover_url "/tmp/tunnel_registry.log" "/" "200") || REG_URL=""
+if [ -n "$REG_URL" ]; then
+    REG_HOST="${REG_URL#https://}"
+    echo "  ✅ Registry: $REG_URL"
+else
+    echo "  ❌ Registry tunnel not found in logs"
+fi
 
+# 至少需要API和MCP
 if [ -z "$API_URL" ] || [ -z "$MCP_URL" ]; then
-    echo "  ❌ Tunnel URLs not reachable."
+    echo "  ❌ Critical tunnels (API+MCP) not reachable. Abort."
     pgrep -x cloudflared > /dev/null && echo "  Process running but URLs stale" || echo "  Process NOT running"
     exit 1
 fi
 
-# === 3. 比较当前mcp.json是否需要更新 ===
-CURRENT=$(python3 -c "import json; print(json.load(open('docs/.well-known/mcp.json'))['transport']['url'].split('/mcp')[0])" 2>/dev/null)
+# === 2. 检查是否需要更新 ===
+NEEDS_UPDATE=false
 
-if [ "$CURRENT" = "$MCP_URL" ]; then
-    # Even if mcp.json is current, check if README has the current API URL
-    if grep -q "$API_HOST" README.md 2>/dev/null; then
-        echo "  All URLs up-to-date ✅"
-        exit 0
-    fi
-    echo "  ⚠️ mcp.json OK but README may have stale API URL"
+# 检查.well-known/mcp.json
+CURRENT_MCP=$(python3 -c "import json; print(json.load(open('docs/.well-known/mcp.json'))['transport']['url'].split('/mcp')[0])" 2>/dev/null)
+[ "$CURRENT_MCP" != "$MCP_URL" ] && NEEDS_UPDATE=true
+
+# 检查README是否有当前API URL
+grep -q "$API_HOST" README.md 2>/dev/null || NEEDS_UPDATE=true
+
+# 检查是否有Registry URL
+if [ -n "$REG_URL" ]; then
+    grep -q "$REG_HOST" ACCESS_URLS.md 2>/dev/null || NEEDS_UPDATE=true
 fi
 
-echo "  🔧 Updating files..."
+if [ "$NEEDS_UPDATE" = false ]; then
+    echo "  ✅ All URLs up-to-date"
+    exit 0
+fi
+
+echo "  🔄 Updating files..."
+
+# === 3. 构建完整过时URL列表（从git历史+已知列表） ===
+# 所有历史trycloudflare host（动态收集+硬编码fallback）
+ALL_KNOWN_HOSTS=$(cat << 'HOSTS'
+italic-telecharger-degrees-appendix
+thinks-discussions-proof-dec
+bathroom-ebooks-isa-accommodation
+size-jackson-jesse-celebrity
+study-comprehensive-jvc-mia
+refresh-bringing-goat-buildings
+producers-zum-brochures-elvis
+appropriate-movie-skin-formats
+atlantic-remains-atomic-floor
+burning-until-bath-breeding
+retrieve-jobs-congress-made
+tex-adequate-date-facing
+generators-computation-picked-emily
+frequently-plays-pit-friendship
+HOSTS
+)
 
 # === 4. 更新 .well-known files ===
 python3 << PYEOF
@@ -83,46 +110,52 @@ import json
 
 api_url = "$API_URL"
 mcp_url = "$MCP_URL"
+reg_url = "$REG_URL"
 timestamp = "$TIMESTAMP"
 
 # Update mcp.json
-mcp = json.load(open('docs/.well-known/mcp.json'))
-mcp['transport']['url'] = f'{mcp_url}/mcp'
-mcp['metadata']['last_verified'] = timestamp
-json.dump(mcp, open('docs/.well-known/mcp.json','w'), indent=2, ensure_ascii=False)
+try:
+    mcp = json.load(open('docs/.well-known/mcp.json'))
+    mcp['transport']['url'] = f'{mcp_url}/mcp'
+    mcp['metadata']['last_verified'] = timestamp
+    json.dump(mcp, open('docs/.well-known/mcp.json','w'), indent=2, ensure_ascii=False)
+    print('  ✅ mcp.json updated')
+except Exception as e:
+    print(f'  ⚠️ mcp.json: {e}')
 
 # Update agent.json
-agent = json.load(open('docs/.well-known/agent.json'))
-agent['endpoints']['api'] = api_url
-agent['endpoints']['mcp'] = f'{mcp_url}/mcp'
-agent['endpoints']['compliance_check'] = f'{api_url}/compliance-check'
-agent['endpoints']['x402_pay_info'] = f'{api_url}/pay/info'
-agent['last_verified'] = timestamp
-json.dump(agent, open('docs/.well-known/agent.json','w'), indent=2, ensure_ascii=False)
+try:
+    agent = json.load(open('docs/.well-known/agent.json'))
+    agent['endpoints']['api'] = api_url
+    agent['endpoints']['mcp'] = f'{mcp_url}/mcp'
+    agent['endpoints']['compliance_check'] = f'{api_url}/compliance-check'
+    agent['endpoints']['x402_pay_info'] = f'{api_url}/pay/info'
+    agent['last_verified'] = timestamp
+    json.dump(agent, open('docs/.well-known/agent.json','w'), indent=2, ensure_ascii=False)
+    print('  ✅ agent.json updated')
+except Exception as e:
+    print(f'  ⚠️ agent.json: {e}')
 
-print('  ✅ .well-known updated')
+# Update agent-card.json if exists
+try:
+    card = json.load(open('docs/.well-known/agent-card.json'))
+    if 'url' in card:
+        card['url'] = api_url
+    if 'endpoints' in card:
+        card['endpoints']['api'] = api_url
+        card['endpoints']['mcp'] = f'{mcp_url}/mcp'
+    json.dump(card, open('docs/.well-known/agent-card.json','w'), indent=2, ensure_ascii=False)
+    print('  ✅ agent-card.json updated')
+except:
+    pass
 PYEOF
 
-# === 5. 更新 live 文件（只替换已知过时的URL pattern） ===
-# 过时API URL列表
-STALE_API_HOSTS=(
-    "thinks-discussions-proof-dec.trycloudflare.com"
-    "bathroom-ebooks-isa-accommodation.trycloudflare.com"
-    "size-jackson-jesse-celebrity.trycloudflare.com"
-    "study-comprehensive-jvc-mia.trycloudflare.com"
-    "refresh-bringing-goat-buildings.trycloudflare.com"
-    "producers-zum-brochures-elvis.trycloudflare.com"
-    "appropriate-movie-skin-formats.trycloudflare.com"
-    "atlantic-remains-atomic-floor.trycloudflare.com"
-    "burning-until-bath-breeding.trycloudflare.com"
-    "retrieve-jobs-congress-made.trycloudflare.com"
-)
-STALE_MCP_HOSTS=(
-    "generators-computation-picked-emily.trycloudflare.com"
-    "tex-adequate-date-facing.trycloudflare.com"
-)
+# === 5. 更新 live 文件 ===
+# 替换策略：
+# - MCP上下文的旧URL → 替换为当前MCP host
+# - Registry上下文的旧URL → 替换为当前Registry host  
+# - 其他旧URL → 替换为当前API host
 
-# Only update these live files (NOT historical docs/reports/blogs)
 LIVE_FILES=(
     "README.md"
     "ACCESS_URLS.md"
@@ -130,30 +163,69 @@ LIVE_FILES=(
     "agent-registry/README.md"
     "agent-registry/agents.json"
     "agent-registry/registry.html"
+    "docs/.well-known/agent-card.json"
+    "docs/.well-known/ai-plugin.json"
+    "docs/.well-known/glama.json"
+    "docs/.well-known/websub.json"
 )
+
+API_HOST_ESC="${API_HOST//./\\.}"
+MCP_HOST_ESC="${MCP_HOST//./\\.}"
+REG_HOST_ESC="${REG_HOST//./\\.}"
 
 for f in "${LIVE_FILES[@]}"; do
     [ -f "$f" ] || continue
-    for old in "${STALE_API_HOSTS[@]}"; do
-        sed -i "s|$old|$API_HOST/g" "$f"
-    done
-    for old in "${STALE_MCP_HOSTS[@]}"; do
-        # In MCP context (e.g. /mcp path), replace with MCP host
-        if grep -q "$old" "$f" 2>/dev/null; then
-            sed -i "s|$old|$MCP_HOST|g" "$f"
+    changed=false
+    
+    while IFS= read -r old_host; do
+        [ -z "$old_host" ] && continue
+        old_host="${old_host// /}"  # trim whitespace
+        [ "$old_host" = "$API_HOST" ] && continue
+        [ "$old_host" = "$MCP_HOST" ] && continue
+        [ "$old_host" = "$REG_HOST" ] && continue
+        
+        # 检查文件中是否有这个旧host
+        if grep -q "$old_host" "$f" 2>/dev/null; then
+            # 判断上下文：如果在/mcp路径附近，替换为MCP host
+            # 如果在registry相关上下文，替换为Registry host
+            # 默认替换为API host
+            if grep -q "${old_host}.*mcp\|mcp.*${old_host}" "$f" 2>/dev/null; then
+                sed -i "s|${old_host}|${MCP_HOST}|g" "$f"
+            else
+                sed -i "s|${old_host}|${API_HOST}|g" "$f"
+            fi
+            changed=true
         fi
-    done
+    done <<< "$ALL_KNOWN_HOSTS"
+    
+    # Registry URL replacement (specific to registry context)
+    if [ -n "$REG_URL" ]; then
+        # 查找frequently-plays-pit-friendship等旧registry host
+        for old_reg in "frequently-plays-pit-friendship"; do
+            if grep -q "$old_reg" "$f" 2>/dev/null; then
+                sed -i "s|${old_reg}|${REG_HOST}|g" "$f"
+                changed=true
+            fi
+        done
+    fi
+    
+    $changed && echo "  📝 Updated: $f"
 done
 
 echo "  ✅ Live files updated"
 
 # === 6. Git commit and push ===
 cd "$REPO_DIR"
-git add docs/.well-known/mcp.json docs/.well-known/agent.json \
-    README.md ACCESS_URLS.md STATUS.md \
-    agent-registry/README.md agent-registry/agents.json agent-registry/registry.html 2>/dev/null
+git add docs/.well-known/ README.md ACCESS_URLS.md STATUS.md \
+    agent-registry/ scripts/heal-discovery-urls.sh 2>/dev/null
 
 git diff --cached --quiet && echo "  No changes to commit" && exit 0
 
-git commit -m "🔧 auto-heal v2.1: URLs updated ($TIMESTAMP)" 2>/dev/null && \
+git commit -m "🔧 auto-heal v3.0: auto-discovered URLs from logs ($TIMESTAMP)
+
+API: $API_HOST
+MCP: $MCP_HOST
+Registry: ${REG_HOST:-N/A}" 2>/dev/null && \
 git push origin master 2>/dev/null && echo "  ✅ Pushed" || echo "  ⚠️ Push failed"
+
+echo "[$TIMESTAMP] ✅ auto-heal complete"

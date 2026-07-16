@@ -9,11 +9,11 @@
 
 ### 📈 Live BDE Scores (real-time)
 
-[![Market](https://img.shields.io/endpoint?url=https://italic-telecharger-degrees-appendix.trycloudflare.com/api/badge)](https://github.com/hbhqq9/bde-score)
-[![AAPL](https://img.shields.io/endpoint?url=https://italic-telecharger-degrees-appendix.trycloudflare.com/api/badge?symbol=AAPL)]()
-[![NVDA](https://img.shields.io/endpoint?url=https://italic-telecharger-degrees-appendix.trycloudflare.com/api/badge?symbol=NVDA)]()
-[![00700](https://img.shields.io/endpoint?url=https://italic-telecharger-degrees-appendix.trycloudflare.com/api/badge?symbol=00700)]()
-[![SH600519](https://img.shields.io/endpoint?url=https://italic-telecharger-degrees-appendix.trycloudflare.com/api/badge?symbol=SH600519)]()
+[![Market](https://img.shields.io/endpoint?url=https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/api/badge)](https://github.com/hbhqq9/bde-score)
+[![AAPL](https://img.shields.io/endpoint?url=https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/api/badge?symbol=AAPL)]()
+[![NVDA](https://img.shields.io/endpoint?url=https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/api/badge?symbol=NVDA)]()
+[![00700](https://img.shields.io/endpoint?url=https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/api/badge?symbol=00700)]()
+[![SH600519](https://img.shields.io/endpoint?url=https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/api/badge?symbol=SH600519)]()
 
 ---
 
@@ -41,10 +41,10 @@ BDE Score™ is a **transparent, multi-factor quantitative scoring system** that
 
 ```bash
 # Get compliance score (JSON)
-curl "https://italic-telecharger-degrees-appendix.trycloudflare.com/compliance-check?url=https://your-mcp-endpoint.com"
+curl "https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/compliance-check?url=https://your-mcp-endpoint.com"
 
 # Get visual report (HTML)
-# Open in browser: https://italic-telecharger-degrees-appendix.trycloudflare.com/compliance-check?url=https://your-mcp-endpoint.com
+# Open in browser: https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/compliance-check?url=https://your-mcp-endpoint.com
 ```
 
 **10 automated checks** covering HTTPS, security headers, API documentation, privacy policy, rate limiting, and EU AI Act Art.50 transparency.
@@ -95,17 +95,17 @@ Results appear in GitHub Step Summary. [Learn more](#github-action)
 
 ```bash
 # Get latest scores (US market)
-curl https://italic-telecharger-degrees-appendix.trycloudflare.com/api/snapshot?market=US
+curl https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/api/snapshot?market=US
 
 # Get all markets
-curl https://italic-telecharger-degrees-appendix.trycloudflare.com/api/snapshot?market=ALL
+curl https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/api/snapshot?market=ALL
 
 # With Premium API Key (unlimited access)
 curl -H "X-API-Key: bde_your_key_here" \
-  https://italic-telecharger-degrees-appendix.trycloudflare.com/api/snapshot?market=ALL
+  https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/api/snapshot?market=ALL
 
 # Historical data
-curl https://italic-telecharger-degrees-appendix.trycloudflare.com/api/history?symbol=AAPL&days=30
+curl https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/api/history?symbol=AAPL&days=30
 ```
 
 ### Pricing
@@ -132,17 +132,17 @@ BDE Score™ supports the [x402 protocol](https://x402.org) — HTTP 402 Payment
 
 ```bash
 # 1. Discover pricing & config
-curl https://italic-telecharger-degrees-appendix.trycloudflare.com/pay/info
+curl https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/pay/info
 
 # 2. Check your free quota
-curl https://italic-telecharger-degrees-appendix.trycloudflare.com/pay/free
+curl https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/pay/free
 
 # 3. First 3 queries are FREE! No payment needed.
-curl https://italic-telecharger-degrees-appendix.trycloudflare.com/pay/query?symbol=AAPL
+curl https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/pay/query?symbol=AAPL
 
 # 4. After free quota, pay $0.01 with x402 (USDC on Base)
 # The server returns HTTP 402 with payment requirements:
-curl -i https://italic-telecharger-degrees-appendix.trycloudflare.com/pay/query?symbol=NVDA
+curl -i https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/pay/query?symbol=NVDA
 
 # Response: 402 Payment Required
 # {
@@ -170,7 +170,7 @@ client.register("eip155:*", ExactEvmScheme(signer=your_signer))
 
 # Auto-pays $0.01 USDC on Base, returns BDE Score
 response = await client.get(
-    "https://italic-telecharger-degrees-appendix.trycloudflare.com/pay/query?symbol=AAPL"
+    "https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/pay/query?symbol=AAPL"
 )
 ```
 
@@ -213,7 +213,7 @@ BDE Score is directly callable by AI agents — no registration, no API keys.
 **Remote Server (zero-setup):**
 ```bash
 # Claude Code — one command
-claude mcp add bde-score --transport http --url https://italic-telecharger-degrees-appendix.trycloudflare.com/mcp
+claude mcp add bde-score --transport http --url https://freight-disabilities-agrees-rebates.trycloudflare.com.trycloudflare.com/mcp
 ```
 
 **Local Server:**
