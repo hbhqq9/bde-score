@@ -47,10 +47,10 @@
     }
   },
   "endpoints": {
-    "api": "https://thinks-discussions-proof-dec.trycloudflare.com",
-    "mcp": "https://generators-computation-picked-emily.trycloudflare.com/mcp",
-    "compliance_check": "https://thinks-discussions-proof-dec.trycloudflare.com/compliance-check",
-    "x402_pay_info": "https://thinks-discussions-proof-dec.trycloudflare.com/pay/info"
+    "api": "https://italic-telecharger-degrees-appendix.trycloudflare.com",
+    "mcp": "https://freight-disabilities-agrees-rebates.trycloudflare.com/mcp",
+    "compliance_check": "https://italic-telecharger-degrees-appendix.trycloudflare.com/compliance-check",
+    "x402_pay_info": "https://italic-telecharger-degrees-appendix.trycloudflare.com/pay/info"
   },
   "authentication": {
     "type": "api_key",
