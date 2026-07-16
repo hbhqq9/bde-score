@@ -1,4 +1,14 @@
 """
+BDE Score™ - AI-Powered Multi-Market Stock Analysis MCP Server
+Copyright (C) 2026 BDE Score™ (https://github.com/hbhqq9/bde-score)
+
+Licensed under AGPL-3.0 with commercial option.
+If you run a modified version on a network server, you must make
+the complete source code available. See LICENSE for details.
+Commercial licensing available: nnhbh@foxmail.com
+"""
+
+"""
 股票因子引擎
 ============
 实现多因子量化选股模型，为每只股票计算综合得分。
