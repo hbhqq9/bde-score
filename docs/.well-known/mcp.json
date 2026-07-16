@@ -4,7 +4,7 @@
   "version": "1.0.2",
   "transport": {
     "type": "streamable-http",
-    "url": "https://freight-disabilities-agrees-rebates.trycloudflare.com/mcp"
+    "url": "https://noted-system-certificate-translation.trycloudflare.com/mcp"
   },
   "authentication": {
     "type": "api-key",
@@ -57,6 +57,6 @@
       "supply-chain",
       "war-risk"
     ],
-    "last_verified": "2026-07-16T03:05:29Z"
+    "last_verified": "2026-07-16T08:43:02Z"
   }
 }

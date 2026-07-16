@@ -28,20 +28,34 @@ discover_url() {
     return 1
 }
 
-echo "  Discovering API URL from /tmp/tunnel_api.log..."
-API_URL=$(discover_url "/tmp/tunnel_api.log" "/" "200") || API_URL=""
+# v3.1 fix: try multiple log file paths (keepalive recreates tunnels with different log names)
+echo "  Discovering API URL from tunnel logs..."
+API_URL=""
+for logfile in /tmp/api_tunnel4.log /tmp/api_tunnel3.log /tmp/api_tunnel2.log /tmp/api_tunnel.log /var/log/cloudflared-bde.log /tmp/tunnel_api.log; do
+    [ -f "$logfile" ] || continue
+    API_URL=$(discover_url "$logfile" "/api/health" "200") && break || true
+    # fallback: try root path
+    API_URL=$(discover_url "$logfile" "/" "200") && break || true
+    API_URL=""
+done
 if [ -n "$API_URL" ]; then
     API_HOST="${API_URL#https://}"
-    echo "  ✅ API: $API_URL"
+    echo "  ✅ API: $API_URL (from $logfile)"
 else
     echo "  ❌ API tunnel not found in logs"
 fi
 
-echo "  Discovering MCP URL from /tmp/tunnel_mcp.log..."
-MCP_URL=$(discover_url "/tmp/tunnel_mcp.log" "/mcp" "401") || MCP_URL=""
+# v3.1 fix: mcp_tunnel.log (not tunnel_mcp.log which is stale)
+echo "  Discovering MCP URL from tunnel logs..."
+MCP_URL=""
+for logfile in /tmp/mcp_tunnel.log /tmp/tunnel_mcp.log; do
+    [ -f "$logfile" ] || continue
+    MCP_URL=$(discover_url "$logfile" "/mcp" "401") && break || true
+    MCP_URL=""
+done
 if [ -n "$MCP_URL" ]; then
     MCP_HOST="${MCP_URL#https://}"
-    echo "  ✅ MCP: $MCP_URL"
+    echo "  ✅ MCP: $MCP_URL (from $logfile)"
 else
     echo "  ❌ MCP tunnel not found in logs"
 fi
