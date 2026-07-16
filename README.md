@@ -2,7 +2,7 @@
 
 **AI-Powered Multi-Market Stock Analysis — One Score, Every Market**
 
-[![Live](https://img.shields.io/badge/Live-Try%20Now-blue?style=for-the-badge)](https://rebel-north-intermediate-roof.trycloudflare.com)
+[![Live](https://img.shields.io/badge/Live-Try%20Now-blue?style=for-the-badge)](https://bore.pub:8776)
 [![API](https://img.shields.io/badge/API-RESTful-green?style=for-the-badge)](#api)
 [![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-Art.50%20Compliant-orange?style=for-the-badge)](#compliance)
 [![License](https://img.shields.io/badge/License-AGPL--3.0-blue?style=for-the-badge)](LICENSE) [![Commercial](https://img.shields.io/badge/Commercial-License-green?style=for-the-badge)](#license)
@@ -26,23 +26,23 @@ BDE Score™ is a **transparent, multi-factor quantitative scoring system** that
 ## 🚀 Quick Start
 
 ### View Live Dashboard
-👉 **[Open Dashboard](https://rebel-north-intermediate-roof.trycloudflare.com/dashboard)**
+👉 **[Open Dashboard](https://bore.pub:8776/dashboard)**
 
 ### API Usage
 
 ```bash
 # Get latest scores (US market)
-curl https://rebel-north-intermediate-roof.trycloudflare.com/api/snapshot?market=US
+curl https://bore.pub:8776/api/snapshot?market=US
 
 # Get all markets
-curl https://rebel-north-intermediate-roof.trycloudflare.com/api/snapshot?market=ALL
+curl https://bore.pub:8776/api/snapshot?market=ALL
 
 # With Premium API Key (unlimited access)
 curl -H "X-API-Key: bde_your_key_here" \
-  https://rebel-north-intermediate-roof.trycloudflare.com/api/snapshot?market=ALL
+  https://bore.pub:8776/api/snapshot?market=ALL
 
 # Historical data
-curl https://rebel-north-intermediate-roof.trycloudflare.com/api/history?symbol=AAPL&days=30
+curl https://bore.pub:8776/api/history?symbol=AAPL&days=30
 ```
 
 ### Pricing
@@ -112,6 +112,6 @@ BDE Score™ is **compliance-first by design**. When Art.50 takes effect on **Au
 
 <p align="center">
   <strong>BDE Score™</strong> — Transparent. Multi-Market. Compliance-Ready.<br>
-  <a href="https://rebel-north-intermediate-roof.trycloudflare.com">Try Live →</a> · 
+  <a href="https://bore.pub:8776">Try Live →</a> · 
   <a href="https://github.com/hbhqq9/bde-score">GitHub</a>
 </p>

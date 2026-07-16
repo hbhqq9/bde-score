@@ -225,8 +225,17 @@ class KeyManager:
     def _load(self):
         try:
             with open(self.keys_file, 'r') as f:
-                return {item['key']: item for item in json.load(f)}
-        except (FileNotFoundError, json.JSONDecodeError):
+                data = json.load(f)
+            result = {}
+            for item in data:
+                if 'key' in item:
+                    result[item['key']] = item
+                elif 'key_hash' in item:
+                    # 使用key_prefix作为dict key（安全存储模式）
+                    prefix = item.get('key_prefix', item['key_hash'][:16])
+                    result[prefix] = item
+            return result
+        except (FileNotFoundError, json.JSONDecodeError, KeyError):
             return {}
     
     def _save(self):
@@ -247,12 +256,22 @@ class KeyManager:
         return key
     
     def verify(self, key):
-        """验证API Key有效性，返回tier或None"""
+        """验证API Key有效性，返回tier或None。支持明文key和bcrypt hash两种验证模式"""
         if not key:
             return None
+        # 模式1: 明文key直接查找（向后兼容）
         entry = self.keys.get(key)
         if entry and entry.get('active'):
             return entry['tier']
+        # 模式2: prefix匹配 + bcrypt验证（安全存储模式）
+        for prefix, item in self.keys.items():
+            if key.startswith(prefix) and item.get('active') and 'key_hash' in item:
+                try:
+                    import bcrypt as _bcrypt
+                    if _bcrypt.checkpw(key.encode(), item['key_hash'].encode()):
+                        return item.get('tier', 'premium')
+                except Exception:
+                    pass
         return None
     
     def check_free_quota(self, ip):
@@ -1021,7 +1040,7 @@ User-agent: Anthropic-AI
 Allow: /
 
 Sitemap: https://hbhqq9.github.io/bde-score/sitemap.xml
-LLMs: https://rebel-north-intermediate-roof.trycloudflare.com/llms.txt
+LLMs: https://bore.pub:8776/llms.txt
 """
     return PlainTextResponse(robots, media_type="text/plain")
 

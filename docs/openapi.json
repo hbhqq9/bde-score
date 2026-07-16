@@ -125,7 +125,7 @@
     }
   },
   "x-mcp-server": {
-    "url": "https://retrieve-jobs-congress-made.trycloudflare.com/mcp",
+    "url": "https://bore.pub:8776/mcp",
     "transport": "streamable-http",
     "authentication": "api-key (X-API-Key header)"
   }

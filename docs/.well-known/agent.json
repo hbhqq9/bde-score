@@ -12,8 +12,20 @@
         "inputSchema": {
           "type": "object",
           "properties": {
-            "market": {"type": "string", "enum": ["US", "HK", "A", "ALL"]},
-            "min_score": {"type": "number", "minimum": 0, "maximum": 100}
+            "market": {
+              "type": "string",
+              "enum": [
+                "US",
+                "HK",
+                "A",
+                "ALL"
+              ]
+            },
+            "min_score": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            }
           }
         }
       },
@@ -30,8 +42,8 @@
     ]
   },
   "endpoints": {
-    "mcp": "https://retrieve-jobs-congress-made.trycloudflare.com/mcp",
-    "rest": "https://atlantic-remains-atomic-floor.trycloudflare.com/api",
+    "mcp": "https://bore.pub:8776/mcp",
+    "rest": "https://bore.pub:8776/api",
     "dashboard": "https://hbhqq9.github.io/bde-score/"
   },
   "authentication": {
@@ -40,11 +52,22 @@
   },
   "metadata": {
     "author": "AGL Governance",
-    "license": "MIT",
+    "license": "AGPL-3.0",
     "homepage": "https://hbhqq9.github.io/bde-score/",
     "repository": "https://github.com/hbhqq9/bde-score",
     "category": "finance",
-    "tags": ["stocks", "quantitative", "multi-factor", "US", "HK", "A-shares", "ESG", "EU AI Act"],
-    "compliance": ["EU AI Act Art.50"]
+    "tags": [
+      "stocks",
+      "quantitative",
+      "multi-factor",
+      "US",
+      "HK",
+      "A-shares",
+      "ESG",
+      "EU AI Act"
+    ],
+    "compliance": [
+      "EU AI Act Art.50"
+    ]
   }
 }
