@@ -2,7 +2,7 @@
   "name": "BDE Score MCP Server",
   "description": "Stock analysis MCP with BDE scoring for US, HK, CN markets. Includes momentum, volatility, value, quality, and ESG factors.",
   "url": "https://lauderdale-pads-fossil-shot.trycloudflare.com/mcp",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "protocol": "mcp",
   "transport": "streamable-http",
   "authentication": {
