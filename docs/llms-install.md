@@ -7,7 +7,7 @@
 {
   "mcpServers": {
     "bde-score": {
-      "url": "https://bore.pub:8776/mcp",
+      "url": "https://deputy-athletics-ranks-hopes.trycloudflare.com/mcp",
       "headers": {
         "X-API-Key": "YOUR_API_KEY"
       }
@@ -38,11 +38,11 @@ tools = get_bde_tools()
 
 ### REST API
 ```bash
-curl "https://bore.pub:8776/api/stock/AAPL"
+curl "https://deputy-athletics-ranks-hopes.trycloudflare.com/api/stock/AAPL"
 ```
 
 ## For LLMs
-See [llms.txt](https://bore.pub:8776/llms.txt) for machine-readable documentation.
+See [llms.txt](https://deputy-athletics-ranks-hopes.trycloudflare.com/llms.txt) for machine-readable documentation.
 
 ## Authentication
 All endpoints require an API Key via `X-API-Key` header.

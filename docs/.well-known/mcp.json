@@ -1,0 +1,39 @@
+{
+  "name": "BDE Score MCP Server",
+  "description": "Stock analysis MCP with BDE scoring for US, HK, CN markets. Includes momentum, volatility, value, quality, and ESG factors.",
+  "url": "https://lauderdale-pads-fossil-shot.trycloudflare.com/mcp",
+  "version": "1.0.1",
+  "protocol": "mcp",
+  "transport": "streamable-http",
+  "authentication": {
+    "type": "api-key",
+    "header": "X-API-Key"
+  },
+  "capabilities": {
+    "tools": [
+      "get_bde_score",
+      "compare_stocks",
+      "esg_analysis"
+    ]
+  },
+  "metadata": {
+    "author": "hbhqq9",
+    "license": "AGPL-3.0",
+    "homepage": "https://hbhqq9.github.io/bde-score/",
+    "repository": "https://github.com/hbhqq9/bde-score",
+    "category": "finance",
+    "tags": [
+      "stocks",
+      "quantitative",
+      "multi-factor",
+      "US",
+      "HK",
+      "A-shares",
+      "ESG",
+      "EU AI Act"
+    ],
+    "compliance": [
+      "EU AI Act Art.50"
+    ]
+  }
+}

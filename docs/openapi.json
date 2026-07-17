@@ -125,7 +125,7 @@
     }
   },
   "x-mcp-server": {
-    "url": "https://bore.pub:8776/mcp",
+    "url": "https://deputy-athletics-ranks-hopes.trycloudflare.com/mcp",
     "transport": "streamable-http",
     "authentication": "api-key (X-API-Key header)"
   }

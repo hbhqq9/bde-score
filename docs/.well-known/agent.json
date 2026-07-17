@@ -42,12 +42,13 @@
     ]
   },
   "endpoints": {
-    "mcp": "https://snapshot-skirt-knowledge-tucson.trycloudflare.com/mcp",
+    "mcp": "https://lauderdale-pads-fossil-shot.trycloudflare.com/mcp",
     "rest": "https://deputy-athletics-ranks-hopes.trycloudflare.com/api",
     "dashboard": "https://hbhqq9.github.io/bde-score/",
     "api": "https://deputy-athletics-ranks-hopes.trycloudflare.com",
     "compliance_check": "https://deputy-athletics-ranks-hopes.trycloudflare.com/compliance-check",
-    "x402_pay_info": "https://deputy-athletics-ranks-hopes.trycloudflare.com/pay/info"
+    "x402_pay_info": "https://deputy-athletics-ranks-hopes.trycloudflare.com/pay/info",
+    "registry": "http://bore.pub:53406"
   },
   "authentication": {
     "type": "api-key",
