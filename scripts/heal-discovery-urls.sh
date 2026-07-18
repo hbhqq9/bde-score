@@ -1,6 +1,6 @@
 #!/bin/bash
-# BDE Score 自愈型发现栈 URL 修复脚本 v3.1
-# v3.1: 修复日志路径匹配（keepalive重建tunnel后日志文件名变化），支持多路径fallback
+# BDE Score 自愈型发现栈 URL 修复脚本 v3.2
+# v3.2: 修复日志路径匹配，添加cf_*日志+新URL到已知列表（keepalive重建tunnel后日志文件名变化），支持多路径fallback
 # 不再依赖硬编码的已知URL列表，而是从日志文件自动发现
 set -e
 REPO_DIR="/app/data/所有对话/主对话/BDE-Stock"
@@ -28,10 +28,10 @@ discover_url() {
     return 1
 }
 
-# v3.1 fix: try multiple log file paths (keepalive recreates tunnels with different log names)
+# v3.2 fix: try multiple log file paths (keepalive recreates tunnels with different log names)
 echo "  Discovering API URL from tunnel logs..."
 API_URL=""
-for logfile in /tmp/api_tunnel4.log /tmp/api_tunnel3.log /tmp/api_tunnel2.log /tmp/api_tunnel.log /var/log/cloudflared-bde.log /tmp/tunnel_api.log; do
+for logfile in /tmp/cf_api_tunnel.log /tmp/api_tunnel4.log /tmp/api_tunnel3.log /tmp/api_tunnel2.log /tmp/api_tunnel.log /var/log/cloudflared-bde.log /tmp/tunnel_api.log; do
     [ -f "$logfile" ] || continue
     API_URL=$(discover_url "$logfile" "/api/health" "200") && break || true
     # fallback: try root path
@@ -45,10 +45,10 @@ else
     echo "  ❌ API tunnel not found in logs"
 fi
 
-# v3.1 fix: mcp_tunnel.log (not tunnel_mcp.log which is stale)
+# v3.2 fix: mcp_tunnel.log (not tunnel_mcp.log which is stale)
 echo "  Discovering MCP URL from tunnel logs..."
 MCP_URL=""
-for logfile in /tmp/mcp_tunnel.log /tmp/tunnel_mcp.log; do
+for logfile in /tmp/cf_mcp_tunnel.log /tmp/mcp_tunnel.log /tmp/tunnel_mcp.log; do
     [ -f "$logfile" ] || continue
     MCP_URL=$(discover_url "$logfile" "/mcp" "401") && break || true
     MCP_URL=""
@@ -145,6 +145,12 @@ retrieve-jobs-congress-made
 tex-adequate-date-facing
 generators-computation-picked-emily
 frequently-plays-pit-friendship
+lauderdale-pads-fossil-shot
+deputy-athletics-ranks-hopes
+purchase-frequencies-trim-slip
+neighborhood-frequency-recorder-monetary
+charges-cemetery-medium-slight
+pathology-attendance-talks-productive
 HOSTS
 )
 
