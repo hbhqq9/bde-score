@@ -231,6 +231,16 @@ for f in "${LIVE_FILES[@]}"; do
     [ -f "$f" ] || continue
     changed=false
     
+    # Step 0: 去重 .trycloudflare.com 后缀（防止历史bug累积）
+    python3 -c "
+import re
+with open('$f','r') as fh: c=fh.read()
+c2=re.sub(r'trycloudflare\.com(?:\.trycloudflare\.com)+','trycloudflare.com',c)
+if c2!=c:
+    with open('$f','w') as fh: fh.write(c2)
+    print('  🔧 Fixed duplicate .trycloudflare.com in $f')
+" 2>/dev/null
+
     # Step 1: 先替换所有已知旧host为API host
     while IFS= read -r old_host; do
         [ -z "$old_host" ] && continue
@@ -238,8 +248,8 @@ for f in "${LIVE_FILES[@]}"; do
         [ "$old_host" = "$API_HOST" ] && continue
         [ "$old_host" = "$MCP_HOST" ] && continue
         [ "$old_host" = "$REG_HOST" ] && continue
-        if grep -q "$old_host" "$f" 2>/dev/null; then
-            sed -i "s|${old_host}|${API_HOST}|g" "$f"
+        if grep -q "${old_host}.trycloudflare.com" "$f" 2>/dev/null; then
+            sed -i "s|${old_host}.trycloudflare.com|${API_HOST}.trycloudflare.com|g" "$f"
             changed=true
         fi
     done <<< "$ALL_KNOWN_HOSTS"
