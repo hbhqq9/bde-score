@@ -42,12 +42,12 @@
     ]
   },
   "endpoints": {
-    "mcp": "https://pathology-attendance-talks-productive.trycloudflare.com/mcp",
+    "mcp": "https://muscle-prison-explore-recorded.trycloudflare.com/mcp",
     "rest": "https://deputy-athletics-ranks-hopes.trycloudflare.com/api",
     "dashboard": "https://hbhqq9.github.io/bde-score/",
-    "api": "https://neighborhood-frequency-recorder-monetary.trycloudflare.com",
-    "compliance_check": "https://neighborhood-frequency-recorder-monetary.trycloudflare.com/compliance-check",
-    "x402_pay_info": "https://neighborhood-frequency-recorder-monetary.trycloudflare.com/pay/info",
+    "api": "https://animal-munich-topics-tasks.trycloudflare.com",
+    "compliance_check": "https://animal-munich-topics-tasks.trycloudflare.com/compliance-check",
+    "x402_pay_info": "https://animal-munich-topics-tasks.trycloudflare.com/pay/info",
     "registry": "http://bore.pub:53406"
   },
   "authentication": {
@@ -74,5 +74,5 @@
       "EU AI Act Art.50"
     ]
   },
-  "last_verified": "2026-07-19T20:39:11Z"
+  "last_verified": "2026-07-20T04:38:51Z"
 }
