@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "bde-score": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sse", "https://expert-won-helmet-chris.trycloudflare.com"],
+      "env": {}
+    }
+  }
+}
