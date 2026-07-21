@@ -1,63 +1,52 @@
-# BDE Score™
+# BDE Score
 
-> AI-powered multi-market stock analysis with transparent multi-factor scoring. Covers 73 stocks across US, HK, and A-share markets. EU AI Act Art.50 compliant. Open source (MIT).
-
-## What is BDE Score™
-
-BDE Score™ is a quantitative stock scoring system that evaluates stocks across 5 independent factors:
-- **Momentum**: Price momentum and rate of change
-- **Mean Reversion**: Distance from statistical mean, oversold/overbought signals
-- **Volume**: Trading volume patterns and money flow
-- **Volatility**: Risk-adjusted returns and volatility regime
-- **Trend**: Moving average alignment and trend strength
-
-Each stock receives a composite score (0-100) with signal classification: Bullish (>70), Neutral (40-70), Bearish (<40).
-
-## Coverage
-
-- **US Markets** (25 stocks): AAPL, MSFT, GOOG, AMZN, META, NVDA, AMD, AVGO, ARM, INTC, V, MA, JNJ, UNH, LLY, PFE, PG, KO, WMT, MCD, TSLA, NFLX, BABA, SPY, QQQ
-- **HK Markets** (26 stocks): Tencent (00700), Alibaba (09988), Baidu (09888), Meituan (03690), Kuaishou (01024), Xiaomi (01810), JD.com (09618), NetEase (09999), BYD (01211), Ping An (02318), ICBC (01398), CCB (00939), and more
-- **A-shares** (23 stocks): Kweichow Moutai (600519), Wuliangye (000858), CATL (300750), BYD (002594), Ping An (601318), CMB (600036), ICBC (601318), and more
-
-## Key Differentiators
-
-1. **Transparency**: Every score breaks down into 5 explainable factors with weights — no black-box AI
-2. **Multi-market**: Single API covers US, HK, and A-share markets simultaneously
-3. **EU AI Act compliant**: Full audit trails, explainable methodology, machine-readable compliance metadata (Art.50 ready for August 2, 2026)
-4. **Open source**: MIT licensed, fully auditable codebase
-5. **Embeddable**: Widget system allows any website to embed live scores
+> Open-source multi-factor stock scoring engine. 7-factor composite model (VIX, Volume Profile, RSI, MACD, Bollinger Bands, OBV, ATR) covering 74 stocks across US, HK, and China A-share markets. EU AI Act Art.50 compliant.
 
 ## API Endpoints
 
-- `GET /api/snapshot/{market}` — Full market snapshot (market: US, HK, A)
-- `GET /api/stock/{symbol}` — Single stock analysis
-- `GET /share/{symbols}` — SVG score cards (e.g., /share/AAPL, /share/US?top=5)
-- `GET /widget` — Embeddable score widget (iframe)
-- `GET /` — Landing page with pricing
-- `GET /dashboard` — Full data dashboard
+- `GET https://provides-part-lamb-leaves.trycloudflare.com/api/analyze?market=ALL` — Score all 74 stocks
+- `GET https://provides-part-lamb-leaves.trycloudflare.com/api/analyze?ticker=AAPL` — Score single stock
+- `GET https://provides-part-lamb-leaves.trycloudflare.com/api/top?market=US&n=10` — Top N performers
+- `GET https://provides-part-lamb-leaves.trycloudflare.com/api/worst?market=US&n=10` — Worst N performers
+- `GET https://provides-part-lamb-leaves.trycloudflare.com/api/market` — Market overview (VIX, breadth)
 
-## Pricing
+## MCP Server
 
-- **Free**: Dashboard access + 3 API queries/day
-- **Premium** ($29/mo): Unlimited API + 365-day history
-- **Institutional** ($199/mo): Custom universe + compliance reports + SLA
+Connect BDE Score as an MCP tool for Claude Code, Cursor, or any MCP client:
 
-## Links
+```json
+{
+  "mcpServers": {
+    "bde-score": {
+      "url": "https://muscle-prison-explore-recorded.trycloudflare.com/mcp",
+      "headers": {
+        "X-API-Key": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
 
-- Live Demo: https://rebel-north-intermediate-roof.trycloudflare.com
-- Dashboard: https://rebel-north-intermediate-roof.trycloudflare.com/dashboard
+## 7-Factor Model
+
+Each stock receives a composite score (0-100):
+- **VIX Regime** (weight: adaptive) — Market fear gauge overlay
+- **Volume Profile** — Institutional accumulation/distribution detection
+- **RSI** (14-period) — Momentum and mean reversion signals
+- **MACD** — Trend direction and momentum shifts
+- **Bollinger Bands** — Volatility regime and price extremes
+- **OBV** — Volume-confirmed trend strength
+- **ATR** — Risk-normalized volatility measure
+
+Signal: Strong Buy (>75), Buy (65-75), Neutral (40-65), Sell (25-40), Strong Sell (<25).
+
+## Discovery
+
+- Official MCP Registry: `bde-score`
+- Agent Card: https://hbhqq9.github.io/bde-score/.well-known/agent.json
+- MCP Discovery: https://hbhqq9.github.io/bde-score/.well-known/mcp.json
+
+## Source
+
 - GitHub: https://github.com/hbhqq9/bde-score
-- GitHub Pages: https://hbhqq9.github.io/bde-score
-- API Docs: https://rebel-north-intermediate-roof.trycloudflare.com/docs
-- Widget: https://rebel-north-intermediate-roof.trycloudflare.com/widget
-
-## Compliance Note
-
-⚠️ BDE Score™ is a technical analysis tool, not financial advice. Investment decisions should be made independently. The system provides quantitative signals based on historical data patterns.
-
-## Related Projects (Compliance Triangle)
-
-- **NeuroBridge** (https://github.com/hbhqq9/neurobridge): VLA→SNN protocol stack — provides the Physical AI compliance framework that BDE Score™ uses for EU AI Act Art.50 transparency
-- **IPO Compliance Service** (https://hbhqq9.github.io/ipo-compliance): 16-dimension Pre-IPO compliance diagnostics — provides the compliance methodology framework
-
-Together these three projects form a "Compliance Triangle": NeuroBridge=protocol infrastructure, IPO Compliance=methodology, BDE Score™=quantitative validation.
+- License: MIT
