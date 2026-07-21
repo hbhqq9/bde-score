@@ -1,0 +1,53 @@
+{
+  "name": "bde-score",
+  "description": "AI governance-aware multi-factor stock scoring MCP server. 7-factor composite scoring (VIX, Volume Profile, RSI, MACD, Bollinger Bands, OBV, ATR) with real-time Yahoo Finance data. Designed for agents that need to evaluate stock momentum with institutional-grade risk awareness.",
+  "version": "1.0.0",
+  "protocol": "mcp",
+  "transport": "stdio",
+  "category": "Data & Analytics",
+  "tags": ["stock-scoring", "finance", "mcp", "governance", "multi-factor-model"],
+  "author": {
+    "name": "BDE Score Team",
+    "email": "nnhbh@foxmail.com",
+    "url": "https://hbhqq9.github.io/bde-score/"
+  },
+  "repository": "https://github.com/hbhqq9/bde-score",
+  "homepage": "https://hbhqq9.github.io/bde-score/",
+  "license": "MIT",
+  "platforms": ["claude-code", "cursor", "vscode"],
+  "tools": [
+    {
+      "name": "score_stock",
+      "description": "Score a single stock using 7-factor composite model (VIX, Volume Profile, RSI, MACD, Bollinger, OBV, ATR)"
+    },
+    {
+      "name": "batch_score",
+      "description": "Score multiple stocks in one call with ranked results"
+    },
+    {
+      "name": "top_performers",
+      "description": "Get top N performing stocks from a watchlist, sorted by composite score"
+    },
+    {
+      "name": "worst_performers",
+      "description": "Get worst N performing stocks from a watchlist, sorted by composite score"
+    },
+    {
+      "name": "market_overview",
+      "description": "Get overall market sentiment including VIX level and breadth indicators"
+    }
+  ],
+  "security": {
+    "requires_api_key": false,
+    "network_access": "read-only (Yahoo Finance)",
+    "file_access": "none",
+    "code_execution": "none"
+  },
+  "discovery": {
+    "well_known": {
+      "mcp": "https://hbhqq9.github.io/bde-score/.well-known/mcp.json",
+      "agent": "https://hbhqq9.github.io/bde-score/.well-known/agent.json",
+      "security": "https://hbhqq9.github.io/bde-score/.well-known/security.txt"
+    }
+  }
+}
