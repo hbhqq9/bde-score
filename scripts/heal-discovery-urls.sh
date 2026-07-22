@@ -51,6 +51,9 @@ MCP_URL=""
 for logfile in /tmp/cf_mcp_tunnel.log /tmp/mcp_tunnel.log /tmp/tunnel_mcp.log; do
     [ -f "$logfile" ] || continue
     MCP_URL=$(discover_url "$logfile" "/mcp" "401") && break || true
+    # v3.3: also accept 402 (x402 payment) and 406 (SSE protocol) as valid MCP responses
+    MCP_URL=$(discover_url "$logfile" "/mcp" "402") && break || true
+    MCP_URL=$(discover_url "$logfile" "/mcp" "406") && break || true
     MCP_URL=""
 done
 if [ -n "$MCP_URL" ]; then
