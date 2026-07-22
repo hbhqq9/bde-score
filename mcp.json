@@ -2,7 +2,11 @@
   "mcpServers": {
     "bde-score": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sse", "https://muscle-prison-explore-recorded.trycloudflare.com"],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sse",
+        "https://consolidated-survey-gamma-arrival.trycloudflare.com"
+      ],
       "env": {}
     }
   }
