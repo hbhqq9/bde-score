@@ -1,0 +1,16 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.hbhqq9/bde-score",
+  "description": "7-factor stock scoring MCP server. US/HK/A-Share, 74 stocks, zero signup.",
+  "version": "1.26.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp"
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/hbhqq9/bde-score",
+    "source": "github"
+  }
+}
