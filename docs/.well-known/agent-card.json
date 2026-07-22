@@ -1,7 +1,7 @@
 {
   "name": "BDE Score",
   "description": "AI-powered multi-market stock analysis with 7-factor BDE scoring. Covers US, HK, and CN A-share markets.",
-  "url": "https://provides-part-lamb-leaves.trycloudflare.com",
+  "url": "https://robot-soul-bet-singer.trycloudflare.com",
   "version": "1.0.3",
   "capabilities": {
     "streaming": false,
@@ -26,7 +26,9 @@
       "description": "Compare the same company across US, HK, and CN A-share markets"
     }
   ],
-  "compliance": ["EU AI Act Art.50(5)"],
+  "compliance": [
+    "EU AI Act Art.50(5)"
+  ],
   "license": "AGPL-3.0",
   "homepage": "https://hbhqq9.github.io/bde-score/"
 }
