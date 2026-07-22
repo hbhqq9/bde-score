@@ -282,6 +282,6 @@ git commit -m "🔧 auto-heal v3.0: auto-discovered URLs from logs ($TIMESTAMP)
 API: $API_HOST
 MCP: $MCP_HOST
 Registry: ${REG_HOST:-N/A}" 2>/dev/null && \
-git push origin master 2>/dev/null && echo "  ✅ Pushed" || echo "  ⚠️ Push failed"
+git push origin main 2>/dev/null && echo "  ✅ Pushed" || echo "  ⚠️ Push failed"
 
 echo "[$TIMESTAMP] ✅ auto-heal complete"
