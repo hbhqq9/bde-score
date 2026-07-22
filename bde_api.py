@@ -45,6 +45,28 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 import uvicorn
 
+# x402 Payment Protocol
+# Import from mcp/ subdirectory (avoid conflict with installed 'mcp' package)
+_mcp_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mcp')
+if _mcp_dir not in sys.path:
+    sys.path.insert(0, _mcp_dir)
+from x402_middleware import (
+    check_payment_status,
+    consume_free_query,
+    build_402_response_body,
+    build_402_headers,
+    get_payment_summary,
+    payment_db,
+    key_verifier,
+    FREE_QUERIES_PER_DAY,
+    WALLET_ADDRESS,
+    CHAIN_NAME,
+    CHAIN_ID,
+    USDC_CONTRACT,
+    PER_QUERY_AMOUNT,
+    MONTHLY_AMOUNT,
+)
+
 
 # 🔒 安全JSON序列化（处理NaN/Inf）
 def safe_json_default(obj):
@@ -780,7 +802,7 @@ async def api_analyze(
     force: bool = Query(False, description="强制刷新，忽略缓存"),
     market: str = Query("US", description="市场: US(美股), HK(港股), A(A股), ALL(全部)")
 ):
-    """运行BDE多因子分析（🔒 带速率限制+并发锁+输入校验）"""
+    """运行BDE多因子分析（🔒 x402付费 + 速率限制 + 并发锁 + 输入校验）"""
     # 🔒 输入白名单校验
     market_upper = market.upper().strip()
     if market_upper not in VALID_MARKETS:
@@ -790,6 +812,19 @@ async def api_analyze(
     client_ip = request.client.host if request.client else "unknown"
     if not rate_limiter.is_allowed(client_ip):
         raise HTTPException(status_code=429, detail="Rate limit exceeded. Max 10 requests per minute.")
+    
+    # 🔑 x402 Payment Check
+    api_key = request.headers.get('x-api-key', '')
+    payment_status = check_payment_status(api_key, client_ip)
+    
+    if not payment_status['allowed']:
+        body_402 = build_402_response_body("/api/analyze")
+        headers_402 = build_402_headers("/api/analyze")
+        return JSONResponse(content=body_402, status_code=402, headers=headers_402)
+    
+    # Consume free query if on free tier
+    if payment_status['tier'] == 'free':
+        consume_free_query(client_ip)
     
     # 🔒 并发锁：同一时刻只允许一个分析任务
     if _analyze_lock.locked():
@@ -818,15 +853,22 @@ async def api_snapshot(
     market: str = Query("US", description="市场: US/HK/A/ALL"),
     auth: dict = Depends(optional_api_key)
 ):
-    """获取最新缓存结果（🔒 免费3次/天，Premium/Institutional无限）"""
-    # 🔑 配额检查
+    """获取最新缓存结果（🔒 x402: 免费3次/天，Premium/Institutional无限）"""
     client_ip = request.client.host if request.client else "unknown"
-    if not auth['authenticated']:
-        if not key_manager.check_free_quota(client_ip):
-            raise HTTPException(
-                status_code=429,
-                detail="Free tier limit reached (3 queries/day). Upgrade to Premium for unlimited access. Send USDC on Base chain to activate."
-            )
+    
+    # 🔑 x402 Payment Check (replaces old free quota check)
+    api_key = request.headers.get('x-api-key', '')
+    payment_status = check_payment_status(api_key, client_ip)
+    
+    if not payment_status['allowed']:
+        # Return 402 with full x402 payment details
+        body_402 = build_402_response_body("/api/snapshot")
+        headers_402 = build_402_headers("/api/snapshot")
+        return JSONResponse(content=body_402, status_code=402, headers=headers_402)
+    
+    # Consume free query if on free tier
+    if payment_status['tier'] == 'free':
+        consume_free_query(client_ip)
     
     # 🔒 输入白名单
     market_upper = market.upper().strip()
@@ -835,13 +877,22 @@ async def api_snapshot(
     
     cache_key = f'data_{market_upper}'
     if _cache.get(cache_key):
-        return _cache[cache_key]
-    # 没有缓存就运行一次
-    try:
-        return run_analysis(market=market_upper)
-    except Exception as e:
-        logger.exception("Snapshot获取失败")
-        raise HTTPException(status_code=500, detail="Service temporarily unavailable.")  # 🔒 不泄露内部错误
+        result = _cache[cache_key]
+    else:
+        # 没有缓存就运行一次
+        try:
+            result = run_analysis(market=market_upper)
+        except Exception as e:
+            logger.exception("Snapshot获取失败")
+            raise HTTPException(status_code=500, detail="Service temporarily unavailable.")
+    
+    # Add payment info to response
+    if isinstance(result, dict):
+        result['payment'] = {
+            'tier': payment_status['tier'],
+            'remaining_today': payment_status['remaining'] if payment_status['remaining'] >= 0 else 'unlimited',
+        }
+    return result
 
 
 # ============================================================
@@ -889,6 +940,93 @@ async def revoke_key(
         key_manager._save()
         return {"status": "revoked", "key": key[:12] + "..."}
     raise HTTPException(status_code=404, detail="Key not found.")
+
+# ============================================================
+# x402 Payment Protocol Endpoints
+# ============================================================
+
+@app.get("/.well-known/x402")
+async def serve_x402_discovery():
+    """x402 payment protocol discovery — AI Agents can auto-discover payment requirements."""
+    x402_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.well-known', 'x402')
+    if os.path.isfile(x402_path):
+        with open(x402_path, 'r') as f:
+            data = json.load(f)
+        return JSONResponse(content=data, headers={
+            "Content-Type": "application/json",
+            "Cache-Control": "public, max-age=3600",
+        })
+    # Fallback: generate dynamically
+    return JSONResponse(content={
+        "protocol": "x402",
+        "version": "1.0",
+        "payment_methods": [{
+            "type": "USDC",
+            "chain": CHAIN_NAME,
+            "chain_id": CHAIN_ID,
+            "contract": USDC_CONTRACT,
+            "recipient": WALLET_ADDRESS,
+            "amounts": {"per_query": PER_QUERY_AMOUNT, "monthly": MONTHLY_AMOUNT},
+        }],
+        "free_tier": {"queries_per_day": FREE_QUERIES_PER_DAY, "requires": "nothing"},
+        "premium_tier": {"queries_per_day": "unlimited", "requires": "valid API key (send USDC to activate)"},
+    }, headers={"Cache-Control": "public, max-age=3600"})
+
+
+@app.get("/api/payment/verify")
+async def payment_verify(
+    request: Request,
+    address: str = Query(None, description="Wallet address to check payment status"),
+    x_api_key: str = Query(None, description="API key to check tier and usage"),
+):
+    """
+    Verify payment status for a wallet address or API key.
+    Returns tier, usage count, and remaining queries.
+    """
+    client_ip = request.client.host if request.client else "unknown"
+    
+    if not address and not x_api_key:
+        # Return current requestor's payment status
+        api_key_header = request.headers.get('x-api-key', '')
+        summary = get_payment_summary(client_ip, api_key_header)
+        return summary
+    
+    # Check by wallet address (on-chain payment verification)
+    if address:
+        payment = payment_db.check_payment(address)
+        usage_today = payment_db.get_free_usage(client_ip)
+        return {
+            "address": address,
+            "has_payment": payment is not None,
+            "payment": payment,
+            "free_usage_today": usage_today,
+            "free_limit": FREE_QUERIES_PER_DAY,
+            "recommendation": (
+                "premium" if payment else
+                "free" if usage_today < FREE_QUERIES_PER_DAY else
+                "upgrade_needed"
+            ),
+        }
+    
+    # Check by API key
+    if x_api_key:
+        tier = key_verifier.verify(x_api_key)
+        summary = get_payment_summary(client_ip, x_api_key)
+        return {
+            "api_key_valid": tier is not None,
+            "tier": tier or "none",
+            **summary,
+        }
+
+
+@app.get("/api/payment/status")
+async def payment_status(request: Request):
+    """Get current payment status for the requesting client."""
+    client_ip = request.client.host if request.client else "unknown"
+    api_key = request.headers.get('x-api-key', '')
+    summary = get_payment_summary(client_ip, api_key)
+    return summary
+
 
 @app.get("/api/history")
 async def api_history(

@@ -48,6 +48,16 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+# x402 Payment Middleware
+from x402_middleware import (
+    check_payment_status,
+    consume_free_query,
+    build_402_response_body,
+    build_402_headers,
+    get_client_ip as x402_get_client_ip,
+    FREE_QUERIES_PER_DAY,
+)
+
 # ============================================================================
 # Security Configuration
 # ============================================================================
@@ -156,20 +166,32 @@ class SecurityMiddleware(BaseHTTPMiddleware):
             is_introspection = method_name in introspection_methods
             
             if not is_introspection:
-                # 1. API Key authentication (required for tool execution)
+                # 1. x402 Payment Check
+                # Supports: (a) server admin key, (b) premium API key, (c) free tier
                 api_key = request.headers.get("X-API-Key", "")
-                if not api_key:
-                    return JSONResponse(
-                        {"error": "Authentication required. Provide X-API-Key header. Introspection (tools/list) is public."},
-                        status_code=401,
-                        headers={"WWW-Authenticate": "ApiKey", **self._security_headers()}
-                    )
-                if not secrets.compare_digest(api_key, MCP_API_KEY):
-                    return JSONResponse(
-                        {"error": "Invalid API key."},
-                        status_code=403,
-                        headers=self._security_headers()
-                    )
+                
+                # Server admin key (from .env) → always allowed
+                if api_key and secrets.compare_digest(api_key, MCP_API_KEY):
+                    pass  # Admin access, skip payment check
+                
+                else:
+                    # x402 payment check: API key or free tier
+                    payment_status = check_payment_status(api_key, client_ip)
+                    
+                    if not payment_status['allowed']:
+                        # 402 Payment Required
+                        body_402 = build_402_response_body("/mcp")
+                        headers_402 = build_402_headers("/mcp")
+                        headers_402.update(self._security_headers())
+                        return JSONResponse(
+                            content=body_402,
+                            status_code=402,
+                            headers=headers_402,
+                        )
+                    
+                    # Consume free query if on free tier
+                    if payment_status['tier'] == 'free':
+                        consume_free_query(client_ip)
             
             # 2. Rate limiting (applies to all requests including introspection)
             if not check_rate_limit(client_ip):
@@ -185,7 +207,7 @@ class SecurityMiddleware(BaseHTTPMiddleware):
         # 4. Process request
         response = await call_next(request)
         
-        # 4. Security headers (Constitution v2.0 §5.2)
+        # 5. Security headers (Constitution v2.0 §5.2)
         for key, value in self._security_headers().items():
             response.headers[key] = value
         # Remove Server header to prevent version leakage
@@ -534,15 +556,36 @@ if __name__ == "__main__":
     print("Security: API Key authentication enabled")
     print(f"Security: Rate limiting {MAX_REQUESTS} req/{WINDOW_SECONDS}s per IP")
     print("Security: Security headers on all responses")
+    print(f"x402 Payment: Free tier = {FREE_QUERIES_PER_DAY} queries/day, Premium = unlimited")
+    print("x402 Discovery: /.well-known/x402")
     
     # Get the underlying Starlette app from FastMCP
     app = mcp.streamable_http_app()
     
-    # Mount .well-known for Glama discovery
+    # Mount .well-known for x402 discovery + Glama
+    # Priority: BDE-Stock/.well-known/ (x402 protocol discovery)
     from starlette.staticfiles import StaticFiles
-    _well_known_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'docs', '.well-known')
-    if os.path.isdir(_well_known_dir):
-        app.mount('/.well-known', StaticFiles(directory=_well_known_dir), name='well-known')
+    from starlette.responses import FileResponse
+    
+    _bde_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    _well_known_dir = os.path.join(_bde_root, '.well-known')
+    _docs_well_known = os.path.join(_bde_root, 'docs', '.well-known')
+    
+    # Serve x402 discovery file
+    _x402_path = os.path.join(_well_known_dir, 'x402')
+    if os.path.isfile(_x402_path):
+        @app.route('/.well-known/x402', methods=['GET'])
+        async def serve_x402(request):
+            return FileResponse(_x402_path, media_type='application/json')
+    
+    # Mount docs/.well-known for glama.json etc.
+    if os.path.isdir(_docs_well_known):
+        @app.route('/.well-known/glama.json', methods=['GET'])
+        async def serve_glama(request):
+            glama_path = os.path.join(_docs_well_known, 'glama.json')
+            if os.path.isfile(glama_path):
+                return FileResponse(glama_path, media_type='application/json')
+            return JSONResponse({"error": "not found"}, status_code=404)
     
     # Add security middleware
     app.add_middleware(SecurityMiddleware)
