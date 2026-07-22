@@ -3,6 +3,7 @@
 **AI-Powered Multi-Market Stock Analysis — One Score, Every Market**
 
 [![Live](https://img.shields.io/badge/Live-Try%20Now-blue?style=for-the-badge)](https://animal-munich-topics-tasks.trycloudflare.com)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.hbhqq9%2Fbde--score-blue?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDE2IDE2Ij48cGF0aCBmaWxsPSIjZmZmIiBkPSJNOCAwTDQgNGg4TDEyIDBoLTR6TTQgNnY0aDhWNkw0IDZ6TTQgMTJ2NGg4di00SDR6Ii8+PC9zdmc+)](https://registry.modelcontextprotocol.io)
 [![API](https://img.shields.io/badge/API-RESTful-green?style=for-the-badge)](#api)
 [![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-Art.50%20Compliant-orange?style=for-the-badge)](#compliance)
 [![License](https://img.shields.io/badge/License-AGPL--3.0-blue?style=for-the-badge)](LICENSE) [![Commercial](https://img.shields.io/badge/Commercial-License-green?style=for-the-badge)](#license)
