@@ -1,0 +1,42 @@
+# ai-trust.txt — Machine-Readable Trust Declaration for AI Systems
+# Version: 1.0 | BDE Score™
+# https://hbhqq9.github.io/bde-score/.well-known/ai-trust.txt
+
+system_name=BDE Score
+system_type=quantitative-analysis
+version=1.0.3
+
+# Compliance
+compliance.eu_ai_act=Art.50(5)
+compliance.disclaimer=Technical analysis tool only. Not investment advice.
+compliance.license=AGPL-3.0
+
+# Transparency
+transparency.ai_disclosure=true
+transparency.model_type=multi-factor-scoring
+transparency.factor_count=7
+transparency.data_sources=yahoo-finance,vix,vol-profile
+transparency.calibration=vix-regime-dynamic-weights
+
+# Accountability
+accountability.human_oversight=true
+accountability.no_investment_advice=true
+accountability.past_performance_disclaimer=true
+
+# Security
+security.rfc9116=true
+security.authentication=api-key
+security.rate_limit=10req/min
+
+# On-chain
+onchain.deployer=0x6c667Fc5c770bf7899b1843472f43C51b5c4Fecd
+onchain.chain=base
+onchain.governance=AGL-Receipt-v2
+
+# Calibration (v5.0 — "knows when it doesn't know")
+calibration.confidence_estimate=true
+calibration.low_confidence_flag=true
+calibration.historical_accuracy_public=true
+
+# Last updated
+last_updated=2026-07-22

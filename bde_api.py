@@ -178,6 +178,10 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             response.headers["Content-Security-Policy"] = "frame-ancestors *"
         else:
             response.headers["X-Frame-Options"] = "DENY"
+        # 🇪🇺 EU AI Act Art.50(5) — AI system disclosure
+        response.headers["X-AI-System"] = "true"
+        response.headers["X-EU-AI-Act-Compliance"] = "Art.50(5)"
+        response.headers["X-AI-Disclosure"] = "AI-powered analysis. Not investment advice."
         # CORS
         response.headers["Access-Control-Allow-Origin"] = "*"
         response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
@@ -1043,6 +1047,30 @@ Sitemap: https://hbhqq9.github.io/bde-score/sitemap.xml
 LLMs: https://bore.pub:8776/llms.txt
 """
     return PlainTextResponse(robots, media_type="text/plain")
+
+@app.get("/.well-known/glama.json")
+async def serve_glama_json():
+    """Glama MCP Registry ownership verification"""
+    return JSONResponse({
+        "$schema": "https://glama.ai/mcp/schemas/connector.json",
+        "maintainers": [{"email": "nnhbh@foxmail.com"}]
+    })
+
+@app.get("/.well-known/ai-plugin.json")
+async def serve_ai_plugin(request: Request):
+    """OpenAI/Agent discovery protocol"""
+    return JSONResponse({
+        "schema_version": "v1",
+        "name_for_human": "BDE Score",
+        "name_for_model": "bde_score",
+        "description_for_human": "AI-Powered Multi-Market Stock Analysis with 7-Factor Model",
+        "description_for_model": "Run comprehensive BDE (Buflen-Deviation-Efficiency) analysis on stocks. Provides 7-factor scoring including VIX regime, Volume Profile, momentum, mean-reversion, volume, volatility, and trend.",
+        "auth": {"type": "none"},
+        "api": {"type": "openapi", "url": f"{request.base_url}openapi.json" if hasattr(request, 'base_url') else "/openapi.json"},
+        "logo_url": "https://hbhqq9.github.io/bde-score/logo.png",
+        "contact_email": "nnhbh@foxmail.com",
+        "legal_info_url": "https://hbhqq9.github.io/bde-score/legal"
+    })
 
 
 # ============================================================

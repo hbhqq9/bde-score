@@ -1,0 +1,12 @@
+# RFC 9116 - security.txt
+# BDE Score™ Security Policy
+
+Contact: mailto:nnhbh@foxmail.com
+Expires: 2027-07-22T00:00:00.000Z
+Encryption: https://github.com/hbhqq9/bde-score/blob/main/SECURITY.md
+Preferred-Languages: en, zh
+Canonical: https://hbhqq9.github.io/bde-score/.well-known/security.txt
+Policy: https://github.com/hbhqq9/bde-score/security/policy
+
+# BDE Score™ follows responsible disclosure.
+# All services comply with EU AI Act Art.50 transparency requirements.
