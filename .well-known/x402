@@ -1,0 +1,25 @@
+{
+  "protocol": "x402",
+  "version": "1.0",
+  "payment_methods": [
+    {
+      "type": "USDC",
+      "chain": "Base",
+      "chain_id": 8453,
+      "contract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "recipient": "0x349Eea0E2f4d3594797851758325Da3eb49D4343",
+      "amounts": {
+        "per_query": "0.10",
+        "monthly": "29.00"
+      }
+    }
+  ],
+  "free_tier": {
+    "queries_per_day": 3,
+    "requires": "nothing"
+  },
+  "premium_tier": {
+    "queries_per_day": "unlimited",
+    "requires": "valid API key (send USDC to activate)"
+  }
+}
