@@ -1,24 +1,16 @@
-# BDE Score
+# BDE Score — MCP Server
 
-> Open-source multi-factor stock scoring engine. 7-factor composite model (VIX, Volume Profile, RSI, MACD, Bollinger Bands, OBV, ATR) covering 74 stocks across US, HK, and China A-share markets. EU AI Act Art.50 compliant.
-
-## API Endpoints
-
-- `GET https://provides-part-lamb-leaves.trycloudflare.com/api/analyze?market=ALL` — Score all 74 stocks
-- `GET https://provides-part-lamb-leaves.trycloudflare.com/api/analyze?ticker=AAPL` — Score single stock
-- `GET https://provides-part-lamb-leaves.trycloudflare.com/api/top?market=US&n=10` — Top N performers
-- `GET https://provides-part-lamb-leaves.trycloudflare.com/api/worst?market=US&n=10` — Worst N performers
-- `GET https://provides-part-lamb-leaves.trycloudflare.com/api/market` — Market overview (VIX, breadth)
+> AI-powered multi-market stock analysis MCP server. 6 MCP tools for scoring, comparison, screening, sector analysis, and ESG. Covers 73 stocks across US, HK, and A-share markets with 7-factor transparent scoring. EU AI Act Art.50 compliant.
 
 ## MCP Server
 
-Connect BDE Score as an MCP tool for Claude Code, Cursor, or any MCP client:
+Connect BDE Score as an MCP tool for Claude Desktop, Cursor, or any MCP client:
 
 ```json
 {
   "mcpServers": {
     "bde-score": {
-      "url": "https://muscle-prison-explore-recorded.trycloudflare.com/mcp",
+      "url": "https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp",
       "headers": {
         "X-API-Key": "YOUR_API_KEY"
       }
@@ -27,26 +19,46 @@ Connect BDE Score as an MCP tool for Claude Code, Cursor, or any MCP client:
 }
 ```
 
+Transport: Streamable HTTP (MCP protocol)
+
+## MCP Tools
+
+| Tool | Description |
+|------|-------------|
+| `get_bde_score` | Get BDE composite scores (0-100) for all stocks in a market (US/HK/CN/ALL) |
+| `get_stock_analysis` | Detailed single-stock analysis with 7-factor breakdown |
+| `get_multi_market_comparison` | Compare same company across US/HK/CN markets |
+| `get_stock_screener` | Screen stocks by minimum BDE score threshold |
+| `get_sector_analysis` | Sector-level aggregation and rankings |
+| `get_esg_analysis` | ESG analysis per stock with compliance metadata |
+
 ## 7-Factor Model
 
 Each stock receives a composite score (0-100):
-- **VIX Regime** (weight: adaptive) — Market fear gauge overlay
-- **Volume Profile** — Institutional accumulation/distribution detection
-- **RSI** (14-period) — Momentum and mean reversion signals
+- **VIX Regime** — Market fear gauge overlay
+- **Volume Profile** — Institutional accumulation/distribution
+- **RSI** (14-period) — Momentum and mean reversion
 - **MACD** — Trend direction and momentum shifts
-- **Bollinger Bands** — Volatility regime and price extremes
+- **Bollinger Bands** — Volatility regime
 - **OBV** — Volume-confirmed trend strength
-- **ATR** — Risk-normalized volatility measure
+- **ATR** — Risk-normalized volatility
 
-Signal: Strong Buy (>75), Buy (65-75), Neutral (40-65), Sell (25-40), Strong Sell (<25).
+Signal: Bullish (>70), Neutral (40-70), Bearish (<40).
+
+## Coverage
+
+- **US** (25): AAPL, MSFT, GOOG, AMZN, META, NVDA, AMD, AVGO, ARM, INTC, V, MA, JNJ, UNH, LLY, PFE, PG, KO, WMT, MCD, TSLA, NFLX, BABA, SPY, QQQ
+- **HK** (26): 00700, 09988, 09888, 03690, 01024, 01810, 09618, 09999, 02015, 09868, 01211, 09863, 02318, 01398, 00939, 03988, 02628, 02899, 00883, 00857, 01088, 00941, 00728, 00762, 01833, 02269
+- **A-Share** (23): SH600519, SZ000858, SZ000568, SH600887, SZ002714, SH601318, SH600036, SH601398, SH601288, SZ300750, SH601012, SZ002594, SH600900, SH688981, SZ002475, SZ002230, SH603501, SH601899, SH601088, SH600585, SZ000333, SH600690, SZ000651
 
 ## Discovery
 
-- Official MCP Registry: `bde-score`
-- Agent Card: https://hbhqq9.github.io/bde-score/.well-known/agent.json
+- Official MCP Registry: `io.github.hbhqq9/bde-score`
+- Agent Card: https://hbhqq9.github.io/bde-score/.well-known/agent-card.json
 - MCP Discovery: https://hbhqq9.github.io/bde-score/.well-known/mcp.json
+- AI Trust: https://hbhqq9.github.io/bde-score/.well-known/ai-trust.txt
 
 ## Source
 
 - GitHub: https://github.com/hbhqq9/bde-score
-- License: MIT
+- License: AGPL-3.0 / Commercial

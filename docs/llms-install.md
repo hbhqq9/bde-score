@@ -7,7 +7,7 @@
 {
   "mcpServers": {
     "bde-score": {
-      "url": "https://deputy-athletics-ranks-hopes.trycloudflare.com/mcp",
+      "url": "https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp",
       "headers": {
         "X-API-Key": "YOUR_API_KEY"
       }
@@ -16,37 +16,48 @@
 }
 ```
 
+Transport: Streamable HTTP
+
 ### Auto-Discovery
 BDE Score supports MCP auto-discovery via `.well-known/mcp.json`:
 - GitHub Pages: `https://hbhqq9.github.io/bde-score/.well-known/mcp.json`
 
+### Claude Desktop
+Add to `claude_desktop_config.json`:
+```json
+{
+  "mcpServers": {
+    "bde-score": {
+      "url": "https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp",
+      "headers": { "X-API-Key": "YOUR_API_KEY" }
+    }
+  }
+}
+```
+
+### Cursor IDE
+Add to `.cursor/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "bde-score": {
+      "url": "https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp",
+      "headers": { "X-API-Key": "YOUR_API_KEY" }
+    }
+  }
+}
+```
+
 ## For Developers
 
-### Python (LangChain)
+### Python MCP Client
 ```python
-from bde_score_langchain import get_bde_tools
-tools = get_bde_tools()
+from mcp import ClientSession
+from mcp.client.streamable_http import streamablehttp_client
+
+async with streamablehttp_client("https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp") as (read, write, _):
+    async with ClientSession(read, write) as session:
+        await session.initialize()
+        result = await session.call_tool("get_bde_score", {"market": "US"})
+        print(result)
 ```
-
-### GitHub Action
-```yaml
-- uses: hbhqq9/bde-score@main
-  with:
-    market: ALL
-    min_score: '55'
-```
-
-### REST API
-```bash
-curl "https://deputy-athletics-ranks-hopes.trycloudflare.com/api/stock/AAPL"
-```
-
-## For LLMs
-See [llms.txt](https://deputy-athletics-ranks-hopes.trycloudflare.com/llms.txt) for machine-readable documentation.
-
-## Authentication
-All endpoints require an API Key via `X-API-Key` header.
-Free tier: 10 requests/minute. Contact for higher limits.
-
-## Coverage
-73 stocks across US (25), HK (26), and CN A-share (23) markets.
