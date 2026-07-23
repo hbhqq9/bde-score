@@ -34,3 +34,6 @@ venv/
 *.egg-info/
 dist/
 build/
+
+# Operational logs
+logs/
