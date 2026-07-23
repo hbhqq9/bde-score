@@ -113,6 +113,31 @@ def get_client_ip(request: Request) -> str:
         return forwarded.split(",")[0].strip()
     return request.client.host if request.client else "unknown"
 
+
+# ============================================================================
+# Accept Header Fix Middleware
+# Fixes Glama compatibility: MCP Streamable HTTP SDK requires both
+# application/json AND text/event-stream in Accept header.
+# Some clients (Glama health check) only send application/json.
+# ============================================================================
+
+class AcceptFixMiddleware(BaseHTTPMiddleware):
+    """Ensures Accept header includes both json and SSE for MCP SDK compatibility."""
+    
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path == "/mcp" and request.method == "POST":
+            accept = request.headers.get("accept", "")
+            if "text/event-stream" not in accept.lower():
+                # Rebuild scope with fixed Accept header
+                new_headers = list(request.scope.get("headers", []))
+                new_headers = [
+                    (k, v) for k, v in new_headers
+                    if k.lower() != b"accept"
+                ]
+                new_headers.append((b"accept", b"application/json, text/event-stream"))
+                request.scope["headers"] = new_headers
+        return await call_next(request)
+
 # ============================================================================
 # Authentication & Security Middleware
 # ============================================================================
@@ -587,7 +612,9 @@ if __name__ == "__main__":
                 return FileResponse(glama_path, media_type='application/json')
             return JSONResponse({"error": "not found"}, status_code=404)
     
-    # Add security middleware
+    # Add middleware (Starlette applies in reverse order)
+    # AcceptFix must be first (innermost) to fix headers before SDK checks
+    app.add_middleware(AcceptFixMiddleware)
     app.add_middleware(SecurityMiddleware)
     
     # Run with uvicorn (no Server header leakage)
