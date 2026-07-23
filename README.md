@@ -59,7 +59,7 @@ Add to `claude_desktop_config.json`:
 {
   "mcpServers": {
     "bde-score": {
-      "url": "https://fantasy-bald-shark-stereo.trycloudflare.com/mcp",
+      "url": "https://enjoying-wide-boat-stan.trycloudflare.com.trycloudflare.com/mcp",
       "headers": {
         "X-API-Key": "your-api-key-here"
       }
@@ -78,7 +78,7 @@ Add to `.cursor/mcp.json` in your project:
 {
   "mcpServers": {
     "bde-score": {
-      "url": "https://fantasy-bald-shark-stereo.trycloudflare.com/mcp",
+      "url": "https://enjoying-wide-boat-stan.trycloudflare.com.trycloudflare.com/mcp",
       "headers": {
         "X-API-Key": "your-api-key-here"
       }
@@ -95,7 +95,7 @@ BDE Score uses the **Streamable HTTP** transport (MCP protocol). Connect from an
 from mcp import ClientSession
 from mcp.client.streamable_http import streamablehttp_client
 
-async with streamablehttp_client("https://fantasy-bald-shark-stereo.trycloudflare.com/mcp") as (read, write, _):
+async with streamablehttp_client("https://enjoying-wide-boat-stan.trycloudflare.com.trycloudflare.com/mcp") as (read, write, _):
     async with ClientSession(read, write) as session:
         await session.initialize()
         tools = await session.list_tools()
@@ -172,7 +172,7 @@ BDE Score implements standard agent discovery protocols:
 
 | Endpoint | URL |
 |----------|-----|
-| MCP Server | `https://fantasy-bald-shark-stereo.trycloudflare.com/mcp` |
+| MCP Server | `https://enjoying-wide-boat-stan.trycloudflare.com.trycloudflare.com/mcp` |
 | `.well-known/mcp.json` | `https://hbhqq9.github.io/bde-score/.well-known/mcp.json` |
 | `.well-known/agent.json` | `https://hbhqq9.github.io/bde-score/.well-known/agent.json` |
 | `.well-known/agent-card.json` | `https://hbhqq9.github.io/bde-score/.well-known/agent-card.json` |
