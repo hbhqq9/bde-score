@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.hbhqq9/bde-score",
   "description": "7-factor stock scoring MCP server. US/HK/CN, 74 stocks. Free + Premium (USDC/Base). x402 ready.",
-  "version": "1.27.0",
+  "version": "1.27.1",
   "remotes": [
     {
       "type": "streamable-http",
