@@ -43,11 +43,11 @@
   },
   "endpoints": {
     "mcp": "https://fantasy-bald-shark-stereo.trycloudflare.com/mcp",
-    "rest": "https://lightbox-essence-complement-learned.trycloudflare.com/api",
+    "rest": "https://enjoying-wide-boat-stan.trycloudflare.com/api",
     "dashboard": "https://hbhqq9.github.io/bde-score/",
-    "api": "https://robot-soul-bet-singer.trycloudflare.com",
-    "compliance_check": "https://robot-soul-bet-singer.trycloudflare.com/compliance-check",
-    "x402_pay_info": "https://robot-soul-bet-singer.trycloudflare.com/pay/info",
+    "api": "https://enjoying-wide-boat-stan.trycloudflare.com",
+    "compliance_check": "https://enjoying-wide-boat-stan.trycloudflare.com/compliance-check",
+    "x402_pay_info": "https://enjoying-wide-boat-stan.trycloudflare.com/pay/info",
     "registry": "http://bore.pub:53406"
   },
   "authentication": {
@@ -74,5 +74,5 @@
       "EU AI Act Art.50"
     ]
   },
-  "last_verified": "2026-07-23T11:44:30Z"
+  "last_verified": "2026-07-23T23:48:11Z"
 }
