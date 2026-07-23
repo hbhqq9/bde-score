@@ -10,7 +10,7 @@ import urllib.request
 
 REGISTRY_BASE = "http://localhost:8892"
 BDE_SCORE_API = "https://bathroom-ebooks-isa-accommodation.trycloudflare.com"
-BDE_SCORE_MCP = "https://tex-adequate-date-facing.trycloudflare.com"
+BDE_SCORE_MCP = "https://fantasy-bald-shark-stereo.trycloudflare.com"
 
 def self_register():
     payload = {

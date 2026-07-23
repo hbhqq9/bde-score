@@ -18,7 +18,7 @@ import httpx
 from typing import Optional, List
 from pydantic import BaseModel, Field
 
-BDE_API_BASE = "https://atlantic-remains-atomic-floor.trycloudflare.com"
+BDE_API_BASE = "https://lightbox-essence-complement-learned.trycloudflare.com"
 
 
 # Pydantic models for input validation

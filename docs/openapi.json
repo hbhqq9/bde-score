@@ -125,7 +125,7 @@
     }
   },
   "x-mcp-server": {
-    "url": "https://deputy-athletics-ranks-hopes.trycloudflare.com/mcp",
+    "url": "https://lightbox-essence-complement-learned.trycloudflare.com/mcp",
     "transport": "streamable-http",
     "authentication": "api-key (X-API-Key header)"
   }

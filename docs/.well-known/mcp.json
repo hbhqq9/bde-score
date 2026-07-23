@@ -1,7 +1,7 @@
 {
   "name": "BDE Score MCP Server",
   "description": "Stock analysis MCP with BDE scoring for US, HK, CN markets. Includes momentum, volatility, value, quality, and ESG factors.",
-  "url": "https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp",
+  "url": "https://fantasy-bald-shark-stereo.trycloudflare.com/mcp",
   "version": "1.0.3",
   "protocol": "mcp",
   "transport": "streamable-http",

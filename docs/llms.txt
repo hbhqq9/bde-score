@@ -10,7 +10,7 @@ Connect BDE Score as an MCP tool for Claude Desktop, Cursor, or any MCP client:
 {
   "mcpServers": {
     "bde-score": {
-      "url": "https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp",
+      "url": "https://fantasy-bald-shark-stereo.trycloudflare.com/mcp",
       "headers": {
         "X-API-Key": "YOUR_API_KEY"
       }

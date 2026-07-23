@@ -7,7 +7,7 @@
 {
   "mcpServers": {
     "bde-score": {
-      "url": "https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp",
+      "url": "https://fantasy-bald-shark-stereo.trycloudflare.com/mcp",
       "headers": {
         "X-API-Key": "YOUR_API_KEY"
       }
@@ -28,7 +28,7 @@ Add to `claude_desktop_config.json`:
 {
   "mcpServers": {
     "bde-score": {
-      "url": "https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp",
+      "url": "https://fantasy-bald-shark-stereo.trycloudflare.com/mcp",
       "headers": { "X-API-Key": "YOUR_API_KEY" }
     }
   }
@@ -41,7 +41,7 @@ Add to `.cursor/mcp.json`:
 {
   "mcpServers": {
     "bde-score": {
-      "url": "https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp",
+      "url": "https://fantasy-bald-shark-stereo.trycloudflare.com/mcp",
       "headers": { "X-API-Key": "YOUR_API_KEY" }
     }
   }
@@ -55,7 +55,7 @@ Add to `.cursor/mcp.json`:
 from mcp import ClientSession
 from mcp.client.streamable_http import streamablehttp_client
 
-async with streamablehttp_client("https://consolidated-survey-gamma-arrival.trycloudflare.com/mcp") as (read, write, _):
+async with streamablehttp_client("https://fantasy-bald-shark-stereo.trycloudflare.com/mcp") as (read, write, _):
     async with ClientSession(read, write) as session:
         await session.initialize()
         result = await session.call_tool("get_bde_score", {"market": "US"})

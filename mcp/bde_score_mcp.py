@@ -26,7 +26,7 @@ MCP_SERVER_CONFIG = {
     "description": "BDE Score™ - Multi-market stock analysis API for AI agents. US/HK/A-share, 73 stocks, transparent scoring.",
 }
 
-BDE_API_BASE = "https://atlantic-remains-atomic-floor.trycloudflare.com"
+BDE_API_BASE = "https://lightbox-essence-complement-learned.trycloudflare.com"
 
 # Tool definitions for MCP
 TOOLS = [
