@@ -1,0 +1,20 @@
+{
+  "last_check": "2026-07-24T23:47:22.255085+08:00",
+  "last_full_report": "2026-07-24T23:47:22.255101+08:00",
+  "balances": {
+    "Deployer(正式)": {
+      "address": "0x6c667Fc5c770bf7899b1843472f43C51b5c4Fecd",
+      "short": "0x6c66...Fecd",
+      "balance_eth": 9.9999203753965e-05,
+      "tx_count": 3,
+      "queried_at": "2026-07-24T23:47:22.255108+08:00"
+    },
+    "x402收款": {
+      "address": "0x349Eea0E2f4d3594797851758325Da3eb49D4343",
+      "short": "0x349E...4343",
+      "balance_eth": 0.0,
+      "tx_count": 0,
+      "queried_at": "2026-07-24T23:47:22.255114+08:00"
+    }
+  }
+}

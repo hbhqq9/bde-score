@@ -1,0 +1,6 @@
+{
+  "message_id": "om_x100b691c828ca0a0c3f6a95c408b873",
+  "chat_id": "oc_8c9081046ededba2030a9c65e760c84b",
+  "sent_at": "2026-07-24 05:51:18",
+  "report_file": "reports/balance_report_20260724_0551.md"
+}

@@ -48,7 +48,7 @@
     "api": "https://enjoying-wide-boat-stan.trycloudflare.com",
     "compliance_check": "https://enjoying-wide-boat-stan.trycloudflare.com/compliance-check",
     "x402_pay_info": "https://enjoying-wide-boat-stan.trycloudflare.com/pay/info",
-    "registry": "http://bore.pub:53406"
+    "registry": "http://bore.pub:15893"
   },
   "authentication": {
     "type": "api-key",
@@ -74,5 +74,5 @@
       "EU AI Act Art.50"
     ]
   },
-  "last_verified": "2026-07-23T23:50:23Z"
+  "last_verified": "2026-07-24T23:46:00Z"
 }
