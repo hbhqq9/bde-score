@@ -1,0 +1,93 @@
+{
+  "initial_capital": 1000000.0,
+  "cash": 676.3400000000256,
+  "positions": {
+    "jnj": {
+      "shares": 949,
+      "avg_cost": 263.4,
+      "current_price": 263.4
+    },
+    "apple": {
+      "shares": 750,
+      "avg_cost": 333.02,
+      "current_price": 333.02
+    },
+    "mastercard": {
+      "shares": 463,
+      "avg_cost": 539.66,
+      "current_price": 539.66
+    },
+    "visa": {
+      "shares": 702,
+      "avg_cost": 355.74,
+      "current_price": 355.74
+    }
+  },
+  "trades": [
+    {
+      "date": "2026-07-25T21:57:38.244917",
+      "action": "signal_neutral",
+      "symbol": "qqq",
+      "shares": 0,
+      "price": 684.23,
+      "note": "CLEAN SELL - 无持仓"
+    },
+    {
+      "date": "2026-07-25T21:57:38.244917",
+      "action": "signal_neutral",
+      "symbol": "tesla",
+      "shares": 0,
+      "price": 313.03,
+      "note": "CLEAN SELL - 无持仓"
+    },
+    {
+      "date": "2026-07-25T21:57:38.244917",
+      "action": "signal_neutral",
+      "symbol": "amazon",
+      "shares": 0,
+      "price": 232.11,
+      "note": "CLEAN SELL - 无持仓"
+    },
+    {
+      "date": "2026-07-25T21:57:38.244917",
+      "action": "signal_buy_new",
+      "symbol": "jnj",
+      "shares": 949,
+      "price": 263.4
+    },
+    {
+      "date": "2026-07-25T21:57:38.244917",
+      "action": "signal_buy_new",
+      "symbol": "apple",
+      "shares": 750,
+      "price": 333.02
+    },
+    {
+      "date": "2026-07-25T21:57:38.244917",
+      "action": "signal_buy_new",
+      "symbol": "mastercard",
+      "shares": 463,
+      "price": 539.66
+    },
+    {
+      "date": "2026-07-25T21:57:38.244917",
+      "action": "signal_buy_new",
+      "symbol": "visa",
+      "shares": 702,
+      "price": 355.74
+    }
+  ],
+  "daily_snapshots": [
+    {
+      "date": "2026-07-25",
+      "total_value": 1000000.0,
+      "cash": 676.34,
+      "return_pct": 0.0,
+      "drawdown_pct": 0.0,
+      "positions_count": 4
+    }
+  ],
+  "peak_value": 1000000.0,
+  "start_date": "2026-07-25",
+  "last_update": "2026-07-25T21:57:38.245134"
+}

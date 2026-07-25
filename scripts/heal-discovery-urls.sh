@@ -48,7 +48,7 @@ fi
 # v3.2 fix: mcp_tunnel.log (not tunnel_mcp.log which is stale)
 echo "  Discovering MCP URL from tunnel logs..."
 MCP_URL=""
-for logfile in /tmp/cf_mcp_tunnel.log /tmp/mcp_tunnel.log /tmp/tunnel_mcp.log "/app/data/所有对话/主对话/tunnel_mcp.log"; do
+for logfile in /var/log/cloudflared-mcp-retry.log /var/log/cloudflared-mcp.log /tmp/cf_mcp_tunnel.log /tmp/mcp_tunnel.log /tmp/tunnel_mcp.log "/app/data/所有对话/主对话/tunnel_mcp.log"; do
     [ -f "$logfile" ] || continue
     MCP_URL=$(discover_url "$logfile" "/mcp" "401") && break || true
     # v3.3: also accept 402 (x402 payment) and 406 (SSE protocol) as valid MCP responses
@@ -73,7 +73,7 @@ for logfile in /tmp/tunnel_registry.log /tmp/registry_tunnel.log /tmp/registry_s
 done
 # Fallback: bore.pub (static format, extract port from bore log)
 if [ -z "$REG_URL" ] && [ -f /tmp/bore_registry.log ]; then
-    BORE_PORT=$(grep -oP 'remote_port=\K\d+' /tmp/bore_registry.log 2>/dev/null | tail -1)
+    BORE_PORT=$(grep -oP 'remote_port=\K\d+' /tmp/bore.log 2>/dev/null | tail -1)
     if [ -n "$BORE_PORT" ]; then
         REG_URL="http://bore.pub:${BORE_PORT}"
         echo "  ✅ Registry: $REG_URL (from bore log, port=$BORE_PORT)"

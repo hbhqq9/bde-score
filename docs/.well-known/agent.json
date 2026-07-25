@@ -42,13 +42,13 @@
     ]
   },
   "endpoints": {
-    "mcp": "https://decorated-during-book.ngrok-free.dev/mcp",
+    "mcp": "https://category-pharmaceutical-competitive-footwear.trycloudflare.com/mcp",
     "rest": "https://boating-landscape-consolidated-respective.trycloudflare.com/api",
     "dashboard": "https://hbhqq9.github.io/bde-score/",
     "api": "https://boating-landscape-consolidated-respective.trycloudflare.com",
     "compliance_check": "https://boating-landscape-consolidated-respective.trycloudflare.com/compliance-check",
     "x402_pay_info": "https://boating-landscape-consolidated-respective.trycloudflare.com/pay/info",
-    "registry": "http://bore.pub:64362"
+    "registry": "http://bore.pub:4857"
   },
   "authentication": {
     "type": "api-key",
@@ -74,5 +74,5 @@
       "EU AI Act Art.50"
     ]
   },
-  "last_verified": "2026-07-25T11:50:00Z"
+  "last_verified": "2026-07-25T23:51:00Z"
 }

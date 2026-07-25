@@ -1,0 +1,12 @@
+{
+  "has_changes": true,
+  "new_buy": [],
+  "new_sell": [
+    "qqq"
+  ],
+  "lost_buy": [
+    "nvidia"
+  ],
+  "lost_sell": [],
+  "message": "⚡ BDE-Stock 信号变化通知\n📅 2026-07-25 21:57\n📊 VIX: 20.0 → 担忧升温(关注做多)\n\n🟡 失去BUY:\n  • NVIDIA (NVIDIA) 评分49.7\n\n🔴 新增SELL:\n  • QQQ (QQQ) 评分50.1 价格$684.23\n\n─── 当前信号 ───\n🟢 BUY: ['apple', 'jnj', 'mastercard', 'visa']\n⚪ HOLD: ['alphabet', 'baba', 'meta', 'microsoft', 'nvidia', 'pg', 'spy']\n🔴 SELL: ['amazon', 'qqq', 'tesla']\n\n─── 组合建议 ───\n  J&J: 25%\n  APPLE: 25%\n  MASTERCARD: 25%\n  VISA: 25%"
+}
