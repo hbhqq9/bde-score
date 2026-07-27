@@ -1,7 +1,7 @@
 {
   "name": "BDE Score",
   "description": "AI-powered multi-market stock analysis with 7-factor BDE scoring. Covers US, HK, and CN A-share markets.",
-  "url": "https://boating-landscape-consolidated-respective.trycloudflare.com",
+  "url": "https://vegetarian-yale-caribbean-gps.trycloudflare.com",
   "version": "1.0.3",
   "capabilities": {
     "streaming": false,
@@ -30,5 +30,6 @@
     "EU AI Act Art.50(5)"
   ],
   "license": "AGPL-3.0",
-  "homepage": "https://hbhqq9.github.io/bde-score/"
+  "homepage": "https://hbhqq9.github.io/bde-score/",
+  "last_verified": "2026-07-27T15:55:40Z"
 }

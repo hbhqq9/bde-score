@@ -5,17 +5,17 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-sse",
-        "https://category-pharmaceutical-competitive-footwear.trycloudflare.com/mcp"
+        "https://watt-rec-framework-artwork.trycloudflare.com/mcp"
       ],
       "env": {}
     }
   },
-  "url": "https://category-pharmaceutical-competitive-footwear.trycloudflare.com/mcp",
+  "url": "https://watt-rec-framework-artwork.trycloudflare.com/mcp",
   "transport": {
     "type": "sse",
-    "url": "https://category-pharmaceutical-competitive-footwear.trycloudflare.com/mcp"
+    "url": "https://watt-rec-framework-artwork.trycloudflare.com/mcp"
   },
   "name": "BDE-Score",
   "version": "1.0.3",
-  "last_verified": "2026-07-27T11:45:54Z"
+  "last_verified": "2026-07-27T15:55:40Z"
 }
