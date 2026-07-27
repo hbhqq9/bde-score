@@ -5,17 +5,17 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-sse",
-        "https://watt-rec-framework-artwork.trycloudflare.com/mcp"
+        "https://unnecessary-concert-gets-jose.trycloudflare.com/mcp"
       ],
       "env": {}
     }
   },
-  "url": "https://watt-rec-framework-artwork.trycloudflare.com/mcp",
+  "url": "https://unnecessary-concert-gets-jose.trycloudflare.com/mcp",
   "transport": {
     "type": "sse",
-    "url": "https://watt-rec-framework-artwork.trycloudflare.com/mcp"
+    "url": "https://unnecessary-concert-gets-jose.trycloudflare.com/mcp"
   },
   "name": "BDE-Score",
   "version": "1.0.3",
-  "last_verified": "2026-07-27T15:55:40Z"
+  "last_verified": "2026-07-27T19:46:36Z"
 }
