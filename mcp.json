@@ -5,9 +5,16 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-sse",
-        "https://category-pharmaceutical-competitive-footwear.trycloudflare.com"
+        "https://category-pharmaceutical-competitive-footwear.trycloudflare.com/mcp"
       ],
       "env": {}
     }
-  }
+  },
+  "url": "https://category-pharmaceutical-competitive-footwear.trycloudflare.com/mcp",
+  "transport": {
+    "type": "sse",
+    "url": "https://category-pharmaceutical-competitive-footwear.trycloudflare.com/mcp"
+  },
+  "name": "BDE-Score",
+  "version": "1.0.3"
 }
