@@ -5,17 +5,17 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-sse",
-        "https://unnecessary-concert-gets-jose.trycloudflare.com/mcp"
+        "https://cole-attempt-powerpoint-bible.trycloudflare.com/mcp"
       ],
       "env": {}
     }
   },
-  "url": "https://unnecessary-concert-gets-jose.trycloudflare.com/mcp",
+  "url": "https://cole-attempt-powerpoint-bible.trycloudflare.com/mcp",
   "transport": {
     "type": "sse",
-    "url": "https://unnecessary-concert-gets-jose.trycloudflare.com/mcp"
+    "url": "https://cole-attempt-powerpoint-bible.trycloudflare.com/mcp"
   },
   "name": "BDE-Score",
   "version": "1.0.3",
-  "last_verified": "2026-07-27T19:46:36Z"
+  "last_verified": "2026-07-28T07:48:56Z"
 }
