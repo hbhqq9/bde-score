@@ -2,11 +2,11 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.hbhqq9/bde-score",
   "description": "7-factor stock scoring MCP server. US/HK/CN, 74 stocks. Free + Premium (USDC/Base). x402 ready.",
-  "version": "1.28.0",
+  "version": "1.28.1",
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://unnecessary-concert-gets-jose.trycloudflare.com/mcp"
+      "url": "https://cole-attempt-powerpoint-bible.trycloudflare.com/mcp"
     }
   ],
   "repository": {
