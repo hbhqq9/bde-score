@@ -2,11 +2,11 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.hbhqq9/bde-score",
   "description": "7-factor stock scoring MCP server. US/HK/CN, 74 stocks. Free + Premium (USDC/Base). x402 ready.",
-  "version": "1.28.1",
+  "version": "1.29.0",
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://cole-attempt-powerpoint-bible.trycloudflare.com/mcp"
+      "url": "https://foot-linda-drew-reputation.trycloudflare.com/mcp"
     }
   ],
   "repository": {
